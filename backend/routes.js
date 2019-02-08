@@ -9,8 +9,7 @@ const routes = {users}
 
 // =========== USERS ================
 const UserController = require("./controllers/UserController");
-
-users.get(`/users/`, UserController.get());
+users.get(`/users/`, UserController.getUsers);
 
 
 module.exports = routes

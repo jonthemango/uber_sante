@@ -24,9 +24,13 @@ const document_router = (router, top_level_route) => {
   const api_package = []
   for(let i=0; i<router.stack.length; i++){
       route_obj = router.stack[i].route;
+      console.log(route_obj)
+      method = route_obj.stack[0].handle
+      method_definition = route_obj.stack[0].handle.toString()
+      method_name = route_obj.stack[0].name;
       path = top_level_route + route_obj.path;
-      method = route_obj.stack[0].method
-      api_package.push({path, method})
+      method = route_obj.stack[0].method;
+      api_package.push({path, method, method_name, method_definition, description:""});
   }
   return api_package
 }

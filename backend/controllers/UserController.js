@@ -3,11 +3,11 @@
 class UserController {
 
 
-    static get (){
-        console.log(1)
-        return (req, res, next) => {
-            res.json({"message": "ok"})
-        }
+    static getUsers (res, req){
+        /**
+         * @params 
+         */
+        res.json({"message": "ok"});
     }
 }
 
