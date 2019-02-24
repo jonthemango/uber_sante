@@ -30,7 +30,7 @@ routers = require('./routes');
 
 // ============ Document routes ==================
 const document_routers = require('./docs');
-const package = document_routers(routers, route)
+const package = document_routers(routers, route, port)
 
 // ============ Add api routes to the api ==========
 for (key in routers){
@@ -38,7 +38,7 @@ for (key in routers){
 }
 
 // Go to '/' to see a list of all methods
-app.get('/', (req, res) => {
+app.get(['/','/api/'], (req, res) => {
     res.status(200)
     res.json({ message: 'healthy', "api_reference": package })
     logger('GET - [/] ')
