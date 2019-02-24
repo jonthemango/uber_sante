@@ -2,9 +2,10 @@ class Patients {
     constructor(healthCardNB,
                 birthDay,
                 gender,
-                phoneNumber
-                physicalAddress
-                email){
+                phoneNumber,
+                physicalAddress,
+                email, 
+                passwordHash){
 
         this.healthCardNB = healthCardNB
         this.birthDay = birthDay
@@ -12,7 +13,9 @@ class Patients {
         this.phoneNumber = phoneNumber
         this.physicalAddress = physicalAddress
         this.email = email
+        this.passwordHash = passwordHash
     }
+
 
 }
 
