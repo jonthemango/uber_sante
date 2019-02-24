@@ -3,7 +3,7 @@ const express = require('express')
 const app = express()
 const log = require('fancy-log')
 const argv = require('yargs').argv
-const { p = 3001, port = p, withlog } = argv
+const { p = 3004, port = p, withlog } = argv
 const bodyParser = require('body-parser')
 const logger = (message) => {
     withlog ? log('Uber Sante API - ' + message) : null
