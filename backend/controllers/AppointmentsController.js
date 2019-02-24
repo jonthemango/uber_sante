@@ -18,13 +18,31 @@ class AppointmentsController {
     }
 
     static getAppointment(req, res){
+        const {appointmentId} = req.body;
+
+        // get it from db
 
     }
 
-    static getAppointments(req, res){
-        
-        
+    static getPatientAppointments(req, res){
+        const patientId = req.params.id;
+
+        // search for patient in db, return them
     }
+
+    static getDoctorAppointments(req, res){
+        const doctorId = req.params.id;
+
+        // search for doctor in db, return them 
+    }
+
+    static getClinicAppointments(req, res){
+        const clinicId = req.params.id;
+
+        // return all appointment for a specific clinic (only 1 clinic during the first milestone)
+    }
+
+    
 }
 
 module.exports = AppointmentsController;

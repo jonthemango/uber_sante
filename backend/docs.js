@@ -29,7 +29,7 @@ const document_router = (router, top_level_route) => {
       method_name = route_obj.stack[0].name;
       path = top_level_route + route_obj.path;
       method = route_obj.stack[0].method;
-      api_package.push({path, method, method_name, method_definition, description:""});
+      api_package.push({path, method, method_name, description:""});
   }
   return api_package
 }

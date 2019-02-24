@@ -1,4 +1,4 @@
-class Physician {
+class Doctor {
     constructor(permit,
                 firstname,
                 lastname,
@@ -15,4 +15,4 @@ class Physician {
 
 }
 
-module.exports = Physician;
+module.exports = Doctor;

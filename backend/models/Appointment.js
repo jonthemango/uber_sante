@@ -10,45 +10,57 @@ class Appointment {
                 this.appointment = new Appointment();
             }
     
-            buildPatientInfo(patientId, timeData, aptType){
-                console.log(this.appointment)
-
+            buildPatientInfo(patientId, timeData, aptType, consume){
                 this.appointment.patientId = patientId;
                 this.appointment.timeData = timeData
                 this.appointment.aptType = aptType;
+                this.appointment.isReal = consume;
                 return this;
             }
             
             consumeDoctor(clinicId, timeData, consume){
-                console.log(this.appointment)
-
                 this.appointment.doctor = null;
+                
+                if (consume){
+                    // update db
+                } else {
+                    // take a resource that may be taken later (ie do not consume)
+                }
+
                 return this;
             }
             
             consumeRoom(clinicId, timeData, consume){
-                console.log(this.appointment)
-
                 this.appointment.room = null;
+
+                if (consume){
+                    // update db
+                } else {
+                    // take a resource that may be taken later (ie do not consume)
+                }
+
                 return this;
             }
     
             maybeReleaseResources(){
-                console.log(this.appointment)
                 if (this.appointment.room == null && this.appointment.doctor){
                     this.appointment.doctor = null;
-                    // and release doctor
+                    this.appointment.isReal = false;
+
+                    // and release doctor from db
                 }
     
                 if (this.appointment.room && this.appointment.doctor == null){
                     this.appointment.room = null;
-                    // and release room
+                    this.appointment.isReal = false;
+
+                    // and release room from db
                 }
     
                 return this;
             }
+
             getAppointment(){
-                console.log(this.appointment)
                 return this.appointment;
             }
         }
