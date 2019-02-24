@@ -1,15 +1,14 @@
-// =========== Declare API Constants =========
-app = require('./app')
+
 
 // ============ Declare all Routers ===========
-const users = require('express').Router();
+const appointments = require('express').Router();
 
 // =========== Put all those routers in a list  ===========
-const routes = {users}
+const routes = {appointments}
 
-// =========== USERS ================
-const UserController = require("./controllers/UserController");
-users.get(`/users/`, UserController.getUsers);
+// =========== Appointments ================
+const AppointmentsController = require("./controllers/AppointmentsController");
+appointments.post('/appointments/', AppointmentsController.makeAppointment);
 
 
 module.exports = routes
