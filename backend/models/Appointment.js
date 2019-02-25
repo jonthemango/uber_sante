@@ -3,6 +3,27 @@ class Appointment {
 
     }
 
+
+    static releaseDoctor(){
+        this.doctor = null;
+
+        // update availability in db
+    }
+
+    static releaseRoom(){
+        this.room = null;
+
+        // update availability in db
+    }
+
+
+    static cancelAppointment(){
+        releaseRoom();
+        releaseDoctor();
+
+        // remove appointment from db
+    }
+
     
     static Builder(){
         class Builder {
