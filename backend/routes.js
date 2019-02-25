@@ -21,7 +21,8 @@ appointments.get('/appointments/:id', AppointmentsController.getAppointment);
 appointments.get('/patients/:id/appointments', AppointmentsController.getPatientAppointments);
 appointments.get('/doctors/:id/appointments', AppointmentsController.getDoctorAppointments);
 appointments.get('/clinics/:id/appointments', AppointmentsController.getClinicAppointments);
-
+appointments.put('/appointments/:id', AppointmentsController.updateAppointment);
+appointments.delete('/appointments/:id', AppointmentsController.deleteAppointment);
 // =========== CRUD Patients ===========
 const PatientsController = require("./controllers/PatientsController");
 patients.post('/patients/', PatientsController.makePatient);
