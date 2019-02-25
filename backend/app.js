@@ -42,7 +42,7 @@ app.get(['/','/api/'], (req, res) => {
     res.status(200)
     res.json({ message: 'healthy', "api_reference": package })
     logger('GET - [/] ')
-}) 
+})
 
 server = app.listen(port, () => {
     logger('backend started on port ' + port)
