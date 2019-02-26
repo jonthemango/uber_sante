@@ -1,36 +1,38 @@
 Patient = require('../models/Patients')
 
-
 class PatientsController {
 
-    static makePatient (req, res){
-
-        const {healthCardNB, birthDay, gender, phoneNumber, physicalAddress, email, password} = req.body;
-
-        const password = password;
-        const patient = new Patient(healthCardNB, birthDay, gender,phoneNumber, physicalAddress, email, passwordHash);
-        
+    static async makePatient(req, res) {
+        console.log("body", req.body)
+        let newPatient = new Patient(req.body)
         // save the patient in db
-
-        res.json(patient)
+        newPatient = await newPatient.save()
+        
+        console.log("new patient:", newPatient)
+        if (newPatient._id) {
+            res.json({ success: true, message: "New patient account created" })
+        } else {
+            res.json({ success: false, message: "New patient was not saved to database" })
+        }
     }
 
 
-    static getPatient(req, res){
+    static async getPatient(req, res) {
         const patientId = req.params.id;
 
-        let patient = {}
-        
-        // search in db for patient
+        let patient = {};
 
-        res.json(patient)
+        patient = Patient.get(patientId);
+
+        res.json(patient);
     }
 
-    static updatePatient(req, res){
-        const {patientId, healthCardNB, birthDay, gender, phoneNumber, physicalAddress, email} = req.body;
+    static updatePatient(req, res) {
+        const { patientId, healthCardNB, birthDay, gender, phoneNumber, physicalAddress, email } = req.body;
 
 
         let patient = {};
+
         // search in db for patient
 
         // update them
@@ -39,12 +41,12 @@ class PatientsController {
 
     }
 
-    static deletePatient(req, res){
-        const {patientId} = req.body;
+    static deletePatient(req, res) {
+        const { patientId } = req.body;
 
         // delete patient from db
 
-        res.json({deleted: true})
+        res.json({ deleted: true })
     }
 
 
