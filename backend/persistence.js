@@ -12,8 +12,8 @@ persist = async (handler) => {
     try{
         result = await handler(db);
         // console.log({result});
-    } catch (e) {
-        result = {error: "Resource unavailable."}
+    } catch (error) {
+        result = {error: error.message}
     } finally {
         client.close()  
     }

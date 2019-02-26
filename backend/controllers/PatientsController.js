@@ -3,16 +3,15 @@ Patient = require('../models/Patients')
 class PatientsController {
 
     static async makePatient(req, res) {
-        console.log("body", req.body)
-        let newPatient = new Patient(req.body)
-        // save the patient in db
-        newPatient = await newPatient.save()
+        const patient = new Patient(req.body)
         
-        console.log("new patient:", newPatient)
-        if (newPatient._id) {
-            res.json({ success: true, message: "New patient account created" })
+        // save the patient in db
+        await patient.save()
+        
+        if (patient._id) {
+            res.json({ success: true, data: patient, message: "New patient account created" })
         } else {
-            res.json({ success: false, message: "New patient was not saved to database" })
+            res.json({ success: false, data: patient, message: "New patient was not saved to database" })
         }
     }
 
@@ -20,33 +19,27 @@ class PatientsController {
     static async getPatient(req, res) {
         const patientId = req.params.id;
 
-        let patient = {};
+        const patient = await Patient.get(patientId);
 
-        patient = Patient.get(patientId);
-
-        res.json(patient);
+        res.json({ success: true, data: patient, message: "Patient was retrived"});
     }
 
-    static updatePatient(req, res) {
-        const { patientId, healthCardNB, birthDay, gender, phoneNumber, physicalAddress, email } = req.body;
+    static async updatePatient(req, res) {
+        const patientId = req.params.id;
+        const patient = new Patient({...req.body, _id:patientId});
+        // save the patient in db
+        await patient.save()
 
-
-        let patient = {};
-
-        // search in db for patient
-
-        // update them
-
-        res.json(patient);
-
+        res.json({ success: true, data: patient, message: "Patient was updated"});
     }
 
-    static deletePatient(req, res) {
-        const { patientId } = req.body;
+    static async deletePatient(req, res) {
+        const patientId = req.params.id;
 
         // delete patient from db
+        const deleted = await Patient.delete(patientId);
 
-        res.json({ deleted: true })
+        res.json({ deleted: deleted, message: "Patient was deleted" })
     }
 
 
