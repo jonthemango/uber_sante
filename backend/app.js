@@ -63,7 +63,7 @@ app.get(['/','/api/'], (req, res) => {
         "yann" : "Co-authored-by: Yann Cedric <ngadeuyann@yahoo.fr>",
         "ribal" : "Co-authored-by: Ribal Aladeeb <aladeeb.r@hotmail.com>",
         "eric" : "Co-authored-by: Eric Kokmanian <erickokmanian1997@gmail.com>",
-        "skander" : "Co-authored-by: skanderbm123 <>",
+        "skander" : "Co-authored-by: skanderbm123 <skander96@hotmail.com>",
         "all" : "Co-authored-by: ramzouza <ramezzaid@outlook.com> Co-authored-by: jonthemango <jonathan.mongeau@mail.concordia.ca> Co-authored-by: Sibachir Ahmed-Yanis <ahmed.yanis.sibachir@gmail.com> Co-authored-by: Yann Cedric <ngadeuyann@yahoo.fr> Co-authored-by: Ribal Aladeeb <aladeeb.r@hotmail.com> Co-authored-by: Eric Kokmanian <erickokmanian1997@gmail.com> Co-authored-by: skanderbm123 <>"
     },
      "api_reference": package })
