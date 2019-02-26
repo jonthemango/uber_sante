@@ -1,50 +1,45 @@
 Patient = require('../models/Patients')
 
-
 class PatientsController {
 
-    static makePatient (req, res){
-
-        const {healthCardNB, birthDay, gender, phoneNumber, physicalAddress, email, password} = req.body;
-
-        const password = password;
-        const patient = new Patient(healthCardNB, birthDay, gender,phoneNumber, physicalAddress, email, passwordHash);
+    static async makePatient(req, res) {
+        const patient = new Patient(req.body)
         
         // save the patient in db
-
-        res.json(patient)
+        await patient.save()
+        
+        if (patient._id) {
+            res.json({ success: true, data: patient, message: "New patient account created" })
+        } else {
+            res.json({ success: false, data: patient, message: "New patient was not saved to database" })
+        }
     }
 
 
-    static getPatient(req, res){
+    static async getPatient(req, res) {
         const patientId = req.params.id;
 
-        let patient = {}
-        
-        // search in db for patient
+        const patient = await Patient.get(patientId);
 
-        res.json(patient)
+        res.json({ success: true, data: patient, message: "Patient was retrived"});
     }
 
-    static updatePatient(req, res){
-        const {patientId, healthCardNB, birthDay, gender, phoneNumber, physicalAddress, email} = req.body;
+    static async updatePatient(req, res) {
+        const patientId = req.params.id;
+        const patient = new Patient({...req.body, _id:patientId});
+        // save the patient in db
+        await patient.save()
 
-
-        let patient = {};
-        // search in db for patient
-
-        // update them
-
-        res.json(patient);
-
+        res.json({ success: true, data: patient, message: "Patient was updated"});
     }
 
-    static deletePatient(req, res){
-        const {patientId} = req.body;
+    static async deletePatient(req, res) {
+        const patientId = req.params.id;
 
         // delete patient from db
+        const deleted = await Patient.delete(patientId);
 
-        res.json({deleted: true})
+        res.json({ deleted: deleted, message: "Patient was deleted" })
     }
 
 
