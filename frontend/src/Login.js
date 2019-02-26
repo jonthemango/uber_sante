@@ -21,7 +21,7 @@ const Box = styled.div`
     align-items: center;
     padding: 40px;
     grid-gap: 20px;
-    box-shadow: 0px 0px 39px 9px rgba(214,214,214,0.46);
+    box-shadow: 0px 0px 39px 9px #00A54F;
     
     img {
         height: 10px;
@@ -42,6 +42,12 @@ const Box = styled.div`
         width: 100%;
     }
 
+    button {
+        height : 40px;
+        width : 60px;
+        font-family : inherit;
+    }
+
 `
 
 class Login extends Component {
@@ -51,8 +57,15 @@ class Login extends Component {
         <Box>
             <p>Email</p>
             <input placeholder="Email"/>
+
             <p>Password</p>
-            <input placeholder="Email"/>
+            <input placeholder="Password"/>
+
+            <button class="button" type="button" onClick={ this.loginEvent }>
+                <span>
+                    LOGIN
+                </span>
+            </button>
         </Box>
     </Main>
   }
