@@ -44,7 +44,7 @@ doctors.post('/doctors/', DoctorsController.makeDoctor);
 doctors.get('/doctors/:id', DoctorsController.getDoctor);
 doctors.put('/doctors/:id', DoctorsController.updateDoctor);
 doctors.delete('/doctors/:id', DoctorsController.deleteDoctor);
-
+doctors.post('/doctors/:id/availability', DoctorsController.setAvailability);
 
 
 module.exports = routes
