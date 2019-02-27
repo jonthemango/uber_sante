@@ -9,7 +9,7 @@ class PatientsController {
         await patient.save()
         
         if (patient._id) {
-            res.json({ success: true, data: patient, message: "New patient account created" })
+            res.json({ success: true, data: patient, message: "New patient account created/updated" })
         } else {
             res.json({ success: false, data: patient, message: "New patient was not saved to database" })
         }
@@ -21,12 +21,18 @@ class PatientsController {
 
         const patient = await Patient.get(patientId);
 
-        res.json({ success: true, data: patient, message: "Patient was retrived"});
+        // don't we also have to check if patient==undefined? - Ribal
+        if (patient == {} || patient.error){
+            res.json({success:false, error: patient.error})
+        } else {
+            res.json({ success: true, data: patient, message: "Patient was retrived"});
+        }
     }
 
     static async updatePatient(req, res) {
         const patientId = req.params.id;
         const patient = new Patient({...req.body, _id:patientId});
+        
         // save the patient in db
         await patient.save()
 

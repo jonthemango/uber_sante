@@ -27,26 +27,36 @@ class Patients {
 
     // if the object has an id in the db, save it, otherwise create it
     async save() {
-        let patients;
         if (this._id) {
-            patients = await persist(async (db) => {
-                return await db.collection("patients").upsertOne({ _id: ObjectId(this._id) }, { $set: { healthCardNB: this.healthCardNB, birthDay: this.birthDay, gender: this.gender, phoneNumber: this.phoneNumber, physicalAddress: this.physicalAddress, email:this.email } });
-            });
+            return this.update();
         } else {
-            patients = await persist(async (db) => {
-                return await db.collection("patients").insertOne(this);
-            });
-            this._id = patients.ops[0]._id;
+            return this.add();
         }
-        
     }
 
-    
+    async update(){
+        const patients = await persist(async (db) => {
+            const patients = await db.collection("patients").updateOne({ _id: ObjectId(this._id) }, { $set: { healthCardNB: this.healthCardNB, birthDay: this.birthDay, gender: this.gender, phoneNumber: this.phoneNumber, physicalAddress: this.physicalAddress, email: this.email } })
+            .catch((err) => {console.log(err)});
+            return patients;
+        }).then((err)=>{console.log(err)}).catch((err)=>{console.log(2)});
+        return patients.ops[0];
+    }
+
+    async add(){
+        const patients = await persist(async (db) => {
+            return await db.collection("patients").insertOne(this);
+        });
+        this._id = patients.ops[0]._id;
+        return patients;
+    }
+
+
 
     static async get(id) {
         const patient = await persist(async (db) => {
             return await db.collection("patients").findOne({ _id: ObjectId(id) });
-        });  
+        });
         return patient;
     }
 
