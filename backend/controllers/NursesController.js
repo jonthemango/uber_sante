@@ -1,55 +1,63 @@
-Nurse = require('../models/Nurse')
+Nurse = require('../models/Nurses')
 
 
 class NursesController {
 
-    static makeNurse(req, res){
+    static async makeNurse(req, res){
         console.log('test;')
         const {accessId, password} = req.body;
 
         const passwordHash = password;
-        const nurse = new Nurse(accessId, passwordHash);
+        const nurse = new Nurse({accessId, passwordHash});
+        
         
         // save the nurse in db
+        await nurse.save()
+        
+        if (nurse._id) {
+            res.json({ success: true, data: nurse, message: "New nurse account created/updated" })
+        } else {
+            res.json({ success: false, data: nurse, message: "New nurse was not saved to database" })
+        }
 
         res.json(nurse)
     }
 
 
-    static getNurse(req, res){
+    static async getNurse(req, res){
         const nurseId = req.params.id;
 
-        let nurse = {};
         
         // search in db for nurse
+        const nurse = await Nurse.get(patientId);
+
+        if (nurse == {} || nurse.error){
+            res.json({success:false, error: nurse.error})
+        } else {
+            res.json({ success: true, data: nurse, message: "Nurse was retrived"});
+        }
 
         res.json(nurse)
     }
 
-    static updateNurse(req, res){
+    static async updateNurse(req, res){
         const nurseId = req.params.id;
-        const {accessId} = req.body;
-
-
-        let nurse = {};
+        const nurse = new Nurse({...req.body, _id:nurseId});
         
-        // search in db for nurse
+        // save the nurse  in db
+        await nurse.save()
 
-        // update them
-
-        res.json(nurse);
-
+        res.json({ success: true, data: nurse, message: "Nurse was updated"});
     }
 
-    static deleteNurse(req, res){
+    static async deleteNurse(req, res){
         const nurseId = req.params.id;
 
         // delete nurse from db
+        const deleted = await Nurse.delete(patientId);
 
-        res.json({deleted: true})
+        res.json({ deleted: deleted, message: "Nurse was deleted" })
     }
-
-
 
 }
 
