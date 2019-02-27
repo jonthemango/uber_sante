@@ -1,52 +1,77 @@
-Doctor = require('../models/Doctor')
+Doctor = require('../models/Doctors')
+Cookies = require('../models/Cookies')
 
 
 class DoctorsController {
 
-    static makeDoctor (req, res){
+    static async makeDoctor(req, res) {
 
-        const {password} = req.body;
+        const doctor = new Doctor(req.body);
 
-        const passwordHash = password;
-        const doctor = new Doctor(passwordHash);
-        
         // save the doctor in db
+        await doctor.save()
 
-        res.json(doctor)
+        if (doctor._id) {
+            res.json({ success: true, data: { doctor } })
+        } else {
+            res.json({ success: false, message: "" })
+        }
+
     }
 
 
-    static getDoctor(req, res){
+    static async getDoctor(req, res) {
         const doctorId = req.params.id;
 
         let doctor = {}
-        
-        // search in db for doctor
+        console.log("YANIS")
+        doctor = Doctor.get(doctorId);
 
-        res.json(dctor)
+        if (doctor == {} || doctor.error) {
+            res.json({ success: false, error: doctor.error })
+        } else {
+            res.json({ success: true, data: doctor, message: "Doctor was retrived" });
+        }
     }
 
-    static updateDoctor(req, res){
+    static async updateDoctor(req, res) {
         const doctorId = req.params.id;
-        const {} = req.body;
 
-
-        let doctor = {};
         
-        // search in db for doctor
-
+        const doctor = new Doctor({ ...req.body, _id: doctorId });
+        //const doctor = await Doctor.get(doctorId);
         // update them
-
-        res.json(doctor);
-
+        await doctor.save();
+        res.json({ success: true, data: {doctor}, message: "Doctor was updated" });
     }
 
-    static deleteDoctor(req, res){
+    static async deleteDoctor(req, res) {
         const doctorId = req.params.id;
 
-        // delete doctor from db
+        // delete Doctor
+        console.log("YAnis1")
+        await Doctor.delete(doctorId);
 
-        res.json({deleted: true})
+
+        res.json({ deleted: true })
+    }
+
+
+    static async setAvailability(req, res) {
+        const doctor_id = req.params.id;
+        const { availability } = req.body;
+        existingDoctor = await Doctor.get(doctor_id);
+        console.log(existingDoctor);
+        const { success, doctor, message } = await existingDoctor.setAvailability(availability)
+        if (success) {
+            // eventually send the availability to the 
+            //Cookies.sync(existingDoctor);
+            res.json({ success })
+        }
+        else {
+            res.json({ success, message })
+        }
+
     }
 
 
