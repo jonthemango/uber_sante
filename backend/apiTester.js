@@ -18,7 +18,7 @@ const axios = require('axios')
 //   .catch(function (error) {
 //     console.log(error);
 //   });
-
+/*
 const Doctor = require('./models/Doctors')
 // console.log(Doctor);
 const doctor = new Doctor({
@@ -26,8 +26,16 @@ const doctor = new Doctor({
   firstname: 'ribal',
   lastname: 'aladeeb',
   city: 'montreal',
-})
-axios.post('http://localhost:5001/api/patients', doctor)
+})*/
+axios.put('http://localhost:5001/api/patients/5c779673afb1805b3fb554b0', {
+  healthCardNB:"k",
+  birthDay:"jjjjj99",
+  gender:"9999",
+  phoneNumber:"99",
+  physicalAddress:"99",
+  email:"99",
+  password:"9kkkk9" }
+  )
   .then(function (response) { console.log(JSON.stringify(response.data, undefined, 2)); })
   .catch(function (error) {
     console.log(error);

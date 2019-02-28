@@ -13,20 +13,38 @@ class Cookies {
     }
 
     async save() {
-        let cookies;
         if (this._id) {
-            cookies = await persist(async (db) => {
-                return await db.collection("cookies").upsertOne({ _id: ObjectId(this._id) }, { $set:{ date: this.date, day:this.day, blockId:this.blockId, consumed: this.consumed}});
-            });
+            return this.update();
         } else {
-            cookies = await persist(async (db) => {
-                return await db.collection("cookies").insertOne(this);
-            });
-            this._id = patients.ops[0]._id;
+            return this.add();
         }
+    }
 
+    async update(){
+        const id = this._id;
+        const result = await persist(async (db) => {
+            delete this._id;
+            const result = await db.collection("cookies").updateOne(
+                { _id: new ObjectId(id) }, 
+                {$set: {...this}}
+                )
+            .then((obj)=>{ return obj.result }).catch( (err) => {return err;});
+            return result
+        }).then( (result) => { return result} ).catch( (err) => {return err;});;
+        this._id = id;
+        if (result.ok){
+            return this;
+        } else { 
+            return null;
+        }
+    }
+
+    async add(){
+        const cookies = await persist(async (db) => {
+            return await db.collection("cookies").insertOne(this);
+        });
+        this._id = cookies.ops[0]._id;
         return cookies;
-        
     }
 
     async consume(){

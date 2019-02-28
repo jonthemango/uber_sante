@@ -4,7 +4,6 @@ Nurse = require('../models/Nurses')
 class NursesController {
 
     static async makeNurse(req, res){
-        console.log('test;')
         const {accessId, password} = req.body;
 
         const passwordHash = password;
@@ -12,12 +11,12 @@ class NursesController {
         
         
         // save the nurse in db
-        await nurse.save()
+        await nurse.add()
         
         if (nurse._id) {
-            res.json({ success: true, data: nurse, message: "New nurse account created/updated" })
+            res.json({ success: true, data: {nurse}, message: "New nurse account created." })
         } else {
-            res.json({ success: false, data: nurse, message: "New nurse was not saved to database" })
+            res.json({ success: false, error: nurse, message: "New nurse was not saved to database" })
         }
 
         res.json(nurse)
@@ -27,14 +26,13 @@ class NursesController {
     static async getNurse(req, res){
         const nurseId = req.params.id;
 
-        
         // search in db for nurse
-        const nurse = await Nurse.get(patientId);
+        const nurse = await Nurse.get(nurseId);
 
-        if (nurse == {} || nurse.error){
+        if (nurse.error || nurse == undefined){
             res.json({success:false, error: nurse.error})
         } else {
-            res.json({ success: true, data: nurse, message: "Nurse was retrived"});
+            res.json({ success: true, data: {nurse}, message: "Nurse was retrived"});
         }
 
         res.json(nurse)
@@ -42,19 +40,22 @@ class NursesController {
 
     static async updateNurse(req, res){
         const nurseId = req.params.id;
-        const nurse = new Nurse({...req.body, _id:nurseId});
+        let nurse = new Nurse({...req.body, _id:nurseId});
         
         // save the nurse  in db
-        await nurse.save()
-
-        res.json({ success: true, data: nurse, message: "Nurse was updated"});
+        nurse = await nurse.update()
+        if (nurse.error){
+            res.json({success: false, data: nurse.error})
+        } else {
+            res.json({ success: true, data: {nurse}, message: "Nurse was updated"});
+        }
     }
 
     static async deleteNurse(req, res){
         const nurseId = req.params.id;
 
         // delete nurse from db
-        const deleted = await Nurse.delete(patientId);
+        const deleted = await Nurse.delete(nurseId);
 
         res.json({ deleted: deleted, message: "Nurse was deleted" })
     }

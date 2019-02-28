@@ -25,7 +25,6 @@ const document_router = (router, top_level_route, port) => {
   for(let i=0; i<router.stack.length; i++){
 
       route_obj = router.stack[i].route;
-      console.log(route_obj);
       method = route_obj.stack[0].handle
       method_definition = route_obj.stack[0].handle.toString()
       method_name = route_obj.stack[0].name;

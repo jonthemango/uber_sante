@@ -11,7 +11,6 @@ persist = async (handler) => {
     let result;
     try{
         result = await handler(db);
-        // console.log({result});
     } catch (error) {
         result = {error: error.message}
     } finally {

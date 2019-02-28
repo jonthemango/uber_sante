@@ -13,21 +13,31 @@ class Nurses {
 
     }
 
-    // if the object has an id in the db, save it, otherwise create it
-    async save() {
-        let nurses;
-        if (this._id) {
-            nurses = await persist(async (db) => {
-                return await db.collection("nurses").upsertOne({ _id: ObjectId(this._id) }, { $set: { _id: this._id, accessId: this.accessId, passwordHash: this.passwordHash } });
-            });
-        } else {
-            nurses = await persist(async (db) => {
-                return await db.collection("nurses").insertOne(this);
-            });
-            this._id = nurses.ops[0]._id;
+    async update(){
+        const id = this._id;
+        const result = await persist(async (db) => {
+            delete this._id;
+            const result = await db.collection("nurses").updateOne(
+                { _id: new ObjectId(id) }, 
+                {$set: {...this}}
+                )
+            .then((obj)=>{ return obj.result }).catch( (err) => {return err;});
+            return result
+        }).then( (result) => { return result} ).catch( (err) => {return err;});;
+        this._id = id;
+        if (result.ok){
+            return this;
+        } else { 
+            return null;
         }
+    }
+
+    async add(){
+        const nurses = await persist(async (db) => {
+            return await db.collection("nurses").insertOne(this);
+        });
+        this._id = nurses.ops[0]._id;
         return nurses;
-        
     }
 
     static async get(id) {
@@ -42,7 +52,6 @@ class Nurses {
         const deleted = await persist(async (db) => {
             // Remove a single document
             const result = await db.collection("nurses").deleteOne({ _id: ObjectId(id) })
-            console.log(result);
             return result.deletedCount > 0;
         })
         return deleted;

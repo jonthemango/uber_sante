@@ -12,7 +12,7 @@ const patient = new Patient({
 })
 Post('/api/patients', "Posting Patient", patient,({expect,res})=>{
     expect(res.body.success).to.equal(true)
-    const id = res.body.data._id;
+    const id = res.body.data.patient._id;
     Get('/api/patients/' + id, "Getting Patient by Id",({expect,res})=>{
         expect(res.body.success).to.equal(true);
 
@@ -20,8 +20,7 @@ Post('/api/patients', "Posting Patient", patient,({expect,res})=>{
         newPatient.gender = "Female";
         newPatient.phoneNumber = 514555555;
         Put('/api/patients/' + id, "Updating Patient by Id", newPatient, ({expect,res}) =>{
-            console.log(res.body);
-            expect(res.body.success).to.equal(true);
+            expect(res.body.data.patient.gender).to.equal("Female");
 
             Delete('/api/patients/' + id, "Deleting Patient by Id", {}, ({expect,res}) =>{
                 expect(res.body.deleted).to.equal(true);

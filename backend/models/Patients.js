@@ -25,22 +25,24 @@ class Patients {
     }
 
 
-    // if the object has an id in the db, save it, otherwise create it
-    async save() {
-        if (this._id) {
-            return this.update();
-        } else {
-            return this.add();
-        }
-    }
 
     async update(){
-        const patients = await persist(async (db) => {
-            const patients = await db.collection("patients").updateOne({ _id: ObjectId(this._id) }, { $set: { healthCardNB: this.healthCardNB, birthDay: this.birthDay, gender: this.gender, phoneNumber: this.phoneNumber, physicalAddress: this.physicalAddress, email: this.email } })
-            .catch((err) => {console.log(err)});
-            return patients;
-        }).then((err)=>{console.log(err)}).catch((err)=>{console.log(2)});
-        return patients.ops[0];
+        const id = this._id;
+        const result = await persist(async (db) => {
+            delete this._id;
+            const result = await db.collection("patients").updateOne(
+                { _id: new ObjectId(id) }, 
+                {$set: {...this}}
+                )
+            .then((obj)=>{ return obj.result }).catch( (err) => {return err;});
+            return result
+        }).then( (result) => { return result} ).catch( (err) => {return err;});;
+        this._id = id;
+        if (result.ok){
+            return this;
+        } else { 
+            return null;
+        }
     }
 
     async add(){
@@ -65,7 +67,6 @@ class Patients {
         const deleted = await persist(async (db) => {
             // Remove a single document
             const result = await db.collection("patients").deleteOne({ _id: ObjectId(id) })
-            console.log(result);
             return result.deletedCount > 0;
         })
         return deleted;

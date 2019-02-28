@@ -9,12 +9,12 @@ class DoctorsController {
         const doctor = new Doctor(req.body);
 
         // save the doctor in db
-        await doctor.save()
+        await doctor.add()
 
         if (doctor._id) {
-            res.json({ success: true, data: { doctor } })
+            res.json({ success: true, data: {doctor}, message: "New doctor account created." })
         } else {
-            res.json({ success: false, message: "" })
+            res.json({ success: false, error: patient.error, message: "New doctor was not saved to database" })
         }
 
     }
@@ -23,37 +23,35 @@ class DoctorsController {
     static async getDoctor(req, res) {
         const doctorId = req.params.id;
 
-        let doctor = {}
-        console.log("YANIS")
-        doctor = Doctor.get(doctorId);
+        const doctor = await Doctor.get(doctorId);
 
-        if (doctor == {} || doctor.error) {
+        if (doctor.error || doctor == undefined) {
             res.json({ success: false, error: doctor.error })
         } else {
-            res.json({ success: true, data: doctor, message: "Doctor was retrived" });
+            res.json({ success: true, data: {doctor}, message: "Doctor was retrived" });
         }
     }
 
     static async updateDoctor(req, res) {
         const doctorId = req.params.id;
+        let doctor = new Doctor({ ...req.body, _id: doctorId });
 
-        
-        const doctor = new Doctor({ ...req.body, _id: doctorId });
-        //const doctor = await Doctor.get(doctorId);
-        // update them
-        await doctor.save();
-        res.json({ success: true, data: {doctor}, message: "Doctor was updated" });
+        doctor = await doctor.update();
+        if (doctor.error){
+            res.json({success: false, error: doctor});
+        } else {
+            res.json({ success: true, data: {doctor}, message: "Doctor updated" });
+        }
     }
 
     static async deleteDoctor(req, res) {
         const doctorId = req.params.id;
 
         // delete Doctor
-        console.log("YAnis1")
-        await Doctor.delete(doctorId);
+        const deleted = await Doctor.delete(doctorId);
 
 
-        res.json({ deleted: true })
+        res.json({ deleted: deleted })
     }
 
 
@@ -61,7 +59,6 @@ class DoctorsController {
         const doctor_id = req.params.id;
         const { availability } = req.body;
         existingDoctor = await Doctor.get(doctor_id);
-        console.log(existingDoctor);
         const { success, doctor, message } = await existingDoctor.setAvailability(availability)
         if (success) {
             // eventually send the availability to the 

@@ -19,41 +19,53 @@ class Doctors {
         this.availability = availability
 
     }
-    // if the object has an id in the db, save it, otherwise create it
-    async save() {
-        let doctor;
-        if (this._id) {
-            doctor = await persist(async (db) => {
-                return await db.collection("doctors").upsertOne({ _id: new ObjectId(this._id) }, { $set: { _id: this._id, permit: this.permit, firstname: this.firstname, lastname: this.lastname, specialty: this.specialty, city: this.city, availability: this.availability } });
-            });
-        } else {
-            doctor = await persist(async (db) => {
-                return await db.collection("doctors").insertOne(this);
-            });
-            this._id = doctor.ops[0]._id;
+    
+    
+
+    async update(){
+        const id = this._id;
+        const result = await persist(async (db) => {
+            delete this._id;
+            const result = await db.collection("doctors").updateOne(
+                { _id: new ObjectId(id) }, 
+                {$set: {...this}}
+                )
+            .then((obj)=>{ return obj.result }).catch( (err) => {return err;});
+            return result
+        }).then( (result) => { return result} ).catch( (err) => {return err;});;
+        this._id = id;
+        if (result.ok){
+            return this;
+        } else { 
+            return null;
         }
-        return doctor.ops[0]
+    }
+
+    async add(){
+        const doctors = await persist(async (db) => {
+            return await db.collection("doctors").insertOne(this);
+        });
+        this._id = doctors.ops[0]._id;
+        return doctors;
     }
 
 
 
     static async get(id) {
         const doctor = await persist(async (db) => {
-            return await db.collection("doctors").findOne({ _id: new ObjectId(id) });
+            return await db.collection("doctors").findOne({ _id: ObjectId(id) });
         });
         return doctor;
     }
 
     static async delete(id) {
 
-        const deletedCount = await persist(async (db) => {
+        const deleted = await persist(async (db) => {
             // Remove a single document
-            console.log("Yanis2")
-            const result = await db.collection("doctors").deleteOne({ _id: new ObjectId(id) })
-            console.log(result, "Yanis3");
+            const result = await db.collection("doctors").deleteOne({ _id: ObjectId(id) })
             return result.deletedCount > 0;
         })
-        return deletedCount;
+        return deleted;
     }
 
     static async setAvailability(availability) {

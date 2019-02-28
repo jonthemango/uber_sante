@@ -6,12 +6,12 @@ class PatientsController {
         const patient = new Patient(req.body)
         
         // save the patient in db
-        await patient.save()
+        await patient.add()
         
         if (patient._id) {
-            res.json({ success: true, data: patient, message: "New patient account created/updated" })
+            res.json({ success: true, data: {patient}, message: "New patient account created." })
         } else {
-            res.json({ success: false, data: patient, message: "New patient was not saved to database" })
+            res.json({ success: false, error: patient, message: "New patient was not saved to database" })
         }
     }
 
@@ -21,22 +21,26 @@ class PatientsController {
 
         const patient = await Patient.get(patientId);
 
-        // don't we also have to check if patient==undefined? - Ribal
-        if (patient == {} || patient.error){
+        if (patient.error || patient == undefined){
             res.json({success:false, error: patient.error})
         } else {
-            res.json({ success: true, data: patient, message: "Patient was retrived"});
+            res.json({ success: true, data: {patient}, message: "Patient was retrived"});
         }
     }
 
     static async updatePatient(req, res) {
         const patientId = req.params.id;
-        const patient = new Patient({...req.body, _id:patientId});
+        let patient = new Patient({...req.body, _id:patientId});
         
-        // save the patient in db
-        await patient.save()
 
-        res.json({ success: true, data: patient, message: "Patient was updated"});
+        patient = await patient.update();
+
+        if (patient.error){
+            res.json({success:false, error: patient})
+        } else {
+            res.json({success:true, data: {patient}, message:"Patient updated"})
+        }
+
     }
 
     static async deletePatient(req, res) {
