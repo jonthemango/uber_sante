@@ -56,17 +56,17 @@ class DoctorsController {
 
 
     static async setAvailability(req, res) {
-        const doctor_id = req.params.id;
+        const doctorId = req.params.id;
         const { availability } = req.body;
-        existingDoctor = await Doctor.get(doctor_id);
-        const { success, doctor, message } = await existingDoctor.setAvailability(availability)
-        if (success) {
+        let doctor = await Doctor.get(doctorId);
+        doctor = await doctor.setAvailability(availability);
+        if (doctor) {
             // eventually send the availability to the 
-            //Cookies.sync(existingDoctor);
-            res.json({ success })
+            Cookies.sync(doctor);
+            res.json({ success: true , data: {doctor}, message: "Availability set." })
         }
         else {
-            res.json({ success, message })
+            res.json({ success: false, error: "Availability not set." })
         }
 
     }

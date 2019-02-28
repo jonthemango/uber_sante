@@ -1,42 +1,35 @@
 
 const axios = require('axios')
-
-// Optionally the request above could also be done as
-
-// axios.post('http://localhost:5001/api/doctors/5c75c3afad74522637fc2561/availability', {
-//   availability: {
-//     "monday": [false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false],
-//     "tuesday": [false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false],
-//     "wednesday": [false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false],
-//     "thursday": [false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false],
-//     "friday": [false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false]
-//   }
-// })
-//   .then(function (response) {
-//     console.log(JSON.stringify(response.data, undefined, 2));
-//   })
-//   .catch(function (error) {
-//     console.log(error);
-//   });
-/*
 const Doctor = require('./models/Doctors')
-// console.log(Doctor);
+
+
 const doctor = new Doctor({
   permit: 'a random permit',
   firstname: 'ribal',
   lastname: 'aladeeb',
   city: 'montreal',
-})*/
-axios.put('http://localhost:5001/api/patients/5c779673afb1805b3fb554b0', {
-  healthCardNB:"k",
-  birthDay:"jjjjj99",
-  gender:"9999",
-  phoneNumber:"99",
-  physicalAddress:"99",
-  email:"99",
-  password:"9kkkk9" }
-  )
-  .then(function (response) { console.log(JSON.stringify(response.data, undefined, 2)); })
+});
+
+// axios.post('http://localhost:5001/api/doctors/', doctor)
+// .then(function (response) {
+//   console.log(JSON.stringify(response.data, undefined, 2));
+// })
+// .catch(function (error) {
+//   console.log(error);
+// });
+
+axios.post('http://localhost:5001/api/doctors/5c77b9cd26af576cdb00429c/availability', {
+  availability: {
+    "monday": [false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false],
+    "tuesday": [false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false],
+    "wednesday": [false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false],
+    "thursday": [false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false],
+    "friday": [false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false]
+  }
+})
+  .then(function (response) {
+    console.log(JSON.stringify(response.data, undefined, 2));
+  })
   .catch(function (error) {
     console.log(error);
   });

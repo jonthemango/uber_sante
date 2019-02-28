@@ -11,14 +11,22 @@ class Cookies {
         this.blockId = blockId;
         this.consumed = consumed;
     }
+    
+    
 
-    async save() {
-        if (this._id) {
-            return this.update();
-        } else {
-            return this.add();
-        }
+    static async clearDoctorAvail(doctor){
+        const deleted = await persist(async (db) => {
+            const result = await db.collection("cookies").deleteMany(
+                { doctorId: doctor._id, consumed: false }
+            )
+            return result.deletedCount > 0;
+        })
+        console.log(deleted);
+        return deleted;
     }
+
+
+    
 
     async update(){
         const id = this._id;
@@ -37,8 +45,8 @@ class Cookies {
         } else { 
             return null;
         }
-    }
-
+    }    
+    
     async add(){
         const cookies = await persist(async (db) => {
             return await db.collection("cookies").insertOne(this);
@@ -47,20 +55,41 @@ class Cookies {
         return cookies;
     }
 
+
+    
+
+
+    // NEEDS TO BE TESTED
+    static async bulk(collection){
+        console.log(collection.length);
+        const result = await persist(async (db) => {
+            return await db.collection("cookies").insertMany(collection, {ordered: true});
+        });    
+        return result;
+    }
+
+    // NEEDS TO BE TESTED
+    async getsBrokenCookies(){
+        const cookies = await persist(async (db) => {
+            return await db.collection("cookies").find({consumed: true});
+        });
+        return cookies;
+    }
+
     async consume(){
         this.consumed = true;
-        await this.save();
+        await this.update();
         return this.consumed;
     }
 
     async release(){
         this.consumed = false;
-        await this.save()
+        await this.update()
         return this.consumed;
     }
 
-    static getNext21Dates(){
-        const noWeeks = 3;
+    static getNextXWeeks(x){
+        const noWeeks = x;
         let dayObj;
         let day;
         let dates = {
@@ -79,28 +108,55 @@ class Cookies {
         return dates;   
     }
 
+    
+
 
 
     static async sync(doctor){
         const weekdays = ["monday","tuesday","wednesday","thursday","friday"];
         let avail = doctor.availability;
-        let date;
-        
         
         let cookie;
-        const dates = Cookies.getNext21Dates();
-        for (let weekday in weekdays){
-            for (let date in dates){
-                for (let i=0; i<avail[weekday]; i++){
-                    cookie = new Cookies({doctorId:doctor._id, date:date, day: weekday, blockId: i, consumed: avail[weekday][i]});
-                    await cookie.save()
+        
+        let weekday;
+        let date;
+        const dates = Cookies.getNextXWeeks(3);
+        let arr = []
+        for (let i=0; i<weekdays.length; i++){
+            weekday = weekdays[i];
+            console.log("WEEKDAY: " + weekday)
+            for (let j=0; j<dates[weekday].length; j++){
+                date = dates[weekday][j];
+                console.log("===> " + date);
+                for (let blockId=0; blockId<avail[weekday].length; blockId++){
+                    cookie = new Cookies({doctorId: doctor._id, date: date, day: weekday, blockId: blockId, consumed: avail[weekday][i]});
+                    arr.push(cookie);
                 }
             }
         }
+
+
+        await Cookies.clearDoctorAvail(doctor); // wait until all unconsumed avail are removed
+
+        let similar;
+        console.log(arr.length);
+        //const cookies = await getBrokenCookies();
+
+        /*for (let i=0; i<arr.length; i++){
+            cookie = arr[i];
+            if (similar){
+                arr[i] = undefined;
+            } 
+            // if cookie is being placed in the spot of another cookie then skip, else insert it
+        }*/
+        console.log("done")
+
+        await Cookies.bulk(arr);
+
         
     }
         
 
  }
 
-exports.module = Cookies;
+module.exports = Cookies;

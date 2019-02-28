@@ -8,6 +8,7 @@ class Nurses {
                 accessId,
                 passwordHash}){
         //username contains three letter followed by 5digits: DOL96315
+        this._id = _id
         this.accessId = accessId;
         this.passwordHash = passwordHash;
 

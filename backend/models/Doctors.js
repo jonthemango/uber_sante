@@ -11,6 +11,7 @@ class Doctors {
         city,
         availability }) {
 
+        this._id = _id;
         this.permit = permit
         this.firstname = firstname
         this.lastname = lastname
@@ -55,7 +56,7 @@ class Doctors {
         const doctor = await persist(async (db) => {
             return await db.collection("doctors").findOne({ _id: ObjectId(id) });
         });
-        return doctor;
+        return new Doctors({...doctor, _id:id});
     }
 
     static async delete(id) {
@@ -68,14 +69,12 @@ class Doctors {
         return deleted;
     }
 
-    static async setAvailability(availability) {
+    async setAvailability(availability) {
         this.availability = availability
-        const dataBaseDoctor = await this.save();
-
-        if (dataBaseDoctor.availability) {
-            return { success: true, doctor: dataBaseDoctor }
-        }
-        return { success: false, message: "availabilities have not been updated" }
+        const doctor = await this.update();
+        if (doctor.availability) {
+            return doctor
+        } else return null;
 
     }
 
