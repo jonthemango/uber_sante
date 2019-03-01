@@ -12,7 +12,7 @@ class DoctorsController {
         await doctor.add()
 
         if (doctor._id) {
-            res.json({ success: true, data: {doctor}, message: "New doctor account created." })
+            res.json({ success: true, data: { doctor }, message: "New doctor account created." })
         } else {
             res.json({ success: false, error: patient.error, message: "New doctor was not saved to database" })
         }
@@ -28,7 +28,7 @@ class DoctorsController {
         if (doctor.error || doctor == undefined) {
             res.json({ success: false, error: doctor.error })
         } else {
-            res.json({ success: true, data: {doctor}, message: "Doctor was retrived" });
+            res.json({ success: true, data: { doctor }, message: "Doctor was retrived" });
         }
     }
 
@@ -37,10 +37,10 @@ class DoctorsController {
         let doctor = new Doctor({ ...req.body, _id: doctorId });
 
         doctor = await doctor.update();
-        if (doctor.error){
-            res.json({success: false, error: doctor});
+        if (doctor.error) {
+            res.json({ success: false, error: doctor });
         } else {
-            res.json({ success: true, data: {doctor}, message: "Doctor updated" });
+            res.json({ success: true, data: { doctor }, message: "Doctor updated" });
         }
     }
 
@@ -58,12 +58,15 @@ class DoctorsController {
     static async setAvailability(req, res) {
         const doctorId = req.params.id;
         const { availability } = req.body;
+
         let doctor = await Doctor.get(doctorId);
         doctor = await doctor.setAvailability(availability);
+
         if (doctor) {
-            // eventually send the availability to the 
-            Cookies.sync(doctor);
-            res.json({ success: true , data: {doctor}, message: "Availability set." })
+            const result = await Cookies.sync(doctor._id, doctor.availability);
+            if (result.ok) {
+                res.json({ success: true, data: { doctor }, message: "Availability set." })
+            }
         }
         else {
             res.json({ success: false, error: "Availability not set." })

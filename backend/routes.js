@@ -8,9 +8,10 @@ const patients = express.Router();
 const nurses = express.Router();
 const clinics = express.Router();
 const doctors = express.Router();
+const cookies = express.Router();
 
 // =========== Put all those routers in a list  ===========
-const routes = {appointments, patients, nurses, clinics, doctors}
+const routes = { appointments, patients, nurses, clinics, doctors, cookies }
 
 // =========== Routes ================
 
@@ -46,6 +47,32 @@ doctors.put('/doctors/:id', DoctorsController.updateDoctor);
 doctors.delete('/doctors/:id', DoctorsController.deleteDoctor);
 doctors.post('/doctors/:id/availability', DoctorsController.setAvailability);
 
+
+// ======== Temporary route to test cookies ========
+const Cookie = require("./models/Cookies")
+cookies.post('/cookies/', (req, res) => {
+    console.log("dummyCookie received", req.body.dummyCookie)
+    dummyCookie = req.body.dummyCookie
+
+    let manyCookies = Array(100)
+
+    for (let i = 0; i < 100; i++) {
+        manyCookies[i] = new Cookie({ ...dummyCookie })
+        manyCookies[i].date = i
+    }
+
+    console.log('manyCookies after assignment is', manyCookies)
+    const result = Cookie.bulk(manyCookies)
+
+    res.json(result)
+})
+
+cookies.delete('/cookies/', (req, res) => {
+    const doctorId = "5c77b9cd26af576cdb00429c"
+    const result = Cookie.clearDoctorCookies(doctorId)
+    console.log(result)
+    res.json({ message: "done delete cookies" })
+})
 
 module.exports = routes
 
