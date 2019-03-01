@@ -69,7 +69,6 @@ const Link = styled.a`
 const Menu = styled.div`
     display: flex;
     width: 100vw;
-    
     height: 500px;
     flex-direction: column;
     align-items: flex-end;
@@ -80,6 +79,12 @@ const Menu = styled.div`
     background-size: contain;
 
     button {
+        height: 100px;
+        width: 200px;
+        margin-right:9%;
+        margin-top:1%;
+    }
+    a{
         height: 100px;
         width: 200px;
         margin-right:9%;
@@ -107,8 +112,7 @@ class Home extends Component {
         </Navbar>
         <Main>
             <Menu>
-                <button>Consult a Doctor</button>
-                <button>Button 2</button>
+                 <a href="/Consult"> <button>Consult a Doctor</button> </a>
                 <button>Button 3</button>
                 <button>Button 4</button>
             </Menu>
