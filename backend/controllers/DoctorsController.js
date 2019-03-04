@@ -1,5 +1,4 @@
 Doctor = require('../models/Doctors')
-Cookies = require('../models/Cookies')
 
 
 class DoctorsController {
@@ -54,23 +53,45 @@ class DoctorsController {
         res.json({ deleted: deleted })
     }
 
+    static isAvail(availability){
+        /* Example of something that passes.
+        {
+            "availability" : {
+                "monday": { "0": true, "1": true, "2": true, "3": true },
+                "tuesday" : { "9": true, "10": true, "11": true, "30":true, "31":true},
+                "wednesday" : {},
+                "thursday": {},
+                "friday": {}
+                } 
+            }
+        */
+        const assert = require('assert');
+        try {
+            assert(availability["monday"])
+            assert(availability["tuesday"])
+            assert(availability["wednesday"])
+            assert(availability["thursday"])
+            assert(availability["friday"])
+
+            return {success: true}
+        } catch (err){
+            return {success:false, error: err, message: "Availability is not valid. Must match { 'monday': {'9': true, ...}, ... }"}
+        }
+    }
+
 
     static async setAvailability(req, res) {
         const doctorId = req.params.id;
         const { availability } = req.body;
+        
+        let isAvail = DoctorsController.isAvail(availability);
+        if (!isAvail.success){
+            res.json(isAvail);
+        }
 
         let doctor = await Doctor.get(doctorId);
         doctor = await doctor.setAvailability(availability);
-
-        if (doctor) {
-            const result = await Cookies.sync(doctor._id, doctor.availability);
-            if (result.ok) {
-                res.json({ success: true, data: { doctor }, message: "Availability set." })
-            }
-        }
-        else {
-            res.json({ success: false, error: "Availability not set." })
-        }
+        res.json({success: true, data: { doctor }, message: "Availability Set" });
 
     }
 

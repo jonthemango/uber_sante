@@ -1,80 +1,64 @@
 
 const axios = require('axios')
 const Doctor = require('./models/Doctors')
-const Cookie = require('./models/Cookies')
 
-const doctor = new Doctor({
-  permit: 'a random permit',
-  firstname: 'ribal',
-  lastname: 'aladeeb',
-  city: 'montreal',
-});
 
-// axios.post('http://localhost:5001/api/doctors/', doctor)
-// .then(function (response) {
-//   console.log(JSON.stringify(response.data, undefined, 2));
-// })
-// .catch(function (error) {
-//   console.log(error);
-// });
-
-axios.post('http://localhost:5001/api/doctors/5c77b9cd26af576cdb00429c/availability', {
-  availability: {
-    "monday": [true, true, true, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false],
-    "tuesday": [false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false],
-    "wednesday": [false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false],
-    "thursday": [false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false],
-    "friday": [false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false]
-  }
-})
+post = (url, obj) => {
+  axios.post(url, obj)
   .then(function (response) {
-    console.log(JSON.stringify({ message: "server responded" }));
+    console.log(JSON.stringify( response.data,null, 2));
   })
   .catch(function (error) {
     console.log(error);
   });
+}
+
+get = (url) => {
+  axios.get(url)
+  .then(function (response) {
+    console.log(JSON.stringify( response.data,null, data));
+  })
+  .catch(function (error) {
+    console.log(error);
+  });
+}
 
 
-// dummyCookie = new Cookie({
-//   doctorId: "5c77b9cd26af576cdb00429c",
-//   date: "whatever",
-//   day: "thursday",
-//   consumed: false
-// })
+const doctor = {
+  permit: 'a random permit',
+  firstname: 'ribal',
+  lastname: 'aladeeb',
+  city: 'montreal',
+};
 
-// axios.post('http://localhost:5001/api/cookies', { dummyCookie })
-// .then(response => {
-// console.log(response)
-// console.log("server has responded")
-// })
-// .catch(error => {
-// console.log(error)
-// })
+const patient = {
+  healthCardNB: "healthCardNB",
+  birthDay: "",
+  gender:"",
+  phoneNumber:"",
+  physicalAddress:"",
+  email: "",
+  password:"secret"
+}
+//post("http://localhost:5001/api/patients/", patient);
+const nurse = {
 
-// axios.delete('http://localhost:5001/api/cookies')
-//   .then(response => {
-//     console.log("server has responded")
-//   })
-//   .catch(error => {
-//     console.log("error from server", error)
-//   })
+}
 
-  // const noWeeks = 3;
-  // let dayObj;
-  // let day;
-  // let dates = {
-  //   "monday":[],
-  //   "tuesday":[],
-  //   "wednesday":[],
-  //   "thursday":[],
-  //   "friday":[]
-  // };
-  // for (let i=0; i<noWeeks*7; i++){
-  //   dayObj = moment().add(i,'days'); 
-  //   day = dayObj.format('dddd').toLowerCase()
-  //   if (day == 'saturday' || day == 'sunday'){ continue; }
-  //     dates[day].push(dayObj.format('L'))
-  // }
+const appointment = {
+   clinicId:"5c79642f43d24100061b3283",
+   patientId: "5c7970367584bf300cc541f4",
+   date: "2019-03-01",
+   blockIds: [9,10,11],
+   isAnnual: true
+}
+
+url = "http://localhost:5001/api/appointments";
+obj = appointment
+post(url,obj);
+
+
+
 
 
 

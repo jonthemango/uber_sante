@@ -1,4 +1,5 @@
 persist = require('../persistence')
+const moment = require('moment')
 ObjectId = require('mongodb').ObjectID;
 const assert = require('assert');
 
@@ -9,7 +10,7 @@ class Doctors {
         lastname,
         specialty,
         city,
-        availability }) {
+        availability, clinicId }) {
 
         this._id = _id;
         this.permit = permit
@@ -18,6 +19,7 @@ class Doctors {
         this.specialty = specialty
         this.city = city
         this.availability = availability
+        this.clinicId = clinicId
 
     }
     
@@ -69,6 +71,8 @@ class Doctors {
         return deleted;
     }
 
+    
+
     async setAvailability(availability) {
         this.availability = availability
         const doctor = await this.update();
@@ -77,6 +81,38 @@ class Doctors {
         } else return null;
 
     }
+
+    static async getDoctors({clinicId, blockIds, date, doctorId}){
+        let query = {};
+
+        if (blockIds && date){
+            let day = moment(date).format('dddd').toLowerCase();
+            let key;
+            for (let i=0; i<blockIds.length; i++){
+                key = "availability." + day + "." + blockIds[i];
+                query[key] = true
+            }            
+        }
+
+        if (clinicId){
+            query.clinicId = clinicId
+        }
+
+        if (doctorId){
+            query.doctorId = doctorId;
+        }
+
+
+        console.log(query);
+        const doctors = await persist(async (db) => {
+            const doctors = await db.collection("doctors").find(query).toArray();
+            return doctors;
+        });
+
+        return doctors
+    }
+
+   
 
 
 

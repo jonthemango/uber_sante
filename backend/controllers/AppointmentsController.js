@@ -1,19 +1,34 @@
-Appointment = require('../models/Appointment')
+const Appointment = require('../models/Appointment')
 
 class AppointmentsController {
 
-    static makeAppointment (req, res){  // (res, req)
-        
-        const { clinicId, patientId, timeData, isAnnual, consume } = req.body;
+    static async makeAppointment (req, res){  // (res, req)
 
-        const builder = Appointment.Builder();
-        const appointment = builder
-        .buildPatientInfo(patientId, timeData, isAnnual, consume)
-        .consumeDoctor(clinicId, timeData, isAnnual, consume)
-        .consumeRoom(clinicId, timeData, isAnnual, consume)
-        .maybeReleaseResources()
-        .getAppointment();
-        res.json(appointment);
+        /*
+        const body = {
+"clinicId": "5c79642f43d24100061b3283", "patientId": "5c7970367584bf300cc541f4", "date": "2019-03-05", "blockIds": [9,10,11], "isAnnual": false
+}
+        post body to 'http://localhost:5001/api/appointments' 
+        */
+        
+        const { clinicId, patientId, date, blockIds, isAnnual } = req.body;
+
+        let builder = Appointment.Builder();
+        builder = await builder
+        .buildPatientInfo({patientId, clinicId})
+        .buildAppointmentTime({date, blockIds})
+        
+        builder = await builder.assignRoom()
+        builder = await builder.assignDoctor()
+
+
+        try{
+            const appointment = await builder.buildAppointment();
+            res.json({success:true, data: {appointment}, message:"Appointment made."});
+        } catch(err){
+            res.json({success:false, error:err, message: "Appointment not made."})
+        }
+        
     }
 
     static getAppointment(req, res){

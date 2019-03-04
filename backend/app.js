@@ -37,6 +37,11 @@ for (key in routers){
     app.use(route, routers[key])
 }
 
+// example middle ware
+app.all('*', (req, res, next)=>{
+    next();
+})
+
 // Go to '/' to see a list of all methods
 app.get(['/','/api/'], (req, res) => {
     res.status(200)
