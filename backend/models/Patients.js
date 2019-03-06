@@ -7,6 +7,8 @@ class Patients {
     constructor({
         _id,
         healthCardNB,
+        firstname,
+        lastname,
         birthDay,
         gender,
         phoneNumber,
@@ -16,6 +18,8 @@ class Patients {
 
         this._id = _id;
         this.healthCardNB = healthCardNB
+        this.firstname = firstname
+        this.lastname = lastname
         this.birthDay = birthDay
         this.gender = gender
         this.phoneNumber = phoneNumber
@@ -26,26 +30,26 @@ class Patients {
 
 
 
-    async update(){
+    async update() {
         const id = this._id;
         const result = await persist(async (db) => {
             delete this._id;
             const result = await db.collection("patients").updateOne(
-                { _id: new ObjectId(id) }, 
-                {$set: {...this}}
-                )
-            .then((obj)=>{ return obj.result }).catch( (err) => {return err;});
+                { _id: new ObjectId(id) },
+                { $set: { ...this } }
+            )
+                .then((obj) => { return obj.result }).catch((err) => { return err; });
             return result
-        }).then( (result) => { return result} ).catch( (err) => {return err;});;
+        }).then((result) => { return result }).catch((err) => { return err; });;
         this._id = id;
-        if (result.ok){
+        if (result.ok) {
             return this;
-        } else { 
+        } else {
             return null;
         }
     }
 
-    async add(){
+    async add() {
         const patients = await persist(async (db) => {
             return await db.collection("patients").insertOne(this);
         });

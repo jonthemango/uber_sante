@@ -4,36 +4,42 @@ const assert = require('assert');
 
 
 class Nurses {
-    constructor({_id,
-                accessId,
-                passwordHash}){
+    constructor({ _id,
+        accessId,
+        email,
+        firstname,
+        lastname,
+        password }) {
         //username contains three letter followed by 5digits: DOL96315
         this._id = _id
-        this.accessId = accessId;
-        this.passwordHash = passwordHash;
+        this.email = email
+        this.firstname = firstname
+        this.lastname = lastname
+        this.accessId = accessId
+        this.password = password
 
     }
 
-    async update(){
+    async update() {
         const id = this._id;
         const result = await persist(async (db) => {
             delete this._id;
             const result = await db.collection("nurses").updateOne(
-                { _id: new ObjectId(id) }, 
-                {$set: {...this}}
-                )
-            .then((obj)=>{ return obj.result }).catch( (err) => {return err;});
+                { _id: new ObjectId(id) },
+                { $set: { ...this } }
+            )
+                .then((obj) => { return obj.result }).catch((err) => { return err; });
             return result
-        }).then( (result) => { return result} ).catch( (err) => {return err;});;
+        }).then((result) => { return result }).catch((err) => { return err; });;
         this._id = id;
-        if (result.ok){
+        if (result.ok) {
             return this;
-        } else { 
+        } else {
             return null;
         }
     }
 
-    async add(){
+    async add() {
         const nurses = await persist(async (db) => {
             return await db.collection("nurses").insertOne(this);
         });
@@ -44,7 +50,7 @@ class Nurses {
     static async get(id) {
         const nurse = await persist(async (db) => {
             return await db.collection("nurses").findOne({ _id: ObjectId(id) });
-        });  
+        });
         return nurse;
     }
 

@@ -8,9 +8,9 @@ const patients = express.Router();
 const nurses = express.Router();
 const clinics = express.Router();
 const doctors = express.Router();
-
+const auth = express.Router()
 // =========== Put all those routers in a list  ===========
-const routes = { appointments, patients, nurses, clinics, doctors }
+const routes = { auth, appointments, patients, nurses, clinics, doctors }
 
 // =========== Routes ================
 
@@ -46,7 +46,8 @@ doctors.put('/doctors/:id', DoctorsController.updateDoctor);
 doctors.delete('/doctors/:id', DoctorsController.deleteDoctor);
 doctors.post('/doctors/:id/availability', DoctorsController.setAvailability);
 
-
+const AuthService = require('./controllers/AuthService')
+auth.post('/login', AuthService.login)
 
 
 module.exports = routes
