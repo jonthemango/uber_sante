@@ -45,10 +45,19 @@ class AuthService {
         }
     }
 
-    static async AuthorizeUser(req, res) {
-        const token = req.body
-
+    static AuthorizeUser(token) {
+        let decoded = null;
+        if (token == null || token == undefined) {
+            return { isAuthorized: false }
+        }
+        try {
+            decoded = jwt.verify(token, superSecret)
+        } catch (error) {
+            return { isAuthorized: false }
+        }
+        return { isAuthorized: true, token: decoded }
     }
+
 
 
     static async login(req, res) {
