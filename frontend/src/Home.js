@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import styled from 'styled-components'
+import Calendar from './Calendar';
 
 const Main = styled.div`
     padding-top: 50px;
@@ -19,6 +20,35 @@ const Links = styled.div`
     height: 100%;
     align-items: center;
 `
+
+const Button = styled.div`
+    cursor: pointer;
+    height: 100px;
+    width: 25vw;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right:9%;
+    margin-top:1%;
+    font-size: 1.5rem;
+    border-radius: 4px;
+    transition: .5s;
+    background: linear-gradient(180deg, rgba(255,255,255,0.9990371148459384) 10%, rgba(5,153,1,1) 100%) white;
+    background-position: 0 50px;
+    background-repeat: no-repeat;
+    font-weight: bold;
+    box-shadow: 0px 0px 10px -5px rgba(0,0,0,0.7);
+    color: #00A54F;
+    &:hover {
+        color: white;
+        background-position: 0 0px; 
+        transform: scale(1.2) translateX(-100px); 
+        font-size: 2rem;
+        text-shadow: 0px 0px .2px rgba(0,0,0,0.98);
+        box-shadow: 50px 0px 10px -5px rgba(0,0,0,0.2);
+
+    }
+    `
 
 const Navbar = styled.div`
     width: 100%;
@@ -112,12 +142,12 @@ class Home extends Component {
         </Navbar>
         <Main>
             <Menu>
-                 <a href="/Consult"> <button>Consult a Doctor</button> </a>
-                <button>Button 3</button>
-                <button>Button 4</button>
+                <Button href="/Consult">Make an appointment</Button>
+                <Button href="/Consult">Request Nurse</Button>
+                <Button href="/Consult"></Button>
+                <Button href="/Consult"></Button>
             </Menu>
         </Main>
-        
     </React.Fragment>
 
     

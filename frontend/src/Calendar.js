@@ -21,7 +21,6 @@ const Main = styled.div`
     justify-items: stretch;
     max-height: 80%;
     overflow-y: scroll;
-    background-color: grey;
 `
 
 const Time = styled.div`
@@ -162,9 +161,9 @@ export default class Calendar extends Component {
     }
 
     render(){
-        const {width='80%', height=500, style} = this.props
+        const {style} = this.props
         return (
-            <div style={{width, height}} {...style}>
+            <div style={{width:'80%', height:500,...style, }} >
                 <Days>
                     { this.state.days.map( x => <Day x key={x} >{x}</Day>) }
                 </Days>
