@@ -1,6 +1,6 @@
 const jwt = require("jsonwebtoken")
 const superSecret = "This string is used to sign the json web token"
-
+const logger = require('../logs')
 
 class AuthService {
 
@@ -45,18 +45,31 @@ class AuthService {
         }
     }
 
-    static async AuthorizeUser(token) {
+    static async AuthorizeUser(req, res) {
+        const token = req.body
 
     }
 
 
     static async login(req, res) {
+        console.log(req.url)
+        logger(req.url)
         const { email, password, type } = req.body
-        console.log('body',req.body)
-        const result = await AuthService.AuthenticateUser({ email, password, type })
-        console.log(result)
-        res.json(result)
+        console.log('body', req.body)
 
+        if (email == "" || email == undefined) {
+            const example =
+                "{email: 'example@mail.com',password: 'examplePassword',type: 'doctor, patient, or nurse',}"
+            const success = false
+            const message =
+                "wrong request body, please send the following: " + example
+            res.json({ success, message })
+        } else {
+
+            const result = await AuthService.AuthenticateUser({ email, password, type })
+            console.log(result)
+            res.json(result)
+        }
     }
 }
 module.exports = AuthService

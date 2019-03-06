@@ -80,4 +80,4 @@ server = app.listen(port, () => {
     logger('backend started on port ' + port)
 })
 
-module.exports = server;
+module.exports = server

@@ -1,5 +1,5 @@
 // =========== Declare API Constants =========
-app = require('./app');
+const app = require('./app');
 express = require('express');
 
 // ============ Declare all Routers ===========
