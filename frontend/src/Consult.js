@@ -133,8 +133,8 @@ class Consult extends Component {
                          <input type="submit"   value="Continue"/>
                     </div>
 
+        </div>
     </div>
- </div>
     </React.Fragment>
         );
     }

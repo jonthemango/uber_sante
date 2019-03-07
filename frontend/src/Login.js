@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import styled from 'styled-components'
 import Button, {ButtonGroup} from 'react-bootstrap'
-
+import {POST,GET} from './ApiCall'
 
 //const auth = require('../../backend/controllers/AuthService')
 
@@ -131,9 +131,9 @@ class Login extends Component {
         // call to database and add the patient tag 
     }
 
-    loginEvent(e) {
-        // const {email, password, type} = this.state
-        // call to backend to authenticate the user
+    loginEvent(e){
+     
+    
     }
     
     render() {
