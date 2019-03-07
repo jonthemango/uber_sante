@@ -6,13 +6,12 @@ class NursesController {
     static async makeNurse(req, res){
         const {accessId, password} = req.body;
 
-        const passwordHash = password;
-        const nurse = new Nurse({accessId, passwordHash});
-        
-        
+        const nurse = new Nurse({accessId, password})
+
+
         // save the nurse in db
         await nurse.add()
-        
+
         if (nurse._id) {
             res.json({ success: true, data: {nurse}, message: "New nurse account created." })
         } else {
@@ -41,7 +40,7 @@ class NursesController {
     static async updateNurse(req, res){
         const nurseId = req.params.id;
         let nurse = new Nurse({...req.body, _id:nurseId});
-        
+
         // save the nurse  in db
         nurse = await nurse.update()
         if (nurse.error){

@@ -14,7 +14,7 @@ class Patients {
         phoneNumber,
         physicalAddress,
         email,
-        passwordHash }) {
+        password }) {
 
         this._id = _id;
         this.healthCardNB = healthCardNB
@@ -25,7 +25,7 @@ class Patients {
         this.phoneNumber = phoneNumber
         this.physicalAddress = physicalAddress
         this.email = email
-        this.passwordHash = passwordHash
+        this.password = password
     }
 
 

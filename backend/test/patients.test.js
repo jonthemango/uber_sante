@@ -8,7 +8,7 @@ const patient = new Patient({
     phoneNumber: 5145443322,
     physicalAddress:"123 Street Name",
     email :'email@email.com',
-    passwordHash :'secret'
+    password :'secret'
 })
 Post('/api/patients', "Posting Patient", patient,({expect,res})=>{
     expect(res.body.success).to.equal(true)
