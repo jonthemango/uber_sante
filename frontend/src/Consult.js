@@ -2,7 +2,6 @@ import React, { Component } from 'react'
 import './Consult.css'
 import styled from 'styled-components'
 
-
 const Separator = styled.div`
     height: 3px;
     margin-top: -3px;
@@ -101,7 +100,7 @@ class Consult extends Component {
                     </div>
 
                     <div className="row">
-                        <label for="Birthday">Birthday</label> <input type="text"/>
+                        <label for="Birthday">Birthday</label> 
                    
                     </div>
         

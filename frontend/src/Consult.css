@@ -1,5 +1,5 @@
 
-  input[type=text],select{
+  input[type=text],select, input[type=password]{
     display:flex;
     width: 100%; 
     padding: 1%; 
@@ -31,6 +31,21 @@
   label{
     font-size: 1.3rem;
     }
+
+  .date {
+    border: none;
+  }
+
+  .react-datepicker-wrapper{
+    width: 100%;
+  }
+
+  .react-datepicker__input-container {
+    width: 100%;
+  }
+
+  
+
 
   .container2 {
     border-radius: 5px;

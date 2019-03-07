@@ -173,11 +173,10 @@ class Login extends Component {
             .then( response => {
                 if (response.success) {
                     cookie.save('session', {type, token: response.token})
-                    NotificationManager.success('Success message', 'Title here');
+                    NotificationManager.success('Logged in!', 'Welcome');
                 }
             }
         )
-
     }
 
     render() {
