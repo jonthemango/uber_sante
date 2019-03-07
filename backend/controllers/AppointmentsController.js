@@ -31,14 +31,21 @@ class AppointmentsController {
         
     }
 
-    static getAppointment(req, res){
-        const {appointmentId} = req.body;
+    static async getAppointment(req, res){
+        const appointmentId = req.params.id;
 
-        let appointment = {};
+        let appointments = [];
+
+        try{
+            appointments = await Appointment.getAppointments({appointmentId})
+            console.log(appointments.length)
+            res.json({success:true, data: {"appointment": appointments[0]}, message:"Appointment returned."})
+        } catch (err){
+            console.log(err.message)
+            res.json({success:false, error: err.message, message: "Appointment not returned. No appointment with that Id."})
+        }
         
-        // get it from db
-
-        res.json(appointment)
+        
     }
 
     static getPatientAppointments(req, res){

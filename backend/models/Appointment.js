@@ -11,18 +11,27 @@ class Appointment {
 
 
 
-    static async getAppointments({patientId, doctorId, clinicId, date, blockIds}){
+    static async getAppointments({appointmentId, patientId, doctorId, clinicId, date, blockIds}){
         
-        const query = {
-            date
+        const query = {}
+
+        if (date){
+            query.date = date;
         }
 
-        
-        if (blockIds.length == 3){
-            query.blockIds = blockIds
-        } else if (blockIds.length == 1){
-            query.blockIds = {$in : [...blockIds]}
+        if (appointmentId){
+            query._id = ObjectId(appointmentId);
         }
+
+        if (blockIds){
+            if (blockIds.length == 3){
+                query.blockIds = blockIds
+            } else if (blockIds.length == 1){
+                query.blockIds = {$in : [...blockIds]}
+            }
+
+        }
+        
         
         if (clinicId){
             query.clinicId = clinicId
@@ -34,6 +43,7 @@ class Appointment {
             query.doctorId = doctorId;
         }
         const appointments = await persist(async (db) => {
+            console.log(query);
             const appointments = await db.collection("appointments").find(query).toArray();
             return appointments;
         });
