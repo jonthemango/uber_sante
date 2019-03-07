@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import styled, {keyframes} from 'styled-components'
+import cookie from 'react-cookies';
 
 const Main = styled.div`
     padding-top: 50px;
@@ -133,12 +134,17 @@ const Menu = styled.div`
 
 
 class Home extends Component {
+    componentDidMount(){
+        console.log('token', cookie.load('session'))
+    }
+
   render() {
+    const session = cookie.load('session')
     return (
     <React.Fragment>
         <Navbar>
             <img alt="" src={require('./res/logo.png')}/>
-            <Links>
+            {!session ? <Links>
                 <Link>
                     <a href="/Login">Sign in</a> 
                     <Separator/>
@@ -147,11 +153,11 @@ class Home extends Component {
                     <a href="/SignUp">Sign up</a>
                     <Separator/>
                 </Link>
-            </Links>
+            </Links> : null }
         </Navbar>
         <Main>
             <Menu>
-                <Btn href="/consult"><img src={"http://www.flambeauswim.com/wp-content/uploads/2015/12/calendar-300x300.png"}/> <p>Make an appointment</p></Btn>
+                <Btn href="/consult"><img alt="" src={"http://www.flambeauswim.com/wp-content/uploads/2015/12/calendar-300x300.png"}/> <p> Make an appointment</p></Btn>
                 <Btn href="/calendar">View my file</Btn>
                 <Btn href="/calendar">Book a room</Btn>
                 <Btn href="/calendar">Contact us</Btn>

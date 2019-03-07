@@ -1,12 +1,12 @@
 import cookie from 'react-cookies'
-const API = 'localhost:3000'
-
-export function apiCall(route,data, more_headers){
-    const id = cookie.load('id');
-    return fetch(API+route, {headers: { 'Content-Type': 'application/json', 'id': id, ...more_headers }, method: 'POST', body: JSON.stringify(data)})
-}
+const API = 'http://localhost:5001'
 
 export function POST(route, data, more_headers){
+    const id = cookie.load('id');
+    return fetch(API+route, {headers: { 'Content-Type': 'application/json', 'id': id,...more_headers }, method: 'POST', body: JSON.stringify(data)})
+}
+
+export function Login(route, data, more_headers){
     const id = cookie.load('id');
     return fetch(API+route, {headers: { 'Content-Type': 'application/json', 'id': id,...more_headers }, method: 'POST', body: JSON.stringify(data)})
 }

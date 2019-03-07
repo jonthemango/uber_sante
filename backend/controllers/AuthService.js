@@ -1,6 +1,7 @@
 const jwt = require("jsonwebtoken")
 const superSecret = "This string is used to sign the json web token"
 const logger = require('../logs')
+const persist = require('../persistence')
 
 class AuthService {
 
@@ -12,9 +13,9 @@ class AuthService {
             // the collections are doctors, patients, nurses (with 's')
             type = type.toLowerCase() + "s"
 
-            console.log(`searching for ${email} from database`)
-            const user = await persist(async (db) => {
-                return await db.collection(type).findOne({ email, password })
+            const user = await persist( async (db) => {
+                const res =  await db.collection(type).findOne({ email, password })
+                return res
             })
             if (!user) {
                 return { success: false, message: `${type} does not exist` }
@@ -61,10 +62,8 @@ class AuthService {
 
 
     static async login(req, res) {
-        console.log(req.url)
         logger(req.url)
         const { email, password, type } = req.body
-        console.log('body', req.body)
 
         if (email == "" || email == undefined) {
             const example =
@@ -76,7 +75,6 @@ class AuthService {
         } else {
 
             const result = await AuthService.AuthenticateUser({ email, password, type })
-            console.log(result)
             res.json(result)
         }
     }

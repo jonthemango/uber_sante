@@ -105,11 +105,11 @@ class SignUp extends Component {
     <div class="container">
                     <div class="row">
                     <label for="Health Card">Health Card Number</label>
-                    <input type="text" type="text" placeholder="XXXX-XXXX-XXXX"/>
+                    <input type="text" placeholder="XXXX-XXXX-XXXX"/>
                     </div>
 
                     <div class="row">
-                        <label for="Birthday">Birthday</label> <input type="text" type="text"/>
+                        <label for="Birthday">Birthday</label> <input type="text"/>
                    
                     </div>
         

@@ -83,29 +83,29 @@ class Consult extends Component {
                     <Separator/>
                 </Link>
                 <Link>
-                    <a href="/login">Sign up</a>
+                    <a href="/sign">Sign up</a>
                     <Separator/>
                 </Link>
             </Links>
         </Navbar>
-<div class="color">
-         <div class="container2">
+<div className="color">
+         <div className="container2">
             <p>Find Consultation in minutes !</p>
         </div>
 
 
-    <div class="container">
-                    <div class="row">
+    <div className="container">
+                    <div className="row">
                     <label for="Health Card">Health Card Number</label>
                     <input type="text" placeholder="XXXX-XXXX-XXXX"/>
                     </div>
 
-                    <div class="row">
+                    <div className="row">
                         <label for="Birthday">Birthday</label> <input type="text"/>
                    
                     </div>
         
-                    <div class="row">
+                    <div className="row">
                         <label for="gender">Gender</label>
                            <select id="gender" name="Gender">
                                 <option value="Men">Men</option>
@@ -114,22 +114,22 @@ class Consult extends Component {
                             </select> 
                      </div>
                
-                    <div class="row">
+                    <div className="row">
                         <label for="phone">Phone Number</label> 
                         <input type="text" placeholder="XXX-XXX-XXXX" />
                     </div>
 
-                    <div class="row">
+                    <div className="row">
                         <label for="email"  >Email</label> 
                         <input type="text" placeholder="email@hotmail.com" />
                     </div>
 
-                    <div class="row">
+                    <div className="row">
                         <label for="address">Address</label> 
                         <input type="text" placeholder="1234 Street"/>
                     </div>
 
-                    <div class="submit">
+                    <div className="submit">
                          <input type="submit"   value="Continue"/>
                     </div>
 
