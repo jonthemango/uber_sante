@@ -131,11 +131,11 @@ class Home extends Component {
             <img alt="" src={require('./res/logo.png')}/>
             <Links>
                 <Link>
-                    <a href="/login">Sign in</a> 
+                    <a href="/Login">Sign in</a> 
                     <Separator/>
                 </Link>
                 <Link>
-                    <a href="/login">Sign up</a>
+                    <a href="/SignUp">Sign up</a>
                     <Separator/>
                 </Link>
             </Links>
