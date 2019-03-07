@@ -98,7 +98,7 @@ class Appointment {
 
                 date = moment(date);
                 if (!date.isValid()){
-                    throw "Date is not valid moment format. Provide '1995-12-25'";
+                    throw new Error("Date is not valid moment format. Provide '1995-12-25'");
                 }
 
                 this.appointment.blockIds = blockIds;
@@ -198,7 +198,7 @@ class Appointment {
 
             async buildAppointment(){
                 if (!this.appointment.result.made){
-                    throw this.appointment.result.message;
+                    throw new Error(this.appointment.result.message);
                 }
                 const appointment = await persist(async (db) => {
                     return await db.collection("appointments").insertOne(this.appointment);

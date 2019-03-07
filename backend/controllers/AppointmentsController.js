@@ -26,7 +26,7 @@ class AppointmentsController {
             const appointment = await builder.buildAppointment();
             res.json({success:true, data: {appointment}, message:"Appointment made."});
         } catch(err){
-            res.json({success:false, error:err, message: "Appointment not made."})
+            res.json({success:false, error:err.message, message: "Appointment not made."})
         }
         
     }
@@ -48,14 +48,24 @@ class AppointmentsController {
         
     }
 
-    static getPatientAppointments(req, res){
+    static async getPatientAppointments(req, res){
         const patientId = req.params.id;
 
-        let appointments = [{}];
+        let appointments = [];
 
-        // search for patient in db, return them
-
-        res.json(appointments);
+        try{
+            const patient = await Patient.get(patientId);
+            console.log(patient);
+            if (!patient.error){
+                appointments = await Appointment.getAppointments({patientId});
+            } else {
+                throw new Error("Patient Id is invalid.")
+            }
+            
+            res.json({success:true, data: {"appointments": appointments}, message:"Appointments returned."})
+        } catch (err){
+            res.json({success:false, error: err.message, message: "Appointment not returned."})
+        }
     }
 
     static getDoctorAppointments(req, res){
