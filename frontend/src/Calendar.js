@@ -15,7 +15,7 @@ let img = new Image()
 
 const Main = styled.div`
     display: grid;
-    grid-template-columns: 7% repeat(5, 18%);
+    grid-template-columns: 10% repeat(5, 18%);
     grid-template-rows: repeat(36, 60px);
     align-items: stretch;
     justify-items: stretch;
@@ -35,7 +35,7 @@ const Time = styled.div`
 const Days = styled.div`
     display: grid;
     grid-auto-flow: column;
-    grid-template-columns: 7% repeat(5, 18%);
+    grid-template-columns: 10% repeat(5, 18%);
     grid-template-rows: 30px;
 `
 
@@ -163,18 +163,18 @@ export default class Calendar extends Component {
     render(){
         const {style} = this.props
         return (
-            <div style={{width:'80%', height:500,...style, }} >
+            <div style={{width:'100%', height:500,...style, borderRadius: 10}} >
                 <Days>
                     { this.state.days.map( x => <Day x key={x} >{x}</Day>) }
                 </Days>
                 <Main>
                     { this.state.times.map( x => <Time key={x} >{x}</Time>) }
                     <Grid>
-                        {this.state.slots.map( x => <Slot   {...x} 
+                        {this.state.slots.map( x => <Slot   {...x}
                                                             key={x.id}
-                                                            onClick={ _ => this.handleSlotClick(x) }  
+                                                            onClick={ _ => this.handleSlotClick(x) }
                                                             draggable={true} 
-                                                            onDragStart={ e => this.startDragging(e, x) } 
+                                                            onDragStart={ e => this.startDragging(e, x) }
                                                             onDragOver={ _ => this.handleDragOver(x) }
                                                             onDragEnd={ _ => this.stopDragging(x) }>
                                                             </Slot>)}
