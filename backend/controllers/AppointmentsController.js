@@ -1,4 +1,6 @@
 const Appointment = require('../models/Appointment')
+const Patient = require('../models/Patients')
+const Doctor = require('../models/Doctors')
 
 class AppointmentsController {
 
@@ -55,7 +57,6 @@ class AppointmentsController {
 
         try{
             const patient = await Patient.get(patientId);
-            console.log(patient);
             if (!patient.error){
                 appointments = await Appointment.getAppointments({patientId});
             } else {
@@ -68,13 +69,24 @@ class AppointmentsController {
         }
     }
 
-    static getDoctorAppointments(req, res){
+    static async getDoctorAppointments(req, res){
         const doctorId = req.params.id;
 
-        let appointments = [{}];
-        // search for doctor in db, return them 
+        let appointments = [];
 
-        res.json(appointments)
+        try{
+            const doctor = await Doctor.get(doctorId);
+            if (doctor == null || doctor.error){
+                throw new Error("Doctor Id is invalid")
+            }
+            appointments = await Appointment.getAppointments({doctorId});
+            
+            
+            res.json({success:true, data: {"appointments": appointments}, message:"Appointments returned."})
+        } catch (err){
+            if (err.message == "Argument passed in must be a single String of 12 bytes or a string of 24 hex characters") err.message = "Doctor Id is invalid.";
+            res.json({success:false, error: err.message, message: "Appointment not returned."})
+        }
     }
 
     static getClinicAppointments(req, res){

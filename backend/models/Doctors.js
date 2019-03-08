@@ -62,15 +62,12 @@ class Doctors {
         const doctor = await persist(async (db) => {
             return await db.collection("doctors").findOne({ _id: ObjectId(id) });
         });
-        delete doctor.password
-        return new Doctors({ ...doctor, _id: id });
-    }
-    static async get({ email, password }) {
-        const doctor = await persist(async (db) => {
-            return await db.collection("doctors").findOne({ email, password })
-        })
-        delete doctor.password
-        return new Doctors({...doctor})
+        if (doctor){
+            delete doctor.password
+            return new Doctors({ ...doctor, _id: id });
+        } else {
+            return null;
+        }
     }
 
     static async delete(id) {

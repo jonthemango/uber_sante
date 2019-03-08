@@ -40,7 +40,7 @@ class Appointment {
             query.patientId = patientId;
         }
         if (doctorId){
-            query.doctorId = doctorId;
+            query["doctor._id"] = ObjectId(doctorId);
         }
         const appointments = await persist(async (db) => {
             console.log(query);
