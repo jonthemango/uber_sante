@@ -37,7 +37,7 @@ class AuthService {
                 superSecret,
                 { expiresIn: 60 * 60 * 24 * 7 }
             )
-            return { success: result.success, token }
+            return { success: result.success, token, user: result.user}
         }
 
         return {
@@ -73,7 +73,6 @@ class AuthService {
                 "wrong request body, please send the following: " + example
             res.json({ success, message })
         } else {
-
             const result = await AuthService.AuthenticateUser({ email, password, type })
             res.json(result)
         }
