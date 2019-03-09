@@ -7,6 +7,8 @@ import genders from 'array-of-genders'
 import {POST} from './ApiCall'
 import {NotificationContainer, NotificationManager} from 'react-notifications';
 import 'react-notifications/lib/notifications.css';
+import cookie from 'react-cookies';
+import { BrowserRouter, Route } from 'react-router-dom'
 
 const Separator = styled.div`
     height: 3px;
@@ -23,8 +25,6 @@ const Links = styled.div`
     height: 100%;
     align-items: center;
 `
-
-
 
 const Navbar = styled.div`
     width: 100%;
@@ -74,7 +74,6 @@ const Link = styled.a`
         width: 100%;
       }
 `  
-
     class SignUp extends Component {
         constructor(props) {
             super(props)
@@ -97,7 +96,9 @@ const Link = styled.a`
                 .then(response => response.json())
                 .then(response => {
                     if(response.success) {
+                        cookie.save('session', {token: response.token})
                         NotificationManager.success('The account was successfully created', 'Success');
+                        this.props.history.push(`/`)
                     }
                  }
             )
@@ -172,7 +173,7 @@ const Link = styled.a`
 
                             <div className="submit">
                                 <input type="submit" value="Register" onClick={ e => this.registerUser(e)} />
-                            </div>
+                            </div> 
 
                         <NotificationContainer/>
                         </div>
