@@ -2,6 +2,8 @@ import React, { Component } from 'react'
 import styled, {keyframes} from 'styled-components'
 import cookie from 'react-cookies';
 
+
+
 const Main = styled.div`
     padding-top: 50px;
 `
@@ -104,6 +106,10 @@ const Link = styled.div`
         background-color: #1E591E;
         width: 100%;
       }
+
+     p {
+
+      }
 `
 
 const Menu = styled.div`
@@ -138,6 +144,11 @@ class Home extends Component {
         console.log('token', cookie.load('session'))
     }
 
+    LogOut() {
+        const currUser = cookie.load('session');
+        cookie.remove('session');       
+    }
+
   render() {
     const session = cookie.load('session')
     return (
@@ -153,7 +164,16 @@ class Home extends Component {
                     <a href="/SignUp">Sign up</a>
                     <Separator/>
                 </Link>
-            </Links> : null }
+            </Links> : <Links>
+                <Link>
+                    <a>Welcome !</a>
+                    <Separator/>
+                </Link>
+                <Link>
+                    <a href='#' onClick={this.LogOut()}>Log off</a>
+                    <Separator/>
+                </Link>
+            </Links> }
         </Navbar>
         <Main>
             <Menu>
