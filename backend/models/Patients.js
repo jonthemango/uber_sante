@@ -67,8 +67,13 @@ class Patients {
     static async get(id) {
         const patient = await persist(async (db) => {
             return await db.collection("patients").findOne({ _id: ObjectId(id) })
-        });
-        return patient
+        })
+
+        if (patient != undefined) {
+            delete patient.password
+            return new Patients({...patient})
+        }
+        return null
     }
 
     static async delete(id) {

@@ -49,11 +49,16 @@ class Doctors {
     }
 
     async add() {
-        const doctors = await persist(async (db) => {
+        const result = await persist(async (db) => {
             return await db.collection("doctors").insertOne(this);
-        });
-        this._id = doctors.ops[0]._id;
-        return doctors;
+        })
+        if (result.ops[0] != undefined) {
+            this._id = result.ops[0]._id
+            let doctor = new Doctors({ ...result.ops[0] })
+            delete doctor.password
+            return doctor
+        }
+        return null
     }
 
 
@@ -62,12 +67,12 @@ class Doctors {
         const doctor = await persist(async (db) => {
             return await db.collection("doctors").findOne({ _id: ObjectId(id) });
         });
-        if (doctor){
+        if (doctor != undefined) {
             delete doctor.password
-            return new Doctors({ ...doctor, _id: id });
-        } else {
-            return null;
+            return new Doctors({ ...doctor });
         }
+        return null;
+
     }
 
     static async delete(id) {

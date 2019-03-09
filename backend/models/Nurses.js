@@ -44,7 +44,7 @@ class Nurses {
             return await db.collection("nurses").insertOne(this)
         })
         if (result.ops[0] != undefined) {
-            this._id = result.ops[0]._id;
+            this._id = result.ops[0]._id
             let nurse = new Nurses({ ...result.ops[0] })
             delete nurse.password
             return nurse
@@ -55,8 +55,12 @@ class Nurses {
     static async get(id) {
         const nurse = await persist(async (db) => {
             return await db.collection("nurses").findOne({ _id: ObjectId(id) });
-        });
-        return nurse;
+        })
+        if (nurse != undefined) {
+            delete nurse.password
+           return new Nurses({ ...nurse })
+        }
+        return null
     }
 
     static async delete(id) {
