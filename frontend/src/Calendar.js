@@ -86,7 +86,7 @@ export default class Calendar extends Component {
     constructor (props) {
         super(props)
 
-        this.state={
+        this.state = {
             dragging: false,
             draggingOff: false,
             times: this.generateTimes(),
@@ -118,6 +118,12 @@ export default class Calendar extends Component {
         return {slot, day}  
     }
 
+    getSlot(day, slot){
+        let factor = this.state.days.map(x=> x.toLowerCase()).indexOf(day)-1 
+        let value = Number(slot) + 36*Number(factor)
+        return value 
+    }
+
     generateTimes(){
         let timeCursor = moment("8:00", "h:mm")
         let times = new Array(36).fill()
@@ -130,6 +136,20 @@ export default class Calendar extends Component {
 
         return times;
     }
+
+    componentWillReceiveProps(nextProps){
+        const {slots} = this.state
+        for(let day in nextProps.availability){
+            for(let value in nextProps.availability[day]){
+                let caseNumber = this.getSlot(day, value)
+                slots[caseNumber].picked=true
+            }
+        }
+
+        this.setState({slots})
+
+    }
+
 
     startDragging(e,x){
         if(!x.picked){
@@ -158,10 +178,6 @@ export default class Calendar extends Component {
     stopDragging(){
         this.setState({dragging: false})
         this.setState({draggingOff: false})
-    }
-
-    componentWillReceiveProps(props){
-        console.log('avail',this.props)
     }
 
     render(){

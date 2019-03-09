@@ -2,7 +2,6 @@ import React, { Component } from 'react'
 import './Consult.css'
 import styled from 'styled-components'
 import cookie from 'react-cookies'
-import Calendar from './Calendar'
 
 const Separator = styled.div`
     height: 3px;
@@ -11,10 +10,7 @@ const Separator = styled.div`
     transition: .5s;
     align-self: center;
 `
-const CalendarArea = styled.div`
-      grid-area: calendar;
-      max-height: 100%;
-`
+
 const Links = styled.div`
     padding-right: 15%;
     display: flex;

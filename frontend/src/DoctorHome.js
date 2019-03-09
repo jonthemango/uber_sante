@@ -115,7 +115,7 @@ const Main = styled.div`
       "picture     infos      infos"
       "buttons calendar calendar"
       "buttons calendar calendar";
-      grid-template-rows: 30vh 70vh;
+      grid-template-rows: 250px 70vh;
       grid-template-columns: 30vw 70vh;
       justify-items: stretch;
       align-items: stretch;
@@ -137,7 +137,7 @@ const InfosArea = styled.div`
       grid-area: infos;
       background-color: lightgrey;
       font-family: arial;
-      font-size: 1rem;
+      font-size: 12px;
 
       div {
           display: flex;
@@ -176,7 +176,7 @@ export default class DoctorHome extends Component {
     }
 
     render(){
-        const {city,clinicId,email,firstname,lastname,permit,specialty, availability} = this.state
+        const {city,email,firstname,lastname,specialty, availability} = this.state
         return(
             <React.Fragment>
                 <Navbar>
@@ -196,9 +196,9 @@ export default class DoctorHome extends Component {
                     <InfosArea>
                         <h1>Doctor</h1>
                         <p>{firstname + "  " +  lastname}   </p>                       
-                        <div><h2>Specialty:</h2> <p>{specialty}</p></div>
-                        <div><h2>Email:</h2> <p>{email}</p></div>
-                        <div><h2>City:</h2> <p>{city}</p></div>
+                        <div><h2>Specialty: </h2> <p>{specialty}</p></div>
+                        <div><h2>Email: </h2> <p>{email}</p></div>
+                        <div><h2>City: </h2> <p>{city}</p></div>
                     </InfosArea>
                     
                     <ButtonsArea>
