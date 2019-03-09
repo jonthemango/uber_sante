@@ -33,7 +33,7 @@ const Navbar = styled.div`
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
-    margin-botto: 30px;
+    margin-bottom: 50px;
 
     img {
         height: 70px;
@@ -124,7 +124,7 @@ const Link = styled.a`
                         <div className="container2">
                             {/* <p>Register online and get your appointments on the go !</p> */}
                             <div style={{overflow: 'hidden', height: 500}}>
-                                <img alt="" style={{height: 550}} src="https://png.pngtree.com/element_origin_min_pic/16/12/10/4caba2d113beb51b0c539836a410edf9.jpg"/>
+                                <img alt="" style={{height: 550, filter: 'drop-shadow(0px 0px 1px #222)'}} src="https://png.pngtree.com/element_origin_min_pic/16/12/10/4caba2d113beb51b0c539836a410edf9.jpg"/>
                             </div>
                         </div>
 
@@ -138,7 +138,7 @@ const Link = styled.a`
 
                             <div className="row">
                                 <label for="address">Password</label>
-                                <input type="password" onChange={e => this.setState({ password: e.target.value })}  />
+                                <input type="password" placeholder="password" onChange={e => this.setState({ password: e.target.value })}  />
                             </div>
 
                             <div className="row">

@@ -5,19 +5,26 @@ import Login from './Login'
 import Consult from './Consult'
 import Calendar from './Calendar'
 import SignUp from './SignUp'
+import {NotificationContainer} from 'react-notifications';
+import DoctorHome from './DoctorHome'
 
 class App extends Component {
   render() {
     return (
+      <React.Fragment>
       <Router>
         <Switch>
-          <Route exact path="/" component={Home}  />
-          <Route exact path="/Login" component={Login}  />
-          <Route exact path="/Consult" component={Consult}  />
-          <Route exact path="/Calendar" component={Calendar}  />
-          <Route exact path="/Signup" component={SignUp}  />
+          <Route exact path="/" component={Home}/>
+          <Route exact path="/login" component={Login}/>
+          <Route exact path="/consult" component={Consult}/>
+          <Route exact path="/calendar" component={Calendar}/>
+          <Route exact path="/signup" component={SignUp}/>
+          <Route exact path="/signup" component={SignUp}/>
+          <Route exact path="/doctor" component={DoctorHome}/>
         </Switch>
       </Router>
+      <NotificationContainer style={{fontFamily: 'arial'}}/>
+      </React.Fragment>
     );
   }
 }

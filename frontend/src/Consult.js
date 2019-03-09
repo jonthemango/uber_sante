@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import './Consult.css'
 import styled from 'styled-components'
+import genders from 'array-of-genders'
 
 const Separator = styled.div`
     height: 3px;
@@ -106,11 +107,11 @@ class Consult extends Component {
         
                     <div className="row">
                         <label for="gender">Gender</label>
-                           <select id="gender" name="Gender">
-                                <option value="Men">Men</option>
-                                <option value="Women">Women</option>
-                                <option value="other">Other</option>
-                            </select> 
+                        <select defaultValue="Woman" id="gender" name="Gender" onChange={e => this.setState({ gender: e.target.value })}>
+                            <option value="Woman">Woman</option>
+                            <option value="Man">Man</option>
+                            {genders.map(i => <option value={i}>{i}</option>)}
+                        </select>
                      </div>
                
                     <div className="row">

@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import { ButtonGroup } from 'react-bootstrap'
 import { POST } from './ApiCall'
 import cookie from 'react-cookies';
-import {NotificationContainer, NotificationManager} from 'react-notifications';
+import {NotificationManager} from 'react-notifications';
 import 'react-notifications/lib/notifications.css';
 
 //const jwt = require("jsonwebtoken")
@@ -55,7 +55,7 @@ const Box = styled.div`
     align-items: center;
     padding: 40px;
     grid-gap: 20px;
-    box-shadow: 0px 0px 39px 9px #00A54F;
+    box-shadow: 0px 0px 1px 1px #00A54F;
     
     img {
         height: 10px;
@@ -174,9 +174,14 @@ class Login extends Component {
                 if (response.success) {
                     cookie.save('session', {type, token: response.token})
                     NotificationManager.success('Logged in!', 'Welcome');
+                    this.props.history.push('/')
+                }else{
+                    NotificationManager.error('Wrong credentials', 'Try again');
                 }
             }
-        )
+        ).catch(e => {
+            NotificationManager.error('Network Error', 'Check backend');
+        })
     }
 
     render() {
@@ -220,7 +225,6 @@ class Login extends Component {
                 </span>
                 </button>
             </Box>
-            <NotificationContainer/>
         </Main>
     }
 }

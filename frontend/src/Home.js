@@ -7,6 +7,7 @@ import cookie from 'react-cookies';
 const Main = styled.div`
     padding-top: 50px;
 `
+
 const Separator = styled.div`
     height: 3px;
     margin-top: -3px;
@@ -98,12 +99,12 @@ const Link = styled.div`
 
     a:hover {
         color: white;
-        background-color: #00A54F;
+        background-color: ${({color='#00A54F'}) => color};
         box-shadow: inset 0px 0px 19px -8px rgba(0,0,0,1);
     }
 
     &:hover ${Separator} {
-        background-color: #1E591E;
+        background-color: ${({underColor='#1E591E'}) => underColor};
         width: 100%;
       }
 
@@ -157,23 +158,20 @@ class Home extends Component {
             <img alt="" src={require('./res/logo.png')}/>
             {!session ? <Links>
                 <Link>
-                    <a href="/Login">Sign in</a> 
+                    <a href="/login">Sign in</a> 
                     <Separator/>
                 </Link>
                 <Link>
                     <a href="/SignUp">Sign up</a>
                     <Separator/>
                 </Link>
-            </Links> : <Links>
-                <Link>
-                    <a>Welcome !</a>
+            </Links> : 
+            <Links>
+                <Link onClick={ _ => cookie.remove('session')} color="#FF6666" underColor="black">
+                    <a href="/">Log out</a>
                     <Separator/>
                 </Link>
-                <Link>
-                    <a href='#' onClick={this.LogOut()}>Log off</a>
-                    <Separator/>
-                </Link>
-            </Links> }
+            </Links>}
         </Navbar>
         <Main>
             <Menu>
