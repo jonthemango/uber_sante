@@ -3,7 +3,6 @@ import './Consult.css'
 import styled from 'styled-components'
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import genders from 'array-of-genders'
 import {POST} from './ApiCall'
 import {NotificationContainer, NotificationManager} from 'react-notifications';
 import 'react-notifications/lib/notifications.css';
@@ -83,7 +82,7 @@ const Link = styled.a`
                 healthCardNB:'',
                 email:'',
                 password:'',
-                gender:'Woman',
+                sexe:'Woman',
                 phoneNumber:'',
                 physicalAddress:'',
 
@@ -92,8 +91,8 @@ const Link = styled.a`
 
         // Function that will add new user to datastore
         registerUser() {
-            const {email,password,healthCardNB,birthDay,gender,phoneNumber,physicalAddress} = this.state
-            POST('/api/patients',{email,password,healthCardNB,birthDay,gender,phoneNumber,physicalAddress})
+            const {email,password,healthCardNB,birthDay,sexe,phoneNumber,physicalAddress} = this.state
+            POST('/api/patients',{email,password,healthCardNB,birthDay,sexe,phoneNumber,physicalAddress})
                 .then(response => response.json())
                 .then(response => {
                     if(response.success) {
@@ -152,11 +151,10 @@ const Link = styled.a`
                             </div>
 
                             <div className="row">
-                                <label for="gender">Gender</label>
-                                <select defaultValue="Woman" id="gender" name="Gender" onChange={e => this.setState({ gender: e.target.value })}>
-                                    <option value="Woman">Woman</option>
-                                    <option value="Man">Man</option>
-                                    {genders.map(i => <option value={i}>{i}</option>)}
+                                <label for="sexe">Sex</label>
+                                <select defaultValue="Woman" id="sexe" name="Sexe" onChange={e => this.setState({ sexe: e.target.value })}>
+                                    <option value="Woman">Man</option>
+                                    <option value="Man">Woman</option>
                                 </select>
                             </div>
 
