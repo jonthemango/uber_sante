@@ -7,7 +7,6 @@ import {POST} from './ApiCall'
 import {NotificationContainer, NotificationManager} from 'react-notifications';
 import 'react-notifications/lib/notifications.css';
 import cookie from 'react-cookies';
-import { BrowserRouter, Route } from 'react-router-dom'
 
 const Separator = styled.div`
     height: 3px;
@@ -170,9 +169,10 @@ const Link = styled.a`
                             </div>
 
                             <div className="submit">
-                                <input type="submit" value="Register" onClick={ e => this.registerUser(e)} />
-                            </div> 
 
+                            <input type="submit" value="Register" onClick={ e => this.registerUser(e)} />
+
+                            </div>
                         <NotificationContainer/>
                         </div>
                     </div>

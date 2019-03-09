@@ -25,7 +25,7 @@ const Links = styled.div`
 `
 const Btn = props => <a {...props} style={{width: '20vw', textDecoration: 'inherit', color: 'inherit',cursor: 'auto'}}> <Button {...props}>{props.children}</Button> </a>
 
-const rotate = keyframes`
+const slide = keyframes`
     0% {opacity: 0; margin-top: 80px;}
     100% {opacity: 1; margin-top: 0px;}
 `
@@ -48,7 +48,7 @@ const Button = styled.div`
     font-weight: bold;
     box-shadow: 0px 0px 10px -5px rgba(0,0,0,0.7);
     color: #00A54F;
-    animation: ${rotate} .3s linear;
+    animation: ${slide} .3s linear;
     &:hover {
         color: rgba(255,255,255,1);
         background-position: 0 0px; 
@@ -146,7 +146,7 @@ class Home extends Component {
     }
 
     LogOut() {
-        const currUser = cookie.load('session');
+        cookie.load('session');
         cookie.remove('session');       
     }
 

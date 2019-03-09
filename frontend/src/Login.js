@@ -6,10 +6,6 @@ import cookie from 'react-cookies';
 import {NotificationManager} from 'react-notifications';
 import 'react-notifications/lib/notifications.css';
 
-//const jwt = require("jsonwebtoken")
-
-//const auth = require('../../backend/controllers/AuthService')
-
 const Navbar = styled.div`
     width: 100%;
     height: 70px;
@@ -172,9 +168,13 @@ class Login extends Component {
             .then( response =>  response.json())
             .then( response => {
                 if (response.success) {
-                    cookie.save('session', {type, token: response.token})
+                    cookie.save('session', {id: response.user._id, type, token: response.token})
                     NotificationManager.success('Logged in!', 'Welcome');
+                   if(type!=='doctor') {
                     this.props.history.push('/')
+                   }else{
+                    this.props.history.push('/doctor')
+                   }
                 }else{
                     NotificationManager.error('Wrong credentials', 'Try again');
                 }
