@@ -4,56 +4,83 @@ Clinics = require('./Clinics');
 Doctors = require('./Doctors')
 
 class Appointment {
-    constructor(){
-        this.result = {made: true, message: []};
+    constructor() {
+        this.result = { made: true, message: [] };
     }
 
 
 
 
-    static async getAppointments({appointmentId, patientId, doctorId, clinicId, date, blockIds}){
-        
+    static async getAppointments({ appointmentId, patientId, doctorId, clinicId, date, blockIds, start, end }) {
+
         const query = {}
 
-        if (date){
+        if (date) {
             query.date = date;
         }
 
-        if (appointmentId){
+        if (appointmentId) {
             query._id = ObjectId(appointmentId);
         }
 
-        if (blockIds){
-            if (blockIds.length == 3){
+        if (blockIds) {
+            if (blockIds.length == 3) {
                 query.blockIds = blockIds
-            } else if (blockIds.length == 1){
-                query.blockIds = {$in : [...blockIds]}
+            } else if (blockIds.length == 1) {
+                query.blockIds = { $in: [...blockIds] }
             }
 
         }
-        
-        
-        if (clinicId){
+
+        if (clinicId) {
             query.clinicId = clinicId
         }
-        if (patientId){
+        if (patientId) {
             query.patientId = patientId;
         }
-        if (doctorId){
+        if (doctorId) {
             query["doctor._id"] = ObjectId(doctorId);
         }
         const appointments = await persist(async (db) => {
-            console.log(query);
+            console.log(query)
             const appointments = await db.collection("appointments").find(query).toArray();
-            return appointments;
+            return appointments
         });
-        return appointments
+
+        let filteredAppointments = []
+        let appointment;
+        let aptDate;
+        if (start || end) {
+
+            const startMoment = moment(start);
+            const endMoment = moment(end);
+            console.log("dates:",startMoment, start, endMoment, end);
+
+            for (let i = 0; i < appointments.length; i++) {
+
+                appointment = appointments[i];
+                aptDate = moment(appointment.date);
+                console.log(startMoment.isValid(), endMoment.isValid(), start != undefined, end != undefined)
+                if (startMoment.isValid() && endMoment.isValid() && start != undefined && end != undefined){
+                    if (startMoment.isBefore(aptDate) && endMoment.isAfter(aptDate)) filteredAppointments.push(appointment)
+                } else if (startMoment.isValid() && start != undefined){
+                    if (startMoment.isBefore(aptDate)) filteredAppointments.push(appointment);
+                } else if (endMoment.isValid() && end != undefined){
+                    if (endMoment.isBefore(aptDate)) filteredAppointments.push(appointment)
+                } else {
+                    throw new Error("Start and End date are invalid")
+                }
+            }
+        }else{
+            filteredAppointments = appointments
+        }
+        return filteredAppointments
     }
 
-    static async patientHasAnnual(patientId){
+    static async patientHasAnnual(patientId) {
         const query = {
             patientId,
-            blockIds: {$size: 3}
+            blockIds: { $size: 3 }
         }
         const patientAppointments = await persist(async (db) => {
             const patientAppointments = await db.collection("appointments").find(query).toArray();
@@ -62,42 +89,42 @@ class Appointment {
         return patientAppointments.length > 1
     }
 
-    
 
-    
-    static Builder(){
+
+
+    static Builder() {
         class Builder {
-            constructor() { 
+            constructor() {
                 this.appointment = new Appointment();
                 return this;
             }
 
-            async buildAppointmentTime({blockIds, date}){
-                let isWithin = moment().add(4,'w').isAfter(moment(date));
-                let isTodayOrLater = moment(date).add(1,'d').isAfter(moment(), 'day');
-                if (!isWithin){
+            async buildAppointmentTime({ blockIds, date }) {
+                let isWithin = moment().add(4, 'w').isAfter(moment(date));
+                let isTodayOrLater = moment(date).add(1, 'd').isAfter(moment(), 'day');
+                if (!isWithin) {
                     this.appointment.result.made = false;
                     this.appointment.result.message.push("Date is not within now and 4 weeks. " + date)
                 }
 
-                if (!isTodayOrLater){
+                if (!isTodayOrLater) {
                     this.appointment.result.made = false;
                     this.appointment.result.message.push("Date is before today. " + date);
                 }
-                if (blockIds.length == 1 && blockIds[0] <= 35 && blockIds >= 0 ) {
+                if (blockIds.length == 1 && blockIds[0] <= 35 && blockIds >= 0) {
                     this.appointment.type = "walkin";
                 } else if (blockIds.length == 3) {
                     this.appointment.type = "annual";
                     let hasAnnual = await Appointment.patientHasAnnual(this.appointment.patientId)
-                    if (hasAnnual){
+                    if (hasAnnual) {
                         this.appointment.result.made = false;
                         this.appointment.result.message.push("Already has annual appointment.")
                     }
-                    
+
                 }
 
                 date = moment(date);
-                if (!date.isValid()){
+                if (!date.isValid()) {
                     throw new Error("Date is not valid moment format. Provide '1995-12-25'");
                 }
 
@@ -106,22 +133,22 @@ class Appointment {
                 return this;
             }
 
-    
-            buildPatientInfo({patientId, clinicId}){
-                if (patientId == undefined || clinicId == undefined){
+
+            buildPatientInfo({ patientId, clinicId }) {
+                if (patientId == undefined || clinicId == undefined) {
                     this.appointment.result.made = false;
                     this.appointment.message.push("Invalid Patient/Clinic Info.");
-                } 
+                }
                 this.appointment.patientId = patientId;
                 this.appointment.clinicId = clinicId;
                 return this;
             }
 
-            static noClinicRooms(clinicId){
+            static noClinicRooms(clinicId) {
                 return 5;
             }
 
-            async assignDoctor(){
+            async assignDoctor() {
                 const doctorQuery = {
                     blockIds: this.appointment.blockIds,
                     date: this.appointment.date,
@@ -141,15 +168,15 @@ class Appointment {
 
                 let doctorId;
                 console.log(doctors.length);
-                for (let i=0; i<appointments.length; i++){
+                for (let i = 0; i < appointments.length; i++) {
                     doctorId = appointments[i].doctor._id;
-                    for (let j=0; j<doctors.length; j++){
-                        if (doctorId.toString() == doctors[j]._id.toString()){
-                            doctors.splice(j,1);
+                    for (let j = 0; j < doctors.length; j++) {
+                        if (doctorId.toString() == doctors[j]._id.toString()) {
+                            doctors.splice(j, 1);
                         }
                     }
                 }
-                if (doctors.length == 0){
+                if (doctors.length == 0) {
                     this.appointment.result.made = false;
                     this.appointment.result.message.push("No available doctors.")
                 }
@@ -158,13 +185,13 @@ class Appointment {
                 // choose a random doctor
                 const luckyDoctor = doctors[Math.floor(Math.random() * doctors.length)];
 
-                this.appointment.doctor = luckyDoctor; 
-                
-                
+                this.appointment.doctor = luckyDoctor;
+
+
                 return this;
             }
- 
-            async assignRoom(){
+
+            async assignRoom() {
                 const query = {
                     blockIds: this.appointment.blockIds,
                     date: moment(this.appointment.date).format('YYYY-MM-DD')
@@ -174,12 +201,12 @@ class Appointment {
 
 
                 const appointments = await Appointment.getAppointments(query)
-                const clinic  = await Clinics.get(this.appointment.clinicId);
+                const clinic = await Clinics.get(this.appointment.clinicId);
 
                 let availableRooms = new Set(clinic.rooms)
 
                 // diff the allRooms and taken rooms to yield available rooms
-                for (let i=0; i<appointments.length; i++){
+                for (let i = 0; i < appointments.length; i++) {
                     availableRooms.delete(appointments[i].room);
                 }
 
@@ -196,8 +223,8 @@ class Appointment {
                 return this;
             }
 
-            async buildAppointment(){
-                if (!this.appointment.result.made){
+            async buildAppointment() {
+                if (!this.appointment.result.made) {
                     throw new Error(this.appointment.result.message);
                 }
                 const appointment = await persist(async (db) => {
@@ -209,8 +236,8 @@ class Appointment {
         }
         return new Builder();
     }
-    
-    
+
+
 
 }
 
