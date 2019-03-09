@@ -40,11 +40,16 @@ class Nurses {
     }
 
     async add() {
-        const nurses = await persist(async (db) => {
-            return await db.collection("nurses").insertOne(this);
-        });
-        this._id = nurses.ops[0]._id;
-        return nurses;
+        const result = await persist(async (db) => {
+            return await db.collection("nurses").insertOne(this)
+        })
+        if (result.ops[0] != undefined) {
+            this._id = result.ops[0]._id;
+            let nurse = new Nurses({ ...result.ops[0] })
+            delete nurse.password
+            return nurse
+        }
+        return null
     }
 
     static async get(id) {
