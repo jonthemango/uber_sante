@@ -1,6 +1,26 @@
 // ============ Random Dependencies ==========
 const express = require('express')
-const app = express()
+
+const AppSingleton = (function () {
+
+    var instance;
+
+    function createInstance(){
+        return express();
+    }
+
+    return {
+        getInstance: function () {
+            if (!instance) {
+                instance = createInstance();
+            }
+            return instance;
+        }
+    };
+
+})();
+
+const app = AppSingleton.getInstance();
 const log = require('fancy-log')
 const argv = require('yargs').argv
 const { p = 5001, port = p, withlog } = argv
