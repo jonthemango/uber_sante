@@ -50,20 +50,25 @@ class Patients {
     }
 
     async add() {
-        const patients = await persist(async (db) => {
-            return await db.collection("patients").insertOne(this);
-        });
-        this._id = patients.ops[0]._id;
-        return patients;
+        const result = await persist(async (db) => {
+            return await db.collection("patients").insertOne(this)
+        })
+        if (result.ops[0] != undefined) {
+            this._id = result.ops[0]._id
+            let patient = new Patients({ ...result.ops[0] })
+            delete patient.password
+            return patient
+        }
+        return null
     }
 
 
 
     static async get(id) {
         const patient = await persist(async (db) => {
-            return await db.collection("patients").findOne({ _id: ObjectId(id) });
+            return await db.collection("patients").findOne({ _id: ObjectId(id) })
         });
-        return patient;
+        return patient
     }
 
     static async delete(id) {
