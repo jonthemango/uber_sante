@@ -2,7 +2,10 @@ import React, { Component } from 'react'
 import './Consult.css'
 import styled from 'styled-components'
 import cookie from 'react-cookies'
-
+import { GET } from './ApiCall'
+import AppointementsCalendar from './AppointementsCalendar'
+import DatePicker from "react-datepicker"
+import {NotificationManager} from 'react-notifications'
 const Separator = styled.div`
     height: 3px;
     margin-top: -3px;
@@ -68,49 +71,80 @@ const Link = styled.a`
     
 `
 
+const CalendarArea = styled.div`
+      grid-area: AppointementsCalendar;
+      max-height: 100%;
+      width:100%;
+`
+
 class Consult extends Component {
     constructor (props) {
         super(props)
 
         this.state={
-            appointment : null,
+            appointment : this.getAllAppointment(),
+            date : new Date(),
         }
     }
     
     getAllAppointment(){
-        //  
-        // cookie.load('session');
-        //   Get('/api/clinics/:id/appointments')
-        //       .then( response =>  response.json())
-        //       .then( response => {
-        //          if (response.success) {
-        //             this.setState({appointment: response.json.value})
-        //          this.createCalendarAvailability()
-        //          }else{                  
-        //          }
-        //      }
-        //   ).catch(e => {
-        //      NotificationManager.error('Network Error', 'Check backend'); 
-        //  Ramez si ca barre enc ouille et que mon code depasse tes foutu comment , wallah cest plu ma faute
+        cookie.load('session');
+        GET('/api/clinics/5c79642f43d24100061b3283/appointments/')
+               .then( res =>  res.json())
+               .then( res => {
+                  if (res.success) {
+                    console.log(res)
+                    this.setState({appointment: res.data.appointment})
+                  }
+                }
+                ).catch(e => {
+        })
 
     }
-    createCalendarAvailability(){
-        /*
-            
-        */
-    }
-    componentWillMount() {
-          //  this.getInfos();
-        this.setState({appointment: this.getAllAppointment()})
-          
-        }
+
+    // Method that will, based on patient's date selection, determine the first day in the same week
+    filterCalendarByDate(day) {
+        var dayCurrent = day.getDay()
+        var firstDayOfWeek = day;
+
+        firstDayOfWeek.setDate(firstDayOfWeek.getDate() - dayCurrent);
         
-       /* getInfos() { // dont save until code run
-            cookie.load('session');
-           //const {} = this.state
-           //GET('/api/login', {id, healthCardNB, birthDay, gender, phoneNumber, physicalAdress, email})
-           //.then()
-        }*/
+        this.createCalendarAvailability(firstDayOfWeek)
+
+        var goodFormat = firstDayOfWeek.toISOString();
+        alert(goodFormat)
+        alert("YANIS2")
+        var testdat = new Date()
+        console.log("TESTYANIS",this.state)
+        var yanis = this.state
+        //testdat.setDate(this.state.appointment[0].date)
+        alert(yanis)
+        // var lastDayOfWeek = new Date();
+        // lastDayOfWeek.setDate(firstDayOfWeek.getDate() + 6);
+        // lastDayOfWeek.setMonth(lastDayOfWeek.getMonth());
+        // alert(lastDayOfWeek);
+    }
+
+    // Method that will only filter
+    createCalendarAvailability(firstDayOfWeek) {
+        // const allAppointments = this.state.appointment;
+        // for each appointment, only store the ones after 'firstDayOfWeek' and before ('firstDayOfWeek'+6)
+        
+        
+    }
+
+    componentWillMount() {
+        //this.getAllAppointment()
+        //this.getInfos();
+        this.setState({appointment: this.getAllAppointment()})
+    }
+        
+    /* getInfos() { // dont save until code run
+        cookie.load('session');
+        //const {} = this.state
+        //GET('/api/login', {id, healthCardNB, birthDay, gender, phoneNumber, physicalAdress, email})
+        //.then()
+    }*/
 
     render() {
     const session = cookie.load('session')
@@ -142,36 +176,33 @@ class Consult extends Component {
       {session ?
 
         <React.Fragment>
-            
-        <div className="container2">
-            <p>Welcome, please select a time slots according to your availabilities!</p>
-        </div>
-        
-
-        <div className="container">
-            <p>Welcome, please select a time slots according to your availabilities!</p>
-        </div>
-        
-        {/* <div>
-        <CalendarArea>
-            <Calendar/>
-        </CalendarArea>
-        </div> */}
+            <br/>
+            <div className="container2">
+                <p>Welcome, please select a date below according to your availabilities!</p>
+                <label for="Birthday">Pick a consultation date</label>
+                <br /> 
+                <DatePicker className='date' selected={this.state.date} onChange={e => this.filterCalendarByDate(e)} />
+                            
+            </div>
+            <br/>
+            <CalendarArea >
+                <AppointementsCalendar appointment ={this.state.appointment} style={{height: 600}}/>
+            </CalendarArea>
 
         </React.Fragment>
         : 
         <React.Fragment>
             
-        <div className="container2">
-            <p>Find a Consultation in minutes!</p>
-        </div>
+            <div className="container2">
+                <p>Find a Consultation in minutes!</p>
+            </div>
 
-          <div className="container">
-            <span>You need to be registered to the system to be able to consult a doctor !</span> 
-            <br/>
-            <input type="submit" value="Sign Up" href="/sign"/>
-          </div> 
-          </React.Fragment>
+            <div className="container">
+                <span>You need to be registered to the system to be able to consult a doctor !</span> 
+                <br/>
+                <a href="/SignUp">Sign up now</a>
+            </div> 
+        </React.Fragment>
         }
 
     </div>
