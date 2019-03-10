@@ -59,6 +59,7 @@ for (key in routers) {
 
 // example middle ware
 app.all('*', (req, res, next) => {
+    logger(`${req.method} - [${req.url}]`)
     next();
 })
 
@@ -93,7 +94,7 @@ app.get(['/', '/api/'], (req, res) => {
         },
         "api_reference": package
     })
-    logger('GET - [/] ')
+
 })
 
 server = app.listen(port, () => {

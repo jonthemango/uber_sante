@@ -16,11 +16,11 @@ class Appointment {
         const query = {}
 
         if (date) {
-            query.date = date;
+            query.date = date
         }
 
         if (appointmentId) {
-            query._id = ObjectId(appointmentId);
+            query._id = ObjectId(appointmentId)
         }
 
         if (blockIds) {
@@ -36,35 +36,35 @@ class Appointment {
             query.clinicId = clinicId
         }
         if (patientId) {
-            query.patientId = patientId;
+            query.patientId = patientId
         }
         if (doctorId) {
             query["doctor._id"] = ObjectId(doctorId);
         }
         const appointments = await persist(async (db) => {
             console.log(query)
-            const appointments = await db.collection("appointments").find(query).toArray();
+            const appointments = await db.collection("appointments").find(query).toArray()
             return appointments
         });
 
         let filteredAppointments = []
-        let appointment;
+        let appointment
         let aptDate;
         if (start || end) {
 
             const startMoment = moment(start);
             const endMoment = moment(end);
-            console.log("dates:",startMoment, start, endMoment, end);
+            console.log("dates:",startMoment, start, endMoment, end)
 
             for (let i = 0; i < appointments.length; i++) {
 
-                appointment = appointments[i];
-                aptDate = moment(appointment.date);
+                appointment = appointments[i]
+                aptDate = moment(appointment.date)
                 console.log(startMoment.isValid(), endMoment.isValid(), start != undefined, end != undefined)
                 if (startMoment.isValid() && endMoment.isValid() && start != undefined && end != undefined){
                     if (startMoment.isBefore(aptDate) && endMoment.isAfter(aptDate)) filteredAppointments.push(appointment)
                 } else if (startMoment.isValid() && start != undefined){
-                    if (startMoment.isBefore(aptDate)) filteredAppointments.push(appointment);
+                    if (startMoment.isBefore(aptDate)) filteredAppointments.push(appointment)
                 } else if (endMoment.isValid() && end != undefined){
                     if (endMoment.isBefore(aptDate)) filteredAppointments.push(appointment)
                 } else {

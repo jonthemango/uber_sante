@@ -9,14 +9,18 @@ class AppointmentsController {
 
         /*
         const body = {
-"clinicId": "5c79642f43d24100061b3283", "patientId": "5c7970367584bf300cc541f4", "date": "2019-03-05", "blockIds": [9,10,11], "isAnnual": false
-}
+            "clinicId": "5c79642f43d24100061b3283",
+            "patientId": "5c7970367584bf300cc541f4",
+            "date": "2019-03-05",
+            "blockIds": [9,10,11],
+            "isAnnual": false
+        }
         post body to 'http://localhost:5001/api/appointments'
         */
 
         const { clinicId, patientId, date, blockIds, isAnnual } = req.body;
 
-        let builder = Appointment.Builder();
+        let builder = Appointment.Builder()
         builder = await builder
         .buildPatientInfo({patientId, clinicId})
         .buildAppointmentTime({date, blockIds})

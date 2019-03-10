@@ -62,7 +62,7 @@ class DoctorsController {
                 "wednesday" : {},
                 "thursday": {},
                 "friday": {}
-                } 
+                }
             }
         */
         const assert = require('assert');
@@ -83,7 +83,7 @@ class DoctorsController {
     static async setAvailability(req, res) {
         const doctorId = req.params.id;
         const { availability } = req.body;
-        
+
         let isAvail = DoctorsController.isAvail(availability);
         if (!isAvail.success){
             res.json(isAvail);
