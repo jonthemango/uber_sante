@@ -2,14 +2,26 @@ import React, {Component} from 'react'
 import styled , {keyframes}from 'styled-components'
 import Calendar from './Calendar'
 import cookie from 'react-cookies';
-import { GET } from './ApiCall'
+import { GET, POST } from './ApiCall'
+import moment from 'moment'
+import {NotificationContainer, NotificationManager} from 'react-notifications';
 
-const Btn = props => <a {...props} style={{width: '20vw', textDecoration: 'inherit', color: 'inherit',cursor: 'auto'}}> <Button {...props}>{props.children}</Button> </a>
+const Btn = props => <a {...props} onClick={null} style={{width: '20vw', textDecoration: 'inherit', color: 'inherit',cursor: 'auto'}}> <Button {...props}>{props.children}</Button> </a>
 
 const slide = keyframes`
     0% {opacity: 0; margin-top: 80px;}
     100% {opacity: 1; margin-top: 0px;}
 `
+
+const ButtonsArea = styled.div`
+      grid-area: buttons;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding-left: 10%;
+      height: 50%;
+`
+
 const Button = styled.div`
     cursor: pointer;
     height: 100px;
@@ -55,6 +67,9 @@ const Navbar = styled.div`
     margin-bottom: 40px;
     img {
         height: 70px;
+        padding-left: 15%;
+    }
+    a {
         padding-left: 15%;
     }
 `
@@ -127,34 +142,55 @@ const PictureArea = styled.div`
       align-items: center;
       justify-content: center;
       img {
-          height: 300px;
-          width: 300px;
-          border-radius: 150px;
+          height: 220px;
+          width: 220px;
       }
 `
 
 const InfosArea = styled.div`
       grid-area: infos;
-      background-color: lightgrey;
-      font-family: arial;
       font-size: 12px;
+      display:flex;
+      flex-direction: column;
+      color: white;
+      
+      h1 {
+          font-weight: bold;
+          font-size: 40px;
+          padding: 0;
+      }
+
+      p {
+        font-size: 20px;
+        padding-left: 10px
+      }
+
+      h2 {
+         font-weight: 30px; 
+      }
 
       div {
           display: flex;
           align-items: center;
       }
+
+      span {
+          display: flex;
+          width: 100%;
+          justify-content: space-around;
+          color: white;
+          background-color: rgba(0,0,0,.5);
+          border-radius: 5px;
+          border: 1px solid black;
+      }
 `
 
-const ButtonsArea = styled.div`
-      grid-area: buttons;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-around;
-      align-items: baseline;
-      padding-left: 10%;
-      height: 35%;
+const HeadBackground = styled.div`
+    grid-row: 1 ;
+    grid-column: 1 / 3;
+    background: url('http://demo.geekslabs.com/materialize/v2.3/layout03/images/user-profile-bg.jpg');
+    background-width: 100%;
 `
-
 const CalendarArea = styled.div`
       grid-area: calendar;
       max-height: 100%;
@@ -164,9 +200,38 @@ export default class DoctorHome extends Component {
     constructor(props){
         super(props)
 
-        this.state = {city:"",clinicId:"",email:"",firstname:"",lastname:"",permit:"",specialty:"", availability: {}}
+        this.state = {city:"",clinicId:"",email:"",firstname:"",lastname:"",permit:"",specialty:"", availability: {}, rawAvailabilitites: [], days: moment.weekdays().splice(1,5).map(x => x.toLowerCase())}
 
 
+    }
+
+    getDay(value){
+        let slot = value % 36
+        let day =  this.state.days[Math.trunc(value / 36)]
+        return {slot, day}  
+    }
+
+    async updateAvailabilities(){
+        const slots = cookie.load('slots')
+        const {id} = cookie.load('session')
+        const newAvailabilities = slots.map(x => x.id).map(x => this.getDay(x))
+        let availability = {}
+
+        for(let day of this.state.days){
+            availability[day] = {}
+        }
+
+        for(let item of newAvailabilities){
+            let {day, slot} = item
+            availability[day][slot]=true;
+        }
+
+        availability = {availability}
+
+        const response = await POST(`/api/doctors/${id}/availability`,availability)
+        if(response.status === 200){
+            NotificationManager.success('Availabilities updated', 'Success');
+        }
     }
 
     async componentDidMount(){
@@ -180,7 +245,9 @@ export default class DoctorHome extends Component {
         return(
             <React.Fragment>
                 <Navbar>
-                <a href="/"> <img alt="" href="/" src={require('./res/logo.png')}/> </a>
+                    <a href="/">
+                        <img alt="" href="/" src={require('./res/logo.png')}/> 
+                    </a>
                     <Links>
                         <Link>
                             <a href="/">Settings</a> 
@@ -189,27 +256,39 @@ export default class DoctorHome extends Component {
                     </Links>
                 </Navbar>
                 <Main>
+                    <HeadBackground/>
                     <PictureArea>
-                        <img alt="" src="http://cdn.onlinewebfonts.com/svg/img_491471.png"/>
+                        <img alt="" src="https://www.shareicon.net/data/512x512/2016/08/18/813844_people_512x512.png"/>
                     </PictureArea>
 
                     <InfosArea>
                         <h1>Doctor</h1>
-                        <p>{firstname + "  " +  lastname}   </p>                       
-                        <div><h2>Specialty: </h2> <p>{specialty}</p></div>
-                        <div><h2>Email: </h2> <p>{email}</p></div>
-                        <div><h2>City: </h2> <p>{city}</p></div>
+                        <p>{firstname + "  " +  lastname}   </p>  
+                        <span>
+                            <div><h2>Specialty: </h2> <p>{specialty}</p></div>
+                            <div><h2>Email: </h2> <p>{email}</p></div>
+                            <div><h2>City: </h2> <p>{city}</p></div>
+                        </span>                     
                     </InfosArea>
                     
                     <ButtonsArea>
-                        <Btn/>
-                        <Btn/>
+                        <Btn>
+                            Availabilities
+                        </Btn>
+                        <Btn>
+                            Appointments
+                        </Btn>
+                        <Btn onClick={ _ => this.updateAvailabilities() }>
+                            Update Availabilities
+                        </Btn>
                     </ButtonsArea>
                     
                     <CalendarArea>
                         <Calendar availability={availability} style={{height: 600}}/>
+                        
                     </CalendarArea>
                 </Main>
+                <NotificationContainer/>
             </React.Fragment>
         )
     }

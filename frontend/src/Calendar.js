@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import styled from 'styled-components'
 import moment from 'moment'
 import './App.css'
+import cookie from 'react-cookies';
 
 // Types of calendars: 
 // 1- Pick time for appointment
@@ -110,6 +111,7 @@ export default class Calendar extends Component {
         let {slots} = this.state
         slots[x.id]=x
         this.setState({slots})
+        cookie.save('slots', slots.filter(x => x.picked))
     }
 
     getDay(value){
@@ -185,7 +187,7 @@ export default class Calendar extends Component {
         return (
             <div style={{width:'100%', height:'100%',...style, borderRadius: 10}} >
                 <Days>
-                    { this.state.days.map( x => <Day x key={x} >{x}</Day>) }
+                    { this.state.days.map( x => <Day key={x} >{x}</Day>) }
                 </Days>
                 <Main>
                     { this.state.times.map( x => <Time key={x} >{x}</Time>) }
