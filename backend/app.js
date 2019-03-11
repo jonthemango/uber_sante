@@ -58,7 +58,7 @@ for (key in routers) {
     app.use(route, routers[key])
 }
 
-// example middle ware
+// Logger Middleware
 app.all('*', (req, res, next) => {
     logger(`${req.method} - [${req.url}]`)
     next();

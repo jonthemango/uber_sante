@@ -5,6 +5,8 @@ const Clinic = require('../models/Clinics')
 const {BusPublisher,EventBus} = require('event-bus-mini')
 const Payment = require('../models/Payment')
 
+
+
 class AppointmentsController {
 
     static async makeAppointment (req, res){  // (res, req)
@@ -15,7 +17,6 @@ class AppointmentsController {
             "patientId": "5c7970367584bf300cc541f4",
             "date": "2019-03-05",
             "blockIds": [9,10,11],
-            "isAnnual": false
         }
         post body to 'http://localhost:5001/api/appointments'
         */
@@ -42,6 +43,7 @@ class AppointmentsController {
         }
 
     }
+
 
     static async getAppointment(req, res){
         const appointmentId = req.params.id;

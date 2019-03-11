@@ -8,6 +8,7 @@ const nurses = express.Router();
 const clinics = express.Router();
 const doctors = express.Router();
 const auth = express.Router()
+
 // =========== Put all those routers in a list  ===========
 const routes = { auth, appointments, patients, nurses, clinics, doctors }
 
@@ -22,6 +23,7 @@ appointments.get('/doctors/:id/appointments', AppointmentsController.getDoctorAp
 appointments.get('/clinics/:id/appointments', AppointmentsController.getClinicAppointments);
 appointments.put('/appointments/:id', AppointmentsController.updateAppointment);
 appointments.delete('/appointments/:id', AppointmentsController.deleteAppointment);
+
 // =========== CRUD Patients ===========
 const PatientsController = require("./controllers/PatientsController");
 patients.post('/patients/', PatientsController.makePatient);
