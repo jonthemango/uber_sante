@@ -10,7 +10,7 @@ class Patients {
         firstname,
         lastname,
         birthDay,
-        sexe,
+        sex,
         phoneNumber,
         physicalAddress,
         email,
@@ -21,7 +21,7 @@ class Patients {
         this.firstname = firstname
         this.lastname = lastname
         this.birthDay = birthDay
-        this.sexe = sexe
+        this.sex = sex
         this.phoneNumber = phoneNumber
         this.physicalAddress = physicalAddress
         this.email = email

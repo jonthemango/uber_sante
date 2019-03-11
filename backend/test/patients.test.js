@@ -17,10 +17,11 @@ Post('/api/patients', "Posting Patient", patient,({expect,res})=>{
         expect(res.body.success).to.equal(true);
 
         const newPatient = patient;
-        newPatient.gender = "Female";
+        newPatient.sex = "Female";
         newPatient.phoneNumber = 514555555;
         Put('/api/patients/' + id, "Updating Patient by Id", newPatient, ({expect,res}) =>{
-            expect(res.body.data.patient.gender).to.equal("Female");
+            console.log(res.body.data)
+            expect(res.body.data.patient.sex).to.equal("Female");
 
             Delete('/api/patients/' + id, "Deleting Patient by Id", {}, ({expect,res}) =>{
                 expect(res.body.deleted).to.equal(true);
