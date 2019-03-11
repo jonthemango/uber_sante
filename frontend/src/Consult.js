@@ -87,7 +87,18 @@ class Consult extends Component {
         this.state={
             appointment : this.getAllAppointment(),
             date : new Date(),
+            slots: this.generateSlots(),
         }
+    }
+
+    generateSlots(lowEnd=0, highEnd=36*5){
+        let list = [];
+        for (let i = lowEnd; i < highEnd; i++) {
+            let slot = {id: i,slots:[]}
+            list.push(slot);
+
+        }   
+        return list;
     }
     
     getAllAppointment(){
@@ -112,58 +123,35 @@ class Consult extends Component {
         var moment = require('moment');
 
         firstDayOfWeek.setDate(firstDayOfWeek.getDate() - dayCurrent);
-        var firstDay = moment(firstDayOfWeek).format("YYYY/MM/DD");
-
-        alert(firstDay); // sa marche pas de changer le format avec la meme variable so jai du creer celle la
+        var firstDay = moment(firstDayOfWeek).format("YYYY-MM-DD");
 
         lastDayOfWeek =  firstDayOfWeek.setDate(firstDayOfWeek.getDate() + 6);
-        lastDayOfWeek =moment(lastDayOfWeek).format("YYYY/MM/DD");
+        lastDayOfWeek = moment(lastDayOfWeek).format("YYYY-MM-DD");
 
-        alert(lastDayOfWeek);
+        this.createCalendarAvailability(firstDay,lastDayOfWeek)
 
-        if(firstDay>lastDayOfWeek){
-
-            alert("SA MARCHE PO");
-        } else {
-
-            alert("Ramez  est beau ");
-        }
-
-       
-
-        
-        this.createCalendarAvailability(firstDayOfWeek)
-        console.log(firstDayOfWeek)
-        // je veux convertir "firstDayOfWeek" en format "YYYY-MM-DD" 
-        // mai yo jon mavait dit on sen fou du format quon send au backend
-        // FIrstday = "2019-12-31"
-        // last day = "2020-01-07"
-        //je veux pas send au backend je veux comparer des dates , je veux savoir si "2019-04-03" > "2019-04-02"
-        // en php tu peux le faire so je me dit quie javascript aussi, sinon il faut couper les morceau
-        //humm att ok mais le getday live il tle retourne comment, getDay retourn un chiffre de 0->diamanche a 6-? samedi
-        // ok ma question plutot cest quoi quon get live ? 
-        //filterCalendarByDate(day) { le day ici cest la day que la personne a click dessus 
-        //nous on veut voir cest quoi le premier jour de la semaine de cette journer la
-        //testdat.setDate(this.state.appointment[0].date)
-
-        /*YANIS : JE REVIENS URGENCE 20H01*/
-        
-        // var lastDayOfWeek = new Date();
-        // lastDayOfWeek.setDate(firstDayOfWeek.getDate() + 6);
-        // lastDayOfWeek.setMonth(lastDayOfWeek.getMonth());
-        // alert(lastDayOfWeek);
     }
 
     getYearOfDate(date){
         return true
     }
     // Method that will only filter
-    //yanis repond a ton cell damn javais aps vu
+    //yanis repond a ton cell damn javais aps vu /on est LAAA
     
-    createCalendarAvailability(firstDayOfWeek) {
-        // const allAppointments = this.state.appointment;
-        // for each appointment, only store the ones after 'firstDayOfWeek' and before ('firstDayOfWeek'+6)
-        console.log("YANIS800",this.state.appointment)
+    createCalendarAvailability(firstDayOfWeek,lastDayOfWeek) {
+        var list = [];
+        for (let i = 0; i < 180; i++) {
+            let slot = {id: i,slots:[]}
+            list.push(slot);
+        }
+        for (let i = 0; i < this.state.appointment.length; i++) {
+            if(this.state.appointment[i].date > firstDayOfWeek && this.state.appointment[i].date < lastDayOfWeek){
+                for (let x = 0; x< this.state.appointment[i].blockIds.length; x++) {
+                    list[this.state.appointment[i].blockIds[x]].slots.push(this.state.appointment[i])
+                }
+            }
+        }
+        this.setState({slots: list});
         
     }
 
@@ -173,12 +161,6 @@ class Consult extends Component {
         this.setState({appointment: this.getAllAppointment()})
     }
         
-    /* getInfos() { // dont save until code run
-        cookie.load('session');
-        //const {} = this.state
-        //GET('/api/login', {id, healthCardNB, birthDay, gender, phoneNumber, physicalAdress, email})
-        //.then()
-    }*/
 
     render() {
     const session = cookie.load('session')
@@ -224,7 +206,7 @@ class Consult extends Component {
             </div>
             <br/>
             <CalendarArea >
-                <AppointementsCalendar appointment ={this.state.appointment} style={{height: 600}}/>
+                <AppointementsCalendar slots={this.state.slots} style={{height: 600}}/>
             </CalendarArea>
 
         </React.Fragment>

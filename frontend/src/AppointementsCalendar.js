@@ -133,11 +133,15 @@ export default class Calendar extends Component {
 
 
     componentWillReceiveProps(props){
-        console.log('avail',this.props)
+        // iterate over all props.slots and check the size of each and depending on it change color -> 
+        // 0= vert, 1 to 4 = orange, 5 =red
+        // for(let i=0 ; i < 180 ; i++){
+        
+        // }
     }
 
     render(){
-        const {style} = this.props
+        const {slots,style} = this.props
         return (
             <div style={{width:'100%', height:'100%',...style, borderRadius: 10}} >
                 <Days>
@@ -147,10 +151,13 @@ export default class Calendar extends Component {
                     { this.state.times.map( x => <Time key={x} >{x}</Time>) }
                     <Grid>
                         {this.state.slots.map( x => <Slot   {...x}
+                                                            id={x.id}
                                                             key={x.id}
                                                             onClick={ _ => this.handleSlotClick(x) }
                                                 >
-                                                            </Slot>)}
+                                                    </Slot>
+                                            )
+                        }
                     </Grid>
                 </Main>
             </div>
