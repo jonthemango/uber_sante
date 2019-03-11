@@ -5,8 +5,6 @@ import cookie from 'react-cookies'
 import { GET } from './ApiCall'
 import AppointementsCalendar from './AppointementsCalendar'
 import DatePicker from "react-datepicker"
-import {NotificationManager} from 'react-notifications'
-import Moment from 'react-moment';
 import 'moment-timezone';
 
 const Separator = styled.div`
@@ -41,7 +39,7 @@ const Navbar = styled.div`
 
 
 `
-const Link = styled.a`
+const Link = styled.div`
     height: 100%;
 
     a {
@@ -151,8 +149,9 @@ class Consult extends Component {
                 }
             }
         }
-        this.setState({slots: list});
-        
+
+
+        this.setState({slots: list.filter(x => x.slots.length !== 0)});
     }
 
     componentWillMount() {
@@ -199,7 +198,7 @@ class Consult extends Component {
             <br/>
             <div className="container2">
                 <p>Welcome, please select a date below according to your availabilities!</p>
-                <label for="Birthday">Pick a consultation date</label>
+                <label>Pick a consultation date</label>
                 <br /> 
                 <DatePicker className='date' selected={this.state.date} onChange={e => this.filterCalendarByDate(e)} />
                             

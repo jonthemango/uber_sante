@@ -142,7 +142,6 @@ const Menu = styled.div`
 
 class Home extends Component {
     componentDidMount(){
-        console.log('token', cookie.load('session'))
     }
 
     LogOut() {
@@ -151,7 +150,7 @@ class Home extends Component {
     }
 
   render() {
-    const session = cookie.load('session')
+    const session= cookie.load('session')
     return (
     <React.Fragment>
         <Navbar>
@@ -167,6 +166,10 @@ class Home extends Component {
                 </Link>
             </Links> : 
             <Links>
+                <Link>
+                    <a href={`/${session.type}`} >Profile</a>
+                    <Separator/>
+                </Link>
                 <Link onClick={ _ => cookie.remove('session')} color="#FF6666" underColor="black">
                     <a href="/">Log out</a>
                     <Separator/>

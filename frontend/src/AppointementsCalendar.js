@@ -60,6 +60,7 @@ const Slot = styled.div`
     border: 0.1px solid black;
     min-height: 10px;
     background-color: ${props => props.picked ? 'lightgreen' : 'transparent'};
+    background-color: ${({color = ''}) => color};
     // border: ${props => props.picked ? 'none' : ''};
     box-shadow: ${props => props.picked ? 'inset 0px 0px 96px 5px rgba(0,0,0,0.19)' : 'none'};
     // border-radius: ${props => props.picked ? '3px' : '0px'};
@@ -89,6 +90,8 @@ export default class Calendar extends Component {
         this.state={
             times: this.generateTimes(),
             slots: this.generateSlots(),
+            colorA: 'blue',
+            colorB: 'salmon',
             days: [" "].concat(moment.weekdays().splice(1,5)) // removing sun & fri
         }
     }
@@ -133,28 +136,42 @@ export default class Calendar extends Component {
 
 
     componentWillReceiveProps(props){
-        // iterate over all props.slots and check the size of each and depending on it change color -> 
-        // 0= vert, 1 to 4 = orange, 5 =red
-        // for(let i=0 ; i < 180 ; i++){
-        
-        // }
+        const { colorA, colorB} = this.state
+        const { slots : newSlots } = props
+        const slots = this.generateSlots()
+        console.log({newSlots})
+        try {
+            for(let newSlot of newSlots){
+                if(newSlot.slots[0].blockIds.length === 1){
+                    slots[newSlot.id].picked = true
+                    slots[newSlot.id].color = colorA
+                } else if(newSlot.slots[0].blockIds.length === 3){
+                    slots[newSlot.id].picked = true
+                    slots[newSlot.id].color = colorB
+                }
+            }
+
+            this.setState({slots})
+        }catch(e) {
+            console.log('err', e)
+        }
     }
 
     render(){
-        const {slots,style} = this.props
+        const {style} = this.props
         return (
             <div style={{width:'100%', height:'100%',...style, borderRadius: 10}} >
                 <Days>
-                    { this.state.days.map( x => <Day x key={x} >{x}</Day>) }
+                    { this.state.days.map( x => <Day key={x} >{x}</Day>) }
                 </Days>
                 <Main>
                     { this.state.times.map( x => <Time key={x} >{x}</Time>) }
                     <Grid>
                         {this.state.slots.map( x => <Slot   {...x}
                                                             id={x.id}
+                                                            color={x.color}
                                                             key={x.id}
-                                                            onClick={ _ => this.handleSlotClick(x) }
-                                                >
+                                                            onClick={ _ => this.handleSlotClick(x) }>
                                                     </Slot>
                                             )
                         }
