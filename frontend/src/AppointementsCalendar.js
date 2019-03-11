@@ -87,8 +87,6 @@ export default class Calendar extends Component {
         super(props)
 
         this.state={
-            dragging: false,
-            draggingOff: false,
             times: this.generateTimes(),
             slots: this.generateSlots(),
             days: [" "].concat(moment.weekdays().splice(1,5)) // removing sun & fri
@@ -131,34 +129,8 @@ export default class Calendar extends Component {
         return times;
     }
 
-    startDragging(e,x){
-        if(!x.picked){
-            this.setState({dragging: true})
-        }else{
-            this.setState({draggingOff: true})
-        }
-        this.handleDragOver(x)
-        e.dataTransfer.setDragImage(img, 0, 0)
-    }
 
-    handleDragOver(x){
-        if(this.state.dragging && !x.picked){
-            x.picked = !x.picked
-            let {slots} = this.state
-            slots[x.id]=x
-            this.setState({slots})
-        } else if (this.state.draggingOff && x.picked) {
-            x.picked = !x.picked
-            let {slots} = this.state
-            slots[x.id]=x
-            this.setState({slots})
-        }
-    }
 
-    stopDragging(){
-        this.setState({dragging: false})
-        this.setState({draggingOff: false})
-    }
 
     componentWillReceiveProps(props){
         console.log('avail',this.props)
@@ -177,10 +149,7 @@ export default class Calendar extends Component {
                         {this.state.slots.map( x => <Slot   {...x}
                                                             key={x.id}
                                                             onClick={ _ => this.handleSlotClick(x) }
-                                                            draggable={true} 
-                                                            onDragStart={ e => this.startDragging(e, x) }
-                                                            onDragOver={ _ => this.handleDragOver(x) }
-                                                            onDragEnd={ _ => this.stopDragging(x) }>
+                                                >
                                                             </Slot>)}
                     </Grid>
                 </Main>

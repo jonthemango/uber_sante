@@ -6,6 +6,9 @@ import { GET } from './ApiCall'
 import AppointementsCalendar from './AppointementsCalendar'
 import DatePicker from "react-datepicker"
 import {NotificationManager} from 'react-notifications'
+import Moment from 'react-moment';
+import 'moment-timezone';
+
 const Separator = styled.div`
     height: 3px;
     margin-top: -3px;
@@ -93,8 +96,7 @@ class Consult extends Component {
                .then( res =>  res.json())
                .then( res => {
                   if (res.success) {
-                    console.log(res)
-                    this.setState({appointment: res.data.appointment})
+                    this.setState({appointment:res.data.appointments})
                   }
                 }
                 ).catch(e => {
@@ -106,30 +108,62 @@ class Consult extends Component {
     filterCalendarByDate(day) {
         var dayCurrent = day.getDay()
         var firstDayOfWeek = day;
+        var lastDayOfWeek;
+        var moment = require('moment');
 
         firstDayOfWeek.setDate(firstDayOfWeek.getDate() - dayCurrent);
+        var firstDay = moment(firstDayOfWeek).format("YYYY/MM/DD");
+
+        alert(firstDay); // sa marche pas de changer le format avec la meme variable so jai du creer celle la
+
+        lastDayOfWeek =  firstDayOfWeek.setDate(firstDayOfWeek.getDate() + 6);
+        lastDayOfWeek =moment(lastDayOfWeek).format("YYYY/MM/DD");
+
+        alert(lastDayOfWeek);
+
+        if(firstDay>lastDayOfWeek){
+
+            alert("SA MARCHE PO");
+        } else {
+
+            alert("Ramez  est beau ");
+        }
+
+       
+
         
         this.createCalendarAvailability(firstDayOfWeek)
-
-        var goodFormat = firstDayOfWeek.toISOString();
-        alert(goodFormat)
-        alert("YANIS2")
-        var testdat = new Date()
-        console.log("TESTYANIS",this.state)
-        var yanis = this.state
+        console.log(firstDayOfWeek)
+        // je veux convertir "firstDayOfWeek" en format "YYYY-MM-DD" 
+        // mai yo jon mavait dit on sen fou du format quon send au backend
+        // FIrstday = "2019-12-31"
+        // last day = "2020-01-07"
+        //je veux pas send au backend je veux comparer des dates , je veux savoir si "2019-04-03" > "2019-04-02"
+        // en php tu peux le faire so je me dit quie javascript aussi, sinon il faut couper les morceau
+        //humm att ok mais le getday live il tle retourne comment, getDay retourn un chiffre de 0->diamanche a 6-? samedi
+        // ok ma question plutot cest quoi quon get live ? 
+        //filterCalendarByDate(day) { le day ici cest la day que la personne a click dessus 
+        //nous on veut voir cest quoi le premier jour de la semaine de cette journer la
         //testdat.setDate(this.state.appointment[0].date)
-        alert(yanis)
+
+        /*YANIS : JE REVIENS URGENCE 20H01*/
+        
         // var lastDayOfWeek = new Date();
         // lastDayOfWeek.setDate(firstDayOfWeek.getDate() + 6);
         // lastDayOfWeek.setMonth(lastDayOfWeek.getMonth());
         // alert(lastDayOfWeek);
     }
 
+    getYearOfDate(date){
+        return true
+    }
     // Method that will only filter
+    //yanis repond a ton cell damn javais aps vu
+    
     createCalendarAvailability(firstDayOfWeek) {
         // const allAppointments = this.state.appointment;
         // for each appointment, only store the ones after 'firstDayOfWeek' and before ('firstDayOfWeek'+6)
-        
+        console.log("YANIS800",this.state.appointment)
         
     }
 
@@ -148,9 +182,13 @@ class Consult extends Component {
 
     render() {
     const session = cookie.load('session')
+    
     return (
+
      
     <React.Fragment>
+
+        
      <Navbar>
          <a href="/"> <img alt="" src={require('./res/logo.png')}/></a>
             {!session ? <Links>
