@@ -2,6 +2,8 @@ const Appointment = require('../models/Appointment')
 const Patient = require('../models/Patients')
 const Doctor = require('../models/Doctors')
 const Clinic = require('../models/Clinics')
+const {BusPublisher,EventBus} = require('event-bus-mini')
+const Payment = require('../models/Payment')
 
 class AppointmentsController {
 
@@ -18,7 +20,9 @@ class AppointmentsController {
         post body to 'http://localhost:5001/api/appointments'
         */
 
-        const { clinicId, patientId, date, blockIds, isAnnual } = req.body;
+        const publisher = new BusPublisher({port:7001})
+
+        const { clinicId, patientId, date, blockIds, isAnnual, paymentInfo } = req.body
 
         let builder = Appointment.Builder()
         builder = await builder
@@ -31,6 +35,7 @@ class AppointmentsController {
 
         try{
             const appointment = await builder.buildAppointment();
+            publisher.publish({event:"paymentPending",data:{appointment,paymentInfo}})
             res.json({success:true, data: {appointment}, message:"Appointment made."});
         } catch(err){
             res.json({success:false, error:err.message, message: "Appointment not made."})

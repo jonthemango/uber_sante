@@ -1,7 +1,7 @@
 const moment = require('moment');
 const persist = require('../persistence');
-Clinics = require('./Clinics');
-Doctors = require('./Doctors')
+const Clinics = require('./Clinics');
+const Doctors = require('./Doctors')
 
 class Appointment {
     constructor() {

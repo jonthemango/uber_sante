@@ -21,6 +21,7 @@ const AppSingleton = (function () {
 })();
 
 const app = AppSingleton.getInstance();
+const AppointmentsController = require('./controllers/AppointmentsController')
 const log = require('fancy-log')
 const argv = require('yargs').argv
 const { p = 5001, port = p, withlog } = argv
@@ -96,6 +97,9 @@ app.get(['/', '/api/'], (req, res) => {
     })
 
 })
+
+
+
 
 server = app.listen(port, () => {
     logger('backend started on port ' + port)
