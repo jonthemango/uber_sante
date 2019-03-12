@@ -1,7 +1,7 @@
 const Appointment = require('../models/Appointment')
 const Patient = require('../models/Patients')
 const Doctor = require('../models/Doctors')
-const Clinic = require('../models/Clinics')
+const Clinics = require('../models/Clinics')
 const { BusPublisher } = require('event-bus-mini')
 const Payment = require('../models/Payment')
 
@@ -23,25 +23,23 @@ class AppointmentsController {
 
         const publisher = new BusPublisher({ port: 7001 })
 
-        const { clinicId, patientId, date, blockIds, isAnnual, paymentInfo } = req.body
+        const { clinicId, patientId, date, blockIds, paymentInfo } = req.body
 
         let builder = Appointment.Builder()
         builder = await builder
             .buildPatientInfo({ patientId, clinicId })
             .buildAppointmentTime({ date, blockIds })
-
         builder = await builder.assignRoom()
         builder = await builder.assignDoctor()
 
 
         try {
-            if (Payment.isValid(paymentInfo)) {
+            if (Payment.isValid({cardNumber: 1})) {
                 const appointment = await builder.buildAppointment();
                 publisher.publish({ event: "paymentPending", data: { appointment, paymentInfo } })
                 res.json({ success: true, data: { appointment }, message: "Appointment made." });
-
             }else{
-            res.json({ success: false, message: "incorrect payment information" })
+            res.json({ success: false, message: "Incorrect payment information" })
             }
         } catch (err) {
             res.json({ success: false, error: err.message, message: "Appointment not made." })

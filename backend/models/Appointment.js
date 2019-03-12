@@ -42,7 +42,6 @@ class Appointment {
             query["doctor._id"] = ObjectId(doctorId);
         }
         const appointments = await persist(async (db) => {
-            console.log(query)
             const appointments = await db.collection("appointments").find(query).toArray()
             return appointments
         });
@@ -54,13 +53,11 @@ class Appointment {
 
             const startMoment = moment(start);
             const endMoment = moment(end);
-            console.log("dates:",startMoment, start, endMoment, end)
 
             for (let i = 0; i < appointments.length; i++) {
 
                 appointment = appointments[i]
                 aptDate = moment(appointment.date)
-                console.log(startMoment.isValid(), endMoment.isValid(), start != undefined, end != undefined)
                 if (startMoment.isValid() && endMoment.isValid() && start != undefined && end != undefined){
                     if (startMoment.isBefore(aptDate) && endMoment.isAfter(aptDate)) filteredAppointments.push(appointment)
                 } else if (startMoment.isValid() && start != undefined){
@@ -137,7 +134,7 @@ class Appointment {
             buildPatientInfo({ patientId, clinicId }) {
                 if (patientId == undefined || clinicId == undefined) {
                     this.appointment.result.made = false;
-                    this.appointment.message.push("Invalid Patient/Clinic Info.");
+                    this.appointment.result.message.push("Invalid Patient/Clinic Info.");
                 }
                 this.appointment.patientId = patientId;
                 this.appointment.clinicId = clinicId;
@@ -167,7 +164,6 @@ class Appointment {
 
 
                 let doctorId;
-                console.log(doctors.length);
                 for (let i = 0; i < appointments.length; i++) {
                     doctorId = appointments[i].doctor._id;
                     for (let j = 0; j < doctors.length; j++) {
@@ -196,9 +192,6 @@ class Appointment {
                     blockIds: this.appointment.blockIds,
                     date: moment(this.appointment.date).format('YYYY-MM-DD')
                 }
-
-
-
 
                 const appointments = await Appointment.getAppointments(query)
                 const clinic = await Clinics.get(this.appointment.clinicId);
