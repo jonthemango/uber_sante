@@ -2,6 +2,9 @@ import React, { Component } from 'react'
 import styled from 'styled-components'
 import moment from 'moment'
 import './App.css'
+import {Modal, Button} from 'react-bootstrap'
+import 'bootstrap/dist/css/bootstrap.min.css';
+import { GET } from './ApiCall';
 
 // Types of calendars: 
 // 1- Pick time for appointment
@@ -20,7 +23,7 @@ const Main = styled.div`
     align-items: stretch;
     justify-items: stretch;
     max-height: 80%;
-    overflow-y: scroll;
+    overflow-y: overlay;
 `
 
 const Time = styled.div`
@@ -47,9 +50,9 @@ const Day = styled.div`
     justify-content: center;
     font-size: 1rem;
     border: 0.2px solid black;
-    color: white;
+    color: ${({textColor='white'}) =>textColor};
     font-weight: bold;
-    background-color: #197919;
+    background-color: ${({topColor='#197919'}) => topColor};
 `
 const Slot = styled.div`
     font-size: 1rem;
@@ -61,9 +64,7 @@ const Slot = styled.div`
     min-height: 10px;
     background-color: ${props => props.picked ? 'lightgreen' : 'transparent'};
     background-color: ${({color = ''}) => color};
-    // border: ${props => props.picked ? 'none' : ''};
     box-shadow: ${props => props.picked ? 'inset 0px 0px 96px 5px rgba(0,0,0,0.19)' : 'none'};
-    // border-radius: ${props => props.picked ? '3px' : '0px'};
     overflow: hidden;
     transition: .2s;
     &:hover {
@@ -116,14 +117,29 @@ export default class Calendar extends Component {
     //     this.setState({slots})
     // }
 
-    handleSlotClick(x){
+    async handleSlotClick(x){
         let slot = x.id % 36
-        x.picked = !x.picked
-        let {slots} = this.state
-        slots[x.id]=x
-        this.setState({slots})
-        this.props.onSlotClicked(slot);
+        if(!this.props.isDoctor){
+            x.picked = !x.picked
+            let {slots} = this.state
+            slots[x.id]=x
+            this.setState({slots})
+        }
+        
+        if(this.props.onSlotClicked){
+            this.props.onSlotClicked(slot);
+        }
+        if(this.props.isDoctor){
+            console.log({x})
+            if(x._id){
+                const patient = await GET(`/api/patients/${x.patientId}`).then(res=>res.json()).then(res=>res.data.patient)
+                const appointmentData = {...x, patient}
+                console.log(appointmentData)
+                this.setState({appointmentData}, _ => this.setState({showModal: true}))
+            } 
+            
 
+        }
         
     }
 
@@ -131,6 +147,12 @@ export default class Calendar extends Component {
         let slot = value % 36
         let day =  this.state.days[Math.trunc(value / 36)+1]
         return {slot, day}  
+    }
+
+    getSlot(day, slot){
+        let factor = this.state.days.map(x=> x.toLowerCase()).indexOf(day)-1 
+        let value = Number(slot) + 36*Number(factor)
+        return value 
     }
 
     generateTimes(){
@@ -151,32 +173,45 @@ export default class Calendar extends Component {
 
     componentWillReceiveProps(props){
         const { colorA, colorB} = this.state
-        const { slots : newSlots } = props
-        const slots = this.generateSlots()
-        console.log({newSlots})
-        try {
-            for(let newSlot of newSlots){
-                if(newSlot.slots[0].blockIds.length === 1){
-                    slots[newSlot.id].picked = true
-                    slots[newSlot.id].color = colorA
-                } else if(newSlot.slots[0].blockIds.length === 3){
-                    slots[newSlot.id].picked = true
-                    slots[newSlot.id].color = colorB
+        const { slots : newSlots , isDoctor = false, date=''} = props
+        if(!isDoctor){
+            const slots = this.generateSlots()
+            try {
+                for(let newSlot of newSlots){
+                    if(newSlot.slots[0].blockIds.length === 1){
+                        slots[newSlot.id].picked = true
+                        slots[newSlot.id].color = colorA
+                    } else if(newSlot.slots[0].blockIds.length === 3){
+                        slots[newSlot.id].picked = true
+                        slots[newSlot.id].color = colorB
+                    }
+                }
+    
+                this.setState({slots})
+            }catch(e) {
+                console.log('err', e)
+            }
+        }else {
+            const slots = this.generateSlots()
+            let weeklySlots = newSlots[date]
+            if(weeklySlots){
+                for(let slot of weeklySlots){
+                    let gridId = this.getSlot(slot.weekday, slot.blockId)
+                    slots[gridId] = {...slot, key: gridId, picked: true, color: slot.type == 'walkin' ? colorA : colorB}
                 }
             }
-
             this.setState({slots})
-        }catch(e) {
-            console.log('err', e)
+            
         }
     }
 
     render(){
-        const {style} = this.props
+        const {style, textColor, topColor} = this.props
+        const {showModal, appointmentData} = this.state
         return (
             <div style={{width:'100%', height:'100%',...style, borderRadius: 10}} >
                 <Days>
-                    { this.state.days.map( x => <Day key={x} >{x}</Day>) }
+                    { this.state.days.map( x => <Day key={x} textColor={textColor}  topColor={topColor} >{x}</Day>) }
                 </Days>
                 <Main>
                     { this.state.times.map( x => <Time key={x} >{x}</Time>) }
@@ -191,6 +226,25 @@ export default class Calendar extends Component {
                         }
                     </Grid>
                 </Main>
+                <Modal show={showModal} onHide={ _ => this.setState({showModal: false})}>
+                <Modal.Header closeButton>
+                    <Modal.Title>Appointment Details</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <p>Patient's Name - { appointmentData ? ((appointmentData.patient.firstname || 'Not Provided') + " " + (appointmentData.patient.lastname || 'Not Provided')) : 'nun'}</p>
+                    <p>Patient's Email- { appointmentData ? appointmentData.patient.email : 'Not Provided'}</p>
+                    <p>Patient's Phone Number- { appointmentData ? appointmentData.patient.phoneNumber : 'Not Provided'}</p>
+                    <p>Patient's Birthday- { appointmentData ? appointmentData.patient.birthDay : 'Not Provided'}</p>
+                    <p>Patient's Address- { appointmentData ? appointmentData.patient.physicalAddress : 'Not Provided'}</p>
+                    <p>Room Number - <b>#{ appointmentData ? appointmentData.room : 'Not Provided'}</b></p>
+                    <p>Appointment Type Number - <b>{ appointmentData ? appointmentData.type : 'Not Provided'}</b></p>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="primary" onClick={ _ => this.setState({showModal: false})}>
+                        Ok
+                    </Button>
+                </Modal.Footer>
+                </Modal>
             </div>
         )
     }
