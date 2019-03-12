@@ -2,14 +2,14 @@ const Appointment = require('../models/Appointment')
 const Patient = require('../models/Patients')
 const Doctor = require('../models/Doctors')
 const Clinic = require('../models/Clinics')
-const {BusPublisher,EventBus} = require('event-bus-mini')
+const { BusPublisher } = require('event-bus-mini')
 const Payment = require('../models/Payment')
 
 
 
 class AppointmentsController {
 
-    static async makeAppointment (req, res){  // (res, req)
+    static async makeAppointment(req, res) {  // (res, req)
 
         /*
         const body = {
@@ -21,118 +21,123 @@ class AppointmentsController {
         post body to 'http://localhost:5001/api/appointments'
         */
 
-        const publisher = new BusPublisher({port:7001})
+        const publisher = new BusPublisher({ port: 7001 })
 
         const { clinicId, patientId, date, blockIds, isAnnual, paymentInfo } = req.body
 
         let builder = Appointment.Builder()
         builder = await builder
-        .buildPatientInfo({patientId, clinicId})
-        .buildAppointmentTime({date, blockIds})
+            .buildPatientInfo({ patientId, clinicId })
+            .buildAppointmentTime({ date, blockIds })
 
         builder = await builder.assignRoom()
         builder = await builder.assignDoctor()
 
 
-        try{
-            const appointment = await builder.buildAppointment();
-            publisher.publish({event:"paymentPending",data:{appointment,paymentInfo}})
-            res.json({success:true, data: {appointment}, message:"Appointment made."});
-        } catch(err){
-            res.json({success:false, error:err.message, message: "Appointment not made."})
+        try {
+            if (Payment.isValid(paymentInfo)) {
+                const appointment = await builder.buildAppointment();
+                publisher.publish({ event: "paymentPending", data: { appointment, paymentInfo } })
+                res.json({ success: true, data: { appointment }, message: "Appointment made." });
+
+            }else{
+            res.json({ success: false, message: "incorrect payment information" })
+            }
+        } catch (err) {
+            res.json({ success: false, error: err.message, message: "Appointment not made." })
         }
 
     }
 
 
-    static async getAppointment(req, res){
+    static async getAppointment(req, res) {
         const appointmentId = req.params.id;
 
         let appointments = [];
 
-        try{
-            appointments = await Appointment.getAppointments({appointmentId})
+        try {
+            appointments = await Appointment.getAppointments({ appointmentId })
             console.log(appointments.length)
-            res.json({success:true, data: {"appointment": appointments[0]}, message:"Appointment returned."})
-        } catch (err){
+            res.json({ success: true, data: { "appointment": appointments[0] }, message: "Appointment returned." })
+        } catch (err) {
             console.log(err.message)
-            res.json({success:false, error: err.message, message: "Appointment not returned. No appointment with that Id."})
+            res.json({ success: false, error: err.message, message: "Appointment not returned. No appointment with that Id." })
         }
 
 
     }
 
-    static async getPatientAppointments(req, res){
+    static async getPatientAppointments(req, res) {
         const patientId = req.params.id;
 
         let appointments = [];
 
-        try{
+        try {
             const patient = await Patient.get(patientId);
-            if (!patient.error){
-                appointments = await Appointment.getAppointments({patientId});
+            if (!patient.error) {
+                appointments = await Appointment.getAppointments({ patientId });
             } else {
                 throw new Error("Patient Id is invalid.")
             }
 
-            res.json({success:true, data: {"appointments": appointments}, message:"Appointments returned."})
-        } catch (err){
-            res.json({success:false, error: err.message, message: "Appointment not returned."})
+            res.json({ success: true, data: { "appointments": appointments }, message: "Appointments returned." })
+        } catch (err) {
+            res.json({ success: false, error: err.message, message: "Appointment not returned." })
         }
     }
 
-    static async getDoctorAppointments(req, res){
+    static async getDoctorAppointments(req, res) {
         const doctorId = req.params.id;
 
         let appointments = [];
 
-        try{
+        try {
             const doctor = await Doctor.get(doctorId);
-            if (doctor == null || doctor.error){
+            if (doctor == null || doctor.error) {
                 throw new Error("Doctor Id is invalid")
             }
-            appointments = await Appointment.getAppointments({doctorId});
+            appointments = await Appointment.getAppointments({ doctorId });
 
 
-            res.json({success:true, data: {"appointments": appointments}, message:"Appointments returned."})
-        } catch (err){
+            res.json({ success: true, data: { "appointments": appointments }, message: "Appointments returned." })
+        } catch (err) {
             if (err.message == "Argument passed in must be a single String of 12 bytes or a string of 24 hex characters") err.message = "Doctor Id is invalid.";
-            res.json({success:false, error: err.message, message: "Appointment not returned."})
+            res.json({ success: false, error: err.message, message: "Appointment not returned." })
         }
     }
 
-    static async getClinicAppointments(req, res){
+    static async getClinicAppointments(req, res) {
 
         const clinicId = req.params.id;
-        const {start,end} = req.query;
+        const { start, end } = req.query;
 
         let appointments = [];
 
-        try{
+        try {
             const clinic = await Clinics.get(clinicId);
-            if (!clinic.error){
-                appointments = await Appointment.getAppointments({clinicId, start, end});
+            if (!clinic.error) {
+                appointments = await Appointment.getAppointments({ clinicId, start, end });
             } else {
                 throw new Error("Clinic Id is invalid.")
             }
 
-            res.json({success:true, data: {"appointments": appointments}, message:"Appointments returned."})
-        } catch (err){
-            res.json({success:false, error: err.message, message: "Appointment not returned."})
+            res.json({ success: true, data: { "appointments": appointments }, message: "Appointments returned." })
+        } catch (err) {
+            res.json({ success: false, error: err.message, message: "Appointment not returned." })
         }
 
     }
 
-    static updateAppointment(req, res){
+    static updateAppointment(req, res) {
         const appointmentId = req.params.id;
-        const {clinicId, patientId, timeData, isAnnual, consume } = req.body;
+        const { clinicId, patientId, timeData, isAnnual, consume } = req.body;
 
         let appointment = {};
 
         res.json(appointment)
     }
 
-    static deleteAppointment(req, res){
+    static deleteAppointment(req, res) {
         const appointmentId = req.params.id;
 
         // delete the appointment from db

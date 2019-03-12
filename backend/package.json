@@ -5,8 +5,8 @@
   "main": "app.js",
   "scripts": {
     "test": "mocha --exit ",
-    "dev": "nodemon app bus --withlog",
-    "start": "node app --withlog &; node bus --withlog"
+    "dev": "nodemon app --withlog",
+    "start": "node app --withlog"
   },
   "repository": {
     "type": "git",
