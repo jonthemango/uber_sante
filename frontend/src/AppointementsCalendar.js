@@ -91,8 +91,8 @@ export default class Calendar extends Component {
         this.state={
             times: this.generateTimes(),
             slots: this.generateSlots(),
-            colorA: 'blue',
-            colorB: 'green',
+            colorA: 'yellow',
+            colorB: 'red',
             days: [" "].concat(moment.weekdays().splice(1,5)), // removing sun & fris
             pickedSlot: null
         }
@@ -127,7 +127,7 @@ export default class Calendar extends Component {
         }
         
         if(this.props.onSlotClicked){
-            this.props.onSlotClicked(slot);
+            this.props.onSlotClicked(slot,x.date);
         }
         if(this.props.isDoctor){
             console.log({x})
@@ -137,8 +137,6 @@ export default class Calendar extends Component {
                 console.log(appointmentData)
                 this.setState({appointmentData}, _ => this.setState({showModal: true}))
             } 
-            
-
         }
         
     }
@@ -178,16 +176,18 @@ export default class Calendar extends Component {
             const slots = this.generateSlots()
             try {
                 for(let newSlot of newSlots){
-                    if(newSlot.slots[0].blockIds.length === 1){
-                        slots[newSlot.id].picked = true
-                        slots[newSlot.id].color = colorA
-                    } else if(newSlot.slots[0].blockIds.length === 3){
-                        slots[newSlot.id].picked = true
-                        slots[newSlot.id].color = colorB
+                    if(newSlot.slots.length !=0){
+                    if(newSlot.slots.length >= 1 && newSlot.slots.length <= 4){
+                        newSlots[newSlot.id].picked = true
+                        newSlots[newSlot.id].color = colorA
+                    } else if(newSlot.slots.length === 5){
+                        newSlots[newSlot.id].picked = true
+                        newSlots[newSlot.id].color = colorB
                     }
                 }
+                }
     
-                this.setState({slots})
+                this.setState({slots:newSlots})
             }catch(e) {
                 console.log('err', e)
             }
@@ -220,6 +220,9 @@ export default class Calendar extends Component {
                                                             id={x.id}
                                                             color={x.color}
                                                             key={x.id}
+                                                            slots={x.slots}
+                                                            date={x.date}
+                                                            picked ={x.picked}
                                                             onClick={ _ => this.handleSlotClick(x) }>
                                                     </Slot>
                                             )

@@ -11,7 +11,9 @@ import Dropdown from 'react-dropdown';
 import 'react-dropdown/style.css'
 import VueClockPicker from 'vue-clock-picker'
 import { ButtonGroup } from 'react-bootstrap'
+
 const moment = require('moment');
+
 const Separator = styled.div`
     height: 3px;
     margin-top: -3px;
@@ -94,7 +96,10 @@ class Consult extends Component {
             slots: this.generateSlots(),
             datePicked:null,
             appointmentType:null,
-            slotSelected:null
+            slotSelected:null,
+            selectedDate:null,
+            dayPickByuser:null,
+            patientEmail: ''
         }
     }  
 
@@ -132,7 +137,7 @@ class Consult extends Component {
         alert(this.state.slotSelected)
         if(this.state.datePicked !=null && this.state.appointmentType !=null && this.state.slotSelected !=null){
 
-            const {id} = cookie.load('session')
+            const user = cookie.load('session')
             var blockid = []
             var isannual = true
         
@@ -145,12 +150,27 @@ class Consult extends Component {
                 isannual = false
             }
 
+            var patientEmail;
+            if(user.type==nurse){
+                patientEmail = this.state.patientEmail
+            }else{
+                patientEmail = user.email
+            }
+
+            GET('/api/patients/email/'+patientEmail)
+                .then(res => res.json())
+                .then(res => {
+
+                })
+            
+/*
             POST('/api/appointments/', {
                 clinicId: "5c79642f43d24100061b3283",
                 patientId: id,
                 date: this.state.datePicked,
                 blockIds: blockid,
                 isAnnual: isannual,
+                paymentInfo:{cardNumber:1}
             })
                .then( res =>  res.json())
                .then( res => {
@@ -165,7 +185,7 @@ class Consult extends Component {
                 .catch(e => {
                     console.log('Error')
             })
-
+*/
         }
         else{
             alert("You did not pick a day/Type/Slot")
@@ -175,41 +195,69 @@ class Consult extends Component {
     // Method that will, based on patient's date selection, determine the first day in the same week
     filterCalendarByDate(day) {
         
+        console.log({day})
+        this.setState({date:day});
         var dayCurrent = day.getDay()
+
         var firstDayOfWeek = day;
-        var lastDayOfWeek;
+        var dayOfWeek =[]
 
         var dayGoodFormat = moment(day).format("YYYY-MM-DD");
 
         this.setState({datePicked:dayGoodFormat});
 
+        
         firstDayOfWeek.setDate(firstDayOfWeek.getDate() - dayCurrent);
         var firstDay = moment(firstDayOfWeek).format("YYYY-MM-DD");
+        var dayOfWeek = []
 
-        lastDayOfWeek =  firstDayOfWeek.setDate(firstDayOfWeek.getDate() + 6);
-        lastDayOfWeek = moment(lastDayOfWeek).format("YYYY-MM-DD");
+        dayOfWeek.push(firstDay)
+        for(let day = 1; day < 7; day++){
+            
+            firstDayOfWeek.setDate(firstDayOfWeek.getDate() + 1);
+            firstDay = moment(firstDayOfWeek).format("YYYY-MM-DD");
+            dayOfWeek.push(firstDay)
 
-        this.createCalendarAvailability(firstDay,lastDayOfWeek)
+        }
+        this.createCalendarAvailability(dayOfWeek)
 
     }
 
     getYearOfDate(date){
         return true
-    }
-    // Method that will only filter
-    //yanis repond a ton cell damn javais aps vu /on est LAAA
+    }  
     
-    createCalendarAvailability(firstDayOfWeek,lastDayOfWeek) {
-        console.log(1111)
+    createCalendarAvailability(arrOfWeek) {
+        
         var list = [];
         for (let i = 0; i < 180; i++) {
-            let slot = {id: i,slots:[]}
-            list.push(slot);
+            var slot = {id: i,slots:[]};
+
+            if(i<36){
+                slot.date=arrOfWeek[1];
+                list.push(slot);
+            }
+            if(i>=36 && i<72){
+                slot.date=arrOfWeek[2];
+                list.push(slot);
+            }
+            if(i>=72 && i<108){
+                slot.date=arrOfWeek[3];
+                list.push(slot);
+            }
+            if(i>=108 && i<144){
+                slot.date=arrOfWeek[4];
+                list.push(slot);
+            }
+            if(i>=144 && i<180){
+                slot.date=arrOfWeek[5];
+                list.push(slot);
+            }
+            
         }
-        console.log(2222);
-        console.log(this.state.appointment)
+        
         for (let i = 0; i < this.state.appointment.length; i++) {
-            if(this.state.appointment[i].date > firstDayOfWeek && this.state.appointment[i].date < lastDayOfWeek){
+            if(this.state.appointment[i].date > arrOfWeek[0] && this.state.appointment[i].date < arrOfWeek[6]){
                 var dayOfTheAppointment = parseInt(moment(this.state.appointment[i].date).day())-1;
                 for (let x = 0; x< this.state.appointment[i].blockIds.length; x++) {
                     list[this.state.appointment[i].blockIds[x]+(36*dayOfTheAppointment)].slots.push(this.state.appointment[i])
@@ -217,13 +265,13 @@ class Consult extends Component {
             }
         }
 
-
-        this.setState({slots: list.filter(x => x.slots.length !== 0)});
+        this.setState({slots: list});
     }
 
-    handleSlotPicked(slot){
-        console.log("YANISPOST",slot)
-        this.setState({slotSelected:slot})
+    handleSlotPicked(slot,date){
+        alert(date)
+        this.setState({slotSelected:slot});
+        this.setState({datePicked:date});
     }
 
     componentWillMount() {
@@ -235,6 +283,7 @@ class Consult extends Component {
 
     render() {
     const session = cookie.load('session')
+    console.log("User2",session)
     const options = [
         'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'
     ]
@@ -274,10 +323,18 @@ class Consult extends Component {
         <React.Fragment>
             <br/>
             <div className="container2">
-                <p>Welcome, please select a date below according to your availabilities!</p>
+
+                {
+                    session.type !== "nurse"?
+                    <div>
+                        <label>Please write a patient email</label>
+                        <input onChange={ e => this.setState({patientEmail:e.target.value})}></input>
+                    </div>
+                    : null
+                }
                 <label>Pick a consultation date</label>
                 <br /> 
-                <DatePicker  className='date' selected={this.state.date} onChange={e => this.filterCalendarByDate(e)} />
+                <DatePicker  className='date' selected={this.state.date} onChange={e => this.filterCalendarByDate(e) } />
 
                 <br />
                 <br />
@@ -295,7 +352,7 @@ class Consult extends Component {
             </div>
             <br/>
             <CalendarArea>
-                <AppointementsCalendar onSlotClicked={ slot => this.handleSlotPicked(slot) } slots={this.state.slots} style={{height: 600}}/>
+                <AppointementsCalendar onSlotClicked={ (slot,date) => this.handleSlotPicked(slot,date) } slots={this.state.slots} style={{height: 600}}/>
             </CalendarArea>
 
         </React.Fragment>
