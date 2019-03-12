@@ -21,7 +21,8 @@ const Main = styled.div`
     align-items: stretch;
     justify-items: stretch;
     max-height: 80%;
-    overflow-y: scroll;
+    overflow-y: overlay;
+
 `
 
 const Time = styled.div`
@@ -61,9 +62,7 @@ const Slot = styled.div`
     border: 0.1px solid black;
     min-height: 10px;
     background-color: ${props => props.picked ? 'lightgreen' : 'transparent'};
-    // border: ${props => props.picked ? 'none' : ''};
     box-shadow: ${props => props.picked ? 'inset 0px 0px 96px 5px rgba(0,0,0,0.19)' : 'none'};
-    // border-radius: ${props => props.picked ? '3px' : '0px'};
     overflow: hidden;
     transition: .2s;
     &:hover {

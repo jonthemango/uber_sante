@@ -7,7 +7,7 @@ import { GET, POST } from './ApiCall'
 import moment from 'moment'
 import {NotificationContainer, NotificationManager} from 'react-notifications';
 
-const Btn = props => <a {...props} onClick={null} style={{width: '20vw', textDecoration: 'inherit', color: 'inherit',cursor: 'auto'}}> <Button {...props}>{props.children}</Button> </a>
+const Btn = props => <a onClick={null} style={{width: '20vw', textDecoration: 'inherit', color: 'inherit',cursor: 'auto'}}> <Button {...props}>{props.children}</Button> </a>
 
 const slide = keyframes`
     0% {opacity: 0; margin-top: 80px;}
@@ -18,9 +18,9 @@ const ButtonsArea = styled.div`
       grid-area: buttons;
       display: flex;
       flex-direction: column;
-      justify-content: center;
+      justify-content: top;
       padding-left: 10%;
-      height: 50%;
+      padding-top: 15%;
 `
 
 const Button = styled.div`
@@ -36,7 +36,7 @@ const Button = styled.div`
     font-size: 1.3rem;
     border-radius: 4px;
     transition: .2s;
-    background: linear-gradient(180deg, rgba(255,255,255,0.9990371148459384) -1%, ${({color})=> color || 'rgba(5,153,1,1)'} 100%) white;
+    background: linear-gradient(180deg, rgba(255,255,255,0.9990371148459384) -1%, ${({backColor})=> backColor || 'rgba(5,153,1,1)'} 100%) white;
     background-position: 0 70px;
     background-repeat: no-repeat;
     font-weight: bold;
@@ -123,28 +123,27 @@ const Link = styled.div`
       }
 `
 
-const initialDate = moment().format('YYYY-MM-DD')
-
 const DateSwitch = ({onCurrentDateChange=console.log}) => {
-    const [currentDate, setDate2] = useState(initialDate)
+    const [currentDate, setDate] = useState(moment().weekday(1))
 
     return (
         <DateArea>
             <img alt="" src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/0d/Caret_left_font_awesome.svg/2000px-Caret_left_font_awesome.svg.png" 
                     onClick={ _ => {
-                        const new_date = moment(currentDate, "YYYY-MM-DD").add(1, 'week').format('YYYY-MM-DD');
-                        setDate2(new_date); 
-                        onCurrentDateChange(new_date); }}/>
-            <p>Week of: <h1> {currentDate} </h1></p>
+                        const new_date = currentDate.clone().subtract(1, 'week');
+                        setDate(new_date); 
+                        onCurrentDateChange(new_date.format('YYYY-MM-DD')); }}/>
+            <div>Week of: <h1> {currentDate.format('YYYY-MM-DD')} </h1></div>
             <img alt="" src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/0d/Caret_left_font_awesome.svg/2000px-Caret_left_font_awesome.svg.png" 
                     onClick={ _ => {
-                        const new_date = moment(currentDate, "YYYY-MM-DD").subtract(1, 'week').format('YYYY-MM-DD');
-                        setDate2(new_date);
-                        onCurrentDateChange(new_date); }}/>
+                        const new_date = currentDate.clone().add(1, 'week');
+                        setDate(new_date); 
+                        onCurrentDateChange(new_date.format('YYYY-MM-DD')); }}/>
         </DateArea>
     )
 
 }
+
 
 const DateArea = styled.div`
     display: flex;
@@ -170,7 +169,7 @@ const DateArea = styled.div`
         transform: rotate(180deg) scale(1.5);
     }
 
-    & p {
+    & div {
         display: flex;
         justify-content: center;
         align-items: center;
@@ -215,32 +214,40 @@ const InfosArea = styled.div`
       font-size: 12px;
       display:flex;
       flex-direction: column;
+      justify-content: space-around;
       color: white;
       
-      h1 {
+      & h1 {
           font-weight: bold;
           font-size: 40px;
           padding: 0;
       }
 
-      p {
+      & p {
+        padding: 10px;
         font-size: 20px;
-        padding-left: 10px
+        margin-bottom: 0;
       }
 
-      h2 {
-         font-weight: 30px; 
+      & h2 {
+        font-size: 30px; 
+        font-weight: normal;
       }
 
-      div {
+      & h3 {
+         font-weight: bold;
+      }
+
+      & div {
           display: flex;
           align-items: center;
       }
 
-      span {
+      & span {
           display: flex;
           width: 100%;
-          justify-content: space-around;
+          padding: 10px;
+          justify-content: space-between;
           color: white;
           background-color: rgba(0,0,0,.5);
           border-radius: 5px;
@@ -272,7 +279,8 @@ export default class DoctorHome extends Component {
                         specialty:"", 
                         availability: {}, 
                         rawAvailabilitites: [], 
-                        displayAppointments: false,
+                        displayAvailabilities: true,
+                        slots: [],
                         days: moment.weekdays().splice(1,5).map(x => x.toLowerCase())}
 
 
@@ -282,12 +290,6 @@ export default class DoctorHome extends Component {
         let slot = value % 36
         let day =  this.state.days[Math.trunc(value / 36)]
         return {slot, day}  
-    }
-
-    async fetchAppointments(){
-        const {id} = cookie.load('session')
-        const response = await GET(`/api/doctors/${id}/appointments`).then(res => res.json())
-        console.log(response)
     }
 
     async updateAvailabilities(){
@@ -307,8 +309,9 @@ export default class DoctorHome extends Component {
 
         availability = {availability}
 
-        const response = await POST(`/api/doctors/${id}/availability`,availability)
-        if(response.status === 200){
+        const response = await POST(`/api/doctors/${id}/availability`,availability).then(res=>res.json())
+
+        if(response.success){
             NotificationManager.success('Availabilities updated', 'Success');
         }
     }
@@ -317,12 +320,27 @@ export default class DoctorHome extends Component {
         const {id} = cookie.load('session')
         const doctorInfo = await GET(`/api/doctors/${id}`).then(res => res.json())
         this.setState({...doctorInfo.data.doctor})
-        
-        // const appointments = await GET(`/api/doctors/${id}/appointments`).then(res => res.json())
+        let slots = []
+
+        const result = await GET(`/api/doctors/${id}/appointments`).then(res => res.json())
+        if(result.success){
+            for(let appointment of result.data.appointments){
+                for(let id of appointment.blockIds){
+                    let firstWeekDay = moment(appointment.date,'YYYY-MM-DD').weekday(1).format('YYYY-MM-DD')
+                    let formatedAppointment = {_id: appointment._id, weekday: moment(appointment.date, 'YYYY-MM-DD').format('dddd').toLowerCase() , date: appointment.date, patientId: appointment.patientId, room: appointment.room, type: appointment.type, blockId: id }
+                    if(slots[id])
+                        slots[firstWeekDay].push(formatedAppointment)
+                    else
+                        slots[firstWeekDay] = [formatedAppointment]
+                    }
+            }
+        }
+
+        this.setState({slots})
     }
 
     render(){
-        const {city,email,firstname,lastname,specialty, availability,displayAppointments} = this.state
+        const {city,email,firstname,lastname,specialty, availability,displayAvailabilities} = this.state
         return(
             <React.Fragment>
                 <Navbar>
@@ -344,33 +362,30 @@ export default class DoctorHome extends Component {
 
                     <InfosArea>
                         <h1>Doctor</h1>
-                        <p>{firstname + "  " +  lastname}   </p>  
+                        <h2>{`${firstname} ${lastname}`}</h2>  
                         <span>
-                            <div><h2>Specialty: </h2> <p>{specialty}</p></div>
-                            <div><h2>Email: </h2> <p>{email}</p></div>
-                            <div><h2>City: </h2> <p>{city}</p></div>
+                            <div><h3>Specialty: </h3> <p>{specialty}</p></div>
+                            <div><h3>Email: </h3> <p>{email}</p></div>
+                            <div><h3>City: </h3> <p>{city}</p></div>
                         </span>                     
                     </InfosArea>
                     
                     <ButtonsArea>
-                        <Btn>
-                            Availabilities
+                        <Btn onClick={ _ => this.setState({displayAvailabilities: true})}>
+                            Display Availabilities
                         </Btn>
-                        <Btn>
-                            Appointments
-                        </Btn>
-                        <Btn onClick={ _ => this.updateAvailabilities() }>
+                        <Btn backColor="#0000B3" onClick={ _ => this.updateAvailabilities() }>
                             Update Availabilities
+                        </Btn>
+                        <Btn backColor="#e18514" onClick={ _ => this.setState({displayAvailabilities: false})}>
+                            Display Appointments
                         </Btn>
                     </ButtonsArea>
                     
                     <CalendarArea>
-                        {displayAppointments ? 
-                            <Calendar availability={availability} style={{height: 600}}/>:
-                            <div>
-                                <DateSwitch/>
-                                <AppointementsCalendar style={{height: 600}}/>
-                            </div>}
+                                <DateSwitch onCurrentDateChange={ date => this.setState({date})} />
+                                <Calendar availability={availability} style={{height:  displayAvailabilities ?600:0, opacity: displayAvailabilities ?1:0, }}/> 
+                                <AppointementsCalendar textColor="black" topColor="#FFA500" date={this.state.date} isDoctor slots={this.state.slots} style={{height: 600, opacity: !displayAvailabilities ?1:0}}/>
                     </CalendarArea>
                 </Main>
                 <NotificationContainer/>
