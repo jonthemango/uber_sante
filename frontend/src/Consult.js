@@ -154,9 +154,8 @@ class Consult extends Component {
             })
                .then( res =>  res.json())
                .then( res => {
-                console.log("TESTERUC",res)
                     if (res.success) {
-                        console.log(res)
+                        alert("Appointment Succesfully Created!!")
                         this.setState({appointment:res.data.appointment})
                     }
                     else
