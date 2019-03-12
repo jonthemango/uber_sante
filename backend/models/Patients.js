@@ -76,6 +76,17 @@ class Patients {
         return null
     }
 
+    static async getByEmail(email){
+        const patient = await persist(async (db)=>{
+            return await db.collection("patients".findOne({email}))
+        })
+        if (patient !=undefined){
+            delete patient.password
+            return new Patients({...patient})
+        }
+        return null
+    }
+
     static async delete(id) {
 
         const deleted = await persist(async (db) => {

@@ -28,6 +28,7 @@ appointments.delete('/appointments/:id', AppointmentsController.deleteAppointmen
 const PatientsController = require("./controllers/PatientsController");
 patients.post('/patients/', PatientsController.makePatient);
 patients.get('/patients/:id', PatientsController.getPatient);
+patients.get('/patients/email/:email',PatientsController.getPatientByEmail)
 patients.put('/patients/:id', PatientsController.updatePatient);
 patients.delete('/patients/:id', PatientsController.deletePatient);
 
