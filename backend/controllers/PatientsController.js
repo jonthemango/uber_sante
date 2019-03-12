@@ -4,12 +4,12 @@ class PatientsController {
 
     static async makePatient(req, res) {
         const patient = new Patient(req.body)
-        
+
         // save the patient in db
         await patient.add()
-        
+
         if (patient._id) {
-            res.json({ success: true, data: {patient}, message: "New patient account created." })
+            res.json({ success: true, data: { patient }, message: "New patient account created." })
         } else {
             res.json({ success: false, error: patient, message: "New patient was not saved to database" })
         }
@@ -21,24 +21,42 @@ class PatientsController {
 
         const patient = await Patient.get(patientId);
 
-        if (patient.error || patient == undefined){
-            res.json({success:false, error: patient.error})
-        } else {
-            res.json({ success: true, data: {patient}, message: "Patient was retrived"});
+        if (patient == undefined) {
+            res.json({ success: false, error: "patient is undefined" })
         }
+        else if (patient.error) {
+            res.json({ success: false, error: patient.error })
+        }
+        res.json({ success: true, data: { patient }, message: "Patient was retrived" });
+
+    }
+
+    static async getPatientByEmail(req, res) {
+        const patientEmail = req.params.email
+
+        const patient = await Patient.getByEmail(patientEmail)
+
+        if (patient == undefined) {
+            res.json({ success: false, error: "patient is undefined" })
+        }
+        else if (patient.error) {
+            res.json({ success: false, error: patient.error })
+        }
+        res.json({ success: true, data: { patient }, message: "Patient was retrived" })
+
     }
 
     static async updatePatient(req, res) {
         const patientId = req.params.id;
-        let patient = new Patient({...req.body, _id:patientId});
-        
+        let patient = new Patient({ ...req.body, _id: patientId });
+
 
         patient = await patient.update();
 
-        if (patient.error){
-            res.json({success:false, error: patient})
+        if (patient.error) {
+            res.json({ success: false, error: patient })
         } else {
-            res.json({success:true, data: {patient}, message:"Patient updated"})
+            res.json({ success: true, data: { patient }, message: "Patient updated" })
         }
 
     }
