@@ -1,6 +1,7 @@
-import React, {Component} from 'react'
+import React, {Component, useState} from 'react'
 import styled , {keyframes}from 'styled-components'
 import Calendar from './Calendar'
+import AppointementsCalendar from './AppointementsCalendar'
 import cookie from 'react-cookies';
 import { GET, POST } from './ApiCall'
 import moment from 'moment'
@@ -122,6 +123,65 @@ const Link = styled.div`
       }
 `
 
+const initialDate = moment().format('YYYY-MM-DD')
+
+const DateSwitch = ({onCurrentDateChange=console.log}) => {
+    const [currentDate, setDate2] = useState(initialDate)
+
+    return (
+        <DateArea>
+            <img alt="" src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/0d/Caret_left_font_awesome.svg/2000px-Caret_left_font_awesome.svg.png" 
+                    onClick={ _ => {
+                        const new_date = moment(currentDate, "YYYY-MM-DD").add(1, 'week').format('YYYY-MM-DD');
+                        setDate2(new_date); 
+                        onCurrentDateChange(new_date); }}/>
+            <p>Week of: <h1> {currentDate} </h1></p>
+            <img alt="" src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/0d/Caret_left_font_awesome.svg/2000px-Caret_left_font_awesome.svg.png" 
+                    onClick={ _ => {
+                        const new_date = moment(currentDate, "YYYY-MM-DD").subtract(1, 'week').format('YYYY-MM-DD');
+                        setDate2(new_date);
+                        onCurrentDateChange(new_date); }}/>
+        </DateArea>
+    )
+
+}
+
+const DateArea = styled.div`
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    & img {
+        height: 50px;
+        width: 50px;
+        cursor: pointer;
+        transition: .3s;
+    }
+
+    & img:hover {
+        transform: scale(1.5);
+    }
+
+    & img:nth-child(3) {
+        transform: rotate(180deg);
+    }
+
+    & img:hover:nth-child(3) {
+        transform: rotate(180deg) scale(1.5);
+    }
+
+    & p {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    & h1 {
+        margin-left: 10px;
+        font-family: Garamond;
+    }
+`
+
 const Main = styled.div`
       display: grid;
       padding: 10px;
@@ -203,7 +263,17 @@ export default class DoctorHome extends Component {
     constructor(props){
         super(props)
 
-        this.state = {city:"",clinicId:"",email:"",firstname:"",lastname:"",permit:"",specialty:"", availability: {}, rawAvailabilitites: [], days: moment.weekdays().splice(1,5).map(x => x.toLowerCase())}
+        this.state = {city:"",
+                        clinicId:"",
+                        email:"",
+                        firstname:"",
+                        lastname:"",
+                        permit:"",
+                        specialty:"", 
+                        availability: {}, 
+                        rawAvailabilitites: [], 
+                        displayAppointments: false,
+                        days: moment.weekdays().splice(1,5).map(x => x.toLowerCase())}
 
 
     }
@@ -212,6 +282,12 @@ export default class DoctorHome extends Component {
         let slot = value % 36
         let day =  this.state.days[Math.trunc(value / 36)]
         return {slot, day}  
+    }
+
+    async fetchAppointments(){
+        const {id} = cookie.load('session')
+        const response = await GET(`/api/doctors/${id}/appointments`).then(res => res.json())
+        console.log(response)
     }
 
     async updateAvailabilities(){
@@ -241,10 +317,12 @@ export default class DoctorHome extends Component {
         const {id} = cookie.load('session')
         const doctorInfo = await GET(`/api/doctors/${id}`).then(res => res.json())
         this.setState({...doctorInfo.data.doctor})
+        
+        // const appointments = await GET(`/api/doctors/${id}/appointments`).then(res => res.json())
     }
 
     render(){
-        const {city,email,firstname,lastname,specialty, availability} = this.state
+        const {city,email,firstname,lastname,specialty, availability,displayAppointments} = this.state
         return(
             <React.Fragment>
                 <Navbar>
@@ -287,8 +365,12 @@ export default class DoctorHome extends Component {
                     </ButtonsArea>
                     
                     <CalendarArea>
-                        <Calendar availability={availability} style={{height: 600}}/>
-                        
+                        {displayAppointments ? 
+                            <Calendar availability={availability} style={{height: 600}}/>:
+                            <div>
+                                <DateSwitch/>
+                                <AppointementsCalendar style={{height: 600}}/>
+                            </div>}
                     </CalendarArea>
                 </Main>
                 <NotificationContainer/>
