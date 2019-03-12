@@ -128,6 +128,53 @@ class Consult extends Component {
         })
 
     }
+
+    nurseMakeAppointment(clinicId,patientId,date,blockIds,isAnnual,paymentInfo){
+        POST('/api/appointments/', {
+            clinicId: clinicId,
+            patientId: patientId,
+            date: date,
+            blockIds: blockIds,
+            isAnnual: isAnnual,
+            paymentInfo:paymentInfo
+        })
+           .then( res =>  res.json())
+           .then( res => {
+                if (res.success) {
+                    alert("Appointment Succesfully Created!!")
+                    this.setState({appointment:res.data.appointment})
+                }
+                else{
+                    alert("Appointment Not Created!! Make sur you choose an available slot ")
+                    console.log('something went terribly wrong')}
+            })
+            .catch(e => {
+                console.log('Error')
+        })
+    }
+
+    sendToCart(clinicId,patientId,date,blockIds,isAnnual,paymentInfo){
+        POST('/api/patients/cart', {
+                    clinicId: clinicId,
+                    patientId: patientId,
+                    date: date,
+                    blockIds: blockIds,
+                    isAnnual: isAnnual,
+                    paymentInfo:paymentInfo
+                })
+                .then( res =>  res.json())
+                .then( res => {
+                        if (res.success) {
+                            alert("Appointment Saved to Cart")
+                        }
+                        else{
+                            alert("A probleme occured when saving to your cart / Please try again")
+                        }
+                    })
+                    .catch(e => {
+                        console.log('Error')
+                })
+    }
     
     // Method that will allow patients to create an appointment
     createAppointment(){
@@ -151,41 +198,23 @@ class Consult extends Component {
             }
 
             var patientEmail;
-            if(user.type==nurse){
+            if(user.type=="nurse"){
                 patientEmail = this.state.patientEmail
             }else{
                 patientEmail = user.email
             }
-
+            
+            
             GET('/api/patients/email/'+patientEmail)
                 .then(res => res.json())
                 .then(res => {
-
-                })
-            
-/*
-            POST('/api/appointments/', {
-                clinicId: "5c79642f43d24100061b3283",
-                patientId: id,
-                date: this.state.datePicked,
-                blockIds: blockid,
-                isAnnual: isannual,
-                paymentInfo:{cardNumber:1}
-            })
-               .then( res =>  res.json())
-               .then( res => {
-                    if (res.success) {
-                        alert("Appointment Succesfully Created!!")
-                        this.setState({appointment:res.data.appointment})
+                    const patientId = res.id
+                    if(user.type=="nurse"){
+                        this.nurseMakeAppointment("5c79642f43d24100061b3283",patientId,this.state.datePicked,blockid,isannual,{cardNumber:1})
+                    }else{
+                        this.sendToCart("5c79642f43d24100061b3283",patientId,this.state.datePicked,blockid,isannual,{cardNumber:1})
                     }
-                    else{
-                        alert("Appointment Not Created!! Make sur you choose an available slot ")
-                        console.log('something went terribly wrong')}
                 })
-                .catch(e => {
-                    console.log('Error')
-            })
-*/
         }
         else{
             alert("You did not pick a day/Type/Slot")
@@ -195,8 +224,8 @@ class Consult extends Component {
     // Method that will, based on patient's date selection, determine the first day in the same week
     filterCalendarByDate(day) {
         
-        console.log({day})
-        this.setState({date:day});
+       // console.log({day})
+        //this.setState({date:day});
         var dayCurrent = day.getDay()
 
         var firstDayOfWeek = day;
