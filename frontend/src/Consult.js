@@ -114,6 +114,7 @@ class Consult extends Component {
         GET('/api/clinics/5c79642f43d24100061b3283/appointments/')
                .then( res =>  res.json())
                .then( res => {
+                   console.log("JON",res)
                   if (res.success) {
                     this.setState({appointment:res.data.appointments})
                   }
@@ -139,9 +140,9 @@ class Consult extends Component {
                 blockid.push(this.state.slotSelected)
                 blockid.push(this.state.slotSelected + 1)
                 blockid.push(this.state.slotSelected + 2)
-                isannual = false
             }else{
                 blockid.push(this.state.slotSelected)
+                isannual = false
             }
 
             POST('/api/appointments/', {
@@ -199,16 +200,17 @@ class Consult extends Component {
     //yanis repond a ton cell damn javais aps vu /on est LAAA
     
     createCalendarAvailability(firstDayOfWeek,lastDayOfWeek) {
+        console.log(1111)
         var list = [];
         for (let i = 0; i < 180; i++) {
             let slot = {id: i,slots:[]}
             list.push(slot);
         }
+        console.log(2222);
+        console.log(this.state.appointment)
         for (let i = 0; i < this.state.appointment.length; i++) {
             if(this.state.appointment[i].date > firstDayOfWeek && this.state.appointment[i].date < lastDayOfWeek){
-                var dayOfTheAppointment = parseInt(moment(this.state.appointment[i].date).day());
-                console.log("ZABE",dayOfTheAppointment)
-                console.log("AJUBADF",this.state.appointment[i].blockIds)
+                var dayOfTheAppointment = parseInt(moment(this.state.appointment[i].date).day())-1;
                 for (let x = 0; x< this.state.appointment[i].blockIds.length; x++) {
                     list[this.state.appointment[i].blockIds[x]+(36*dayOfTheAppointment)].slots.push(this.state.appointment[i])
                 }
