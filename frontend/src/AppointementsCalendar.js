@@ -91,10 +91,13 @@ export default class Calendar extends Component {
             times: this.generateTimes(),
             slots: this.generateSlots(),
             colorA: 'blue',
-            colorB: 'salmon',
-            days: [" "].concat(moment.weekdays().splice(1,5)) // removing sun & fri
+            colorB: 'green',
+            days: [" "].concat(moment.weekdays().splice(1,5)), // removing sun & fris
+            pickedSlot: null
         }
     }
+
+
 
     generateSlots(lowEnd=0, highEnd=36*5){
         let list = [];
@@ -106,11 +109,22 @@ export default class Calendar extends Component {
         return list;
     }
 
+    // handleSlotClick(x){
+    //     x.picked = !x.picked
+    //     let {slots} = this.state
+    //     slots[x.id]=x
+    //     this.setState({slots})
+    // }
+
     handleSlotClick(x){
+        let slot = x.id % 36
         x.picked = !x.picked
         let {slots} = this.state
         slots[x.id]=x
         this.setState({slots})
+        this.props.onSlotClicked(slot);
+
+        
     }
 
     getDay(value){

@@ -3,8 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "amazing-time-picker": "^1.8.0",
     "array-of-genders": "^1.0.1",
     "bootstrap": "^4.3.1",
+    "dropdown-menu": "^0.1.1",
     "moment": "^2.24.0",
     "moment-timezone": "^0.5.23",
     "npm": "^6.8.0",
@@ -13,11 +15,14 @@
     "react-cookies": "^0.1.0",
     "react-datepicker": "^2.1.0",
     "react-dom": "^16.8.4",
+    "react-dropdown": "^1.6.4",
     "react-moment": "^0.8.4",
     "react-notifications": "^1.4.3",
+    "react-radio-buttons": "^1.2.2",
     "react-router-dom": "^4.3.1",
     "react-scripts": "2.1.5",
-    "styled-components": "^4.1.3"
+    "styled-components": "^4.1.3",
+    "vue-clock-picker": "^0.4.2"
   },
   "scripts": {
     "start": "react-scripts start",

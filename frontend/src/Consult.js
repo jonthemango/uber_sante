@@ -2,11 +2,16 @@ import React, { Component } from 'react'
 import './Consult.css'
 import styled from 'styled-components'
 import cookie from 'react-cookies'
-import { GET } from './ApiCall'
+import { GET, POST } from './ApiCall'
 import AppointementsCalendar from './AppointementsCalendar'
 import DatePicker from "react-datepicker"
 import 'moment-timezone';
-
+import { RadioGroup, RadioButton } from 'react-radio-buttons';
+import Dropdown from 'react-dropdown';
+import 'react-dropdown/style.css'
+import VueClockPicker from 'vue-clock-picker'
+import { ButtonGroup } from 'react-bootstrap'
+const moment = require('moment');
 const Separator = styled.div`
     height: 3px;
     margin-top: -3px;
@@ -39,6 +44,7 @@ const Navbar = styled.div`
 
 
 `
+
 const Link = styled.div`
     height: 100%;
 
@@ -86,8 +92,11 @@ class Consult extends Component {
             appointment : this.getAllAppointment(),
             date : new Date(),
             slots: this.generateSlots(),
+            datePicked:null,
+            appointmentType:null,
+            slotSelected:null
         }
-    }
+    }  
 
     generateSlots(lowEnd=0, highEnd=36*5){
         let list = [];
@@ -99,6 +108,7 @@ class Consult extends Component {
         return list;
     }
     
+    // Method that will fetch all existing appointments in a specific clinic
     getAllAppointment(){
         cookie.load('session');
         GET('/api/clinics/5c79642f43d24100061b3283/appointments/')
@@ -112,13 +122,65 @@ class Consult extends Component {
         })
 
     }
+    
+    // Method that will allow patients to create an appointment
+    createAppointment(){
 
+        alert(this.state.datePicked)
+        alert(this.state.appointmentType)
+        alert(this.state.slotSelected)
+        if(this.state.datePicked !=null && this.state.appointmentType !=null && this.state.slotSelected !=null){
+
+            const {id} = cookie.load('session')
+            var blockid = []
+            var isannual = true
+        
+            if(this.state.appointmentType == "appointmentType60"){
+                blockid.push(this.state.slotSelected)
+                blockid.push(this.state.slotSelected + 1)
+                blockid.push(this.state.slotSelected + 2)
+                isannual = false
+            }else{
+                blockid.push(this.state.slotSelected)
+            }
+
+            POST('/api/appointments/', {
+                clinicId: "5c79642f43d24100061b3283",
+                patientId: id,
+                date: this.state.datePicked,
+                blockIds: blockid,
+                isAnnual: isannual,
+            })
+               .then( res =>  res.json())
+               .then( res => {
+                console.log("TESTERUC",res)
+                    if (res.success) {
+                        console.log(res)
+                        this.setState({appointment:res.data.appointment})
+                    }
+                    else
+                        console.log('something went terribly wrong')
+                })
+                .catch(e => {
+                    console.log('Error')
+            })
+
+        }
+        else{
+            alert("You did not pick a day/Type/Slot")
+        }
+
+    }   
     // Method that will, based on patient's date selection, determine the first day in the same week
     filterCalendarByDate(day) {
+        
         var dayCurrent = day.getDay()
         var firstDayOfWeek = day;
         var lastDayOfWeek;
-        var moment = require('moment');
+
+        var dayGoodFormat = moment(day).format("YYYY-MM-DD");
+
+        this.setState({datePicked:dayGoodFormat});
 
         firstDayOfWeek.setDate(firstDayOfWeek.getDate() - dayCurrent);
         var firstDay = moment(firstDayOfWeek).format("YYYY-MM-DD");
@@ -144,14 +206,22 @@ class Consult extends Component {
         }
         for (let i = 0; i < this.state.appointment.length; i++) {
             if(this.state.appointment[i].date > firstDayOfWeek && this.state.appointment[i].date < lastDayOfWeek){
+                var dayOfTheAppointment = parseInt(moment(this.state.appointment[i].date).day());
+                console.log("ZABE",dayOfTheAppointment)
+                console.log("AJUBADF",this.state.appointment[i].blockIds)
                 for (let x = 0; x< this.state.appointment[i].blockIds.length; x++) {
-                    list[this.state.appointment[i].blockIds[x]].slots.push(this.state.appointment[i])
+                    list[this.state.appointment[i].blockIds[x]+(36*dayOfTheAppointment)].slots.push(this.state.appointment[i])
                 }
             }
         }
 
 
         this.setState({slots: list.filter(x => x.slots.length !== 0)});
+    }
+
+    handleSlotPicked(slot){
+        console.log("YANISPOST",slot)
+        this.setState({slotSelected:slot})
     }
 
     componentWillMount() {
@@ -163,6 +233,11 @@ class Consult extends Component {
 
     render() {
     const session = cookie.load('session')
+    const options = [
+        'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'
+    ]
+    const defaultOption = options[0]
+
     
     return (
 
@@ -200,12 +275,25 @@ class Consult extends Component {
                 <p>Welcome, please select a date below according to your availabilities!</p>
                 <label>Pick a consultation date</label>
                 <br /> 
-                <DatePicker className='date' selected={this.state.date} onChange={e => this.filterCalendarByDate(e)} />
+                <DatePicker  className='date' selected={this.state.date} onChange={e => this.filterCalendarByDate(e)} />
+
+                <br />
+                <br />
+                <p>Do you wish to book a 20min or a 1h consultation ?</p>
+                <RadioGroup onChange={value=>this.setState({appointmentType:value})} >
+                    <RadioButton value="appointmentType20">20 min walk-in</RadioButton>
+                    <RadioButton value="appointmentType60">1h annual check-up</RadioButton>
+                </RadioGroup>
+
+                <p>Choose the starting slot in the calendar</p>
+                
+                <button className="button" id = "appointmentSave" onClick={ _ => this.createAppointment() }> Book Appointment</button>
+                
                             
             </div>
             <br/>
-            <CalendarArea >
-                <AppointementsCalendar slots={this.state.slots} style={{height: 600}}/>
+            <CalendarArea>
+                <AppointementsCalendar onSlotClicked={ slot => this.handleSlotPicked(slot) } slots={this.state.slots} style={{height: 600}}/>
             </CalendarArea>
 
         </React.Fragment>
