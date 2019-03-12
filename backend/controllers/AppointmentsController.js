@@ -24,7 +24,7 @@ class AppointmentsController {
         const publisher = new BusPublisher({ port: 7001 })
 
         const { clinicId, patientId, date, blockIds, paymentInfo } = req.body
-
+        
         let builder = Appointment.Builder()
         builder = await builder
             .buildPatientInfo({ patientId, clinicId })
@@ -34,7 +34,7 @@ class AppointmentsController {
 
 
         try {
-            if (Payment.isValid({cardNumber: 1})) {
+            if (Payment.isValid(paymentInfo)) {
                 const appointment = await builder.buildAppointment();
                 publisher.publish({ event: "paymentPending", data: { appointment, paymentInfo } })
                 res.json({ success: true, data: { appointment }, message: "Appointment made." });
