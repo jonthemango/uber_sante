@@ -158,8 +158,9 @@ class Consult extends Component {
                         alert("Appointment Succesfully Created!!")
                         this.setState({appointment:res.data.appointment})
                     }
-                    else
-                        console.log('something went terribly wrong')
+                    else{
+                        alert("Appointment Not Created!! Make sur you choose an available slot ")
+                        console.log('something went terribly wrong')}
                 })
                 .catch(e => {
                     console.log('Error')
