@@ -58,7 +58,7 @@ class CartItem extends Component {
     }
 
     updateUser(user){
-        PUT('/api/patients/'+user._id,{user : user})
+        PUT('/api/patients/'+user._id,{...user})
             .then( res =>  res.json())
             .then( res => {
                     if (res.success) {
@@ -91,7 +91,7 @@ class CartItem extends Component {
             }
             ).catch(e => {
         })
-            
+
     }
 
     handleClickSave(cartInfo,info){
@@ -124,7 +124,7 @@ class CartItem extends Component {
     }
 
 
-    render() {  
+    render() {
         const {cartInfo,info ,date, time, isAnnual } = this.props
 
         let timeAppointment = this.getHourByBlockIds(time[0]);
@@ -135,9 +135,9 @@ class CartItem extends Component {
             <React.Fragment>
             <div class="card search-result">
                 <div class="card-header"></div>
-            
+
             </div>
-            
+
             <div className="cart-item">
                     <span style={{ marginLeft: 10,fontFamily: 'Arial'}}>  Date: {date}</span> <br/><br/>
                     <span style={{ marginLeft: 10,fontFamily: 'Arial'}}>  Time: {timeAppointment}</span> <br/><br/>
@@ -147,7 +147,7 @@ class CartItem extends Component {
 
             </div>
             </React.Fragment>
-            
+
         );
     }
 }

@@ -14,7 +14,8 @@ class Patients {
         phoneNumber,
         physicalAddress,
         email,
-        password }) {
+        password,
+        cart }) {
 
         this._id = _id;
         this.healthCardNB = healthCardNB
@@ -26,6 +27,18 @@ class Patients {
         this.physicalAddress = physicalAddress
         this.email = email
         this.password = password
+        this.cart = cart
+        console.log("from constructor,",{ _id,
+            healthCardNB,
+            firstname,
+            lastname,
+            birthDay,
+            sex,
+            phoneNumber,
+            physicalAddress,
+            email,
+            password,
+            cart})
     }
 
 
