@@ -80,88 +80,67 @@ class Cart extends Component {
         super(props)
 
         this.state={
-            cart: this.getPatientCart(),
+            cart: [],
         }
     }  
 
-    getHourByBlockIds(blockId){
-        switch(blockId){
-            case 0 : return "08h00"
-            case 1 : return "08h20"
-            case 2 : return "08h40"
-            case 3 : return "09h00"
-            case 4 : return "09h20"
-            case 5 : return "09h40"
-            case 6 : return "10h00"
-            case 7 : return "10h20"
-            case 8 : return "10h40"
-            case 9 : return "11h00"
-            case 10 : return "11h20"
-            case 11 : return "11h40"
-            case 12 : return "12h00"
-            case 13 : return "12h20"
-            case 14 : return "12h40"
-            case 15 : return "13h00"
-            case 16 : return "13h20"
-            case 17 : return "13h40"
-            case 18 : return "14h00"
-            case 19 : return "14h20"
-            case 20 : return "14h40"
-            case 21 : return "15h00"
-            case 22 : return "15h20"
-            case 23 : return "15h40"
-            case 24 : return "16h00"
-            case 25 : return "16h20"
-            case 26 : return "16h40"
-            case 27 : return "17h00"
-            case 28 : return "17h20"
-            case 29 : return "17h40"
-            case 30 : return "18h00"
-            case 31 : return "18h20"
-            case 32 : return "18h40"
-            case 33 : return "19h00"
-            case 34 : return "19h20"
-            case 35 : return "19h40"
-        }
-
-    }
+    
 
     generateInfoByPatientCart(patient){
+        
+        
         if(patient.cart == undefined){
             alert("You did not save an appointment at this time")
         }else{
-            return patient.cart
+            //this.setState({patient.cart}) // <- The real one when Ribal fix the issue
+            let cart =[]
+        let appointmentObj = {
+            clinicId: "5c79642f43d24100061b3283",
+            patientId: "123456789",
+            date: "28-04-2019",
+            blockIds: [3,4,5],
+            isAnnual: true,
+            paymentInfo:{cardNumber:1}
+        }
+        cart[0] =appointmentObj
+        let yanis = {
+            clinicId: "5c79642f43d24100061b3283",
+            patientId: "123456789",
+            date: "29-04-2019",
+            blockIds: [11],
+            isAnnual: false,
+            paymentInfo:{cardNumber:1}
+        }
+        cart[1] = yanis
+        
+        this.setState({cart:cart})
+            
         }
     }
 
     getPatientCart(){
         const user = cookie.load('session')
-        console.log(user)
-        
         GET('/api/patients/'+user.id)
             .then( res =>  res.json())
             .then( res => {
-
                 if (res.success) {
-                    return this.generateInfoByPatientCart(res.data.patient)
+                    this.generateInfoByPatientCart(res.data.patient)
                 }
             }
             ).catch(e => {
         })
     }
 
-    componentWillMount() {
-        this.setState({cart:this.getPatientCart()})
+    componentWillMount(props) {
+        this.getPatientCart()
     }
         
 
     render() {
     const session = cookie.load('session')
     const {cart} = this.state
-    
-    return (
 
-     
+    return (
     <React.Fragment>
 
         
@@ -186,13 +165,9 @@ class Cart extends Component {
         </Navbar>
             
         <div class= "logged-body">
-            <h1>Cart</h1>
-            {cookie.load('admin') === 'yes'?
-                <button class="btn-cart btn btn-success action-bar-btn" type="button" onClick={() => this.handleClickSave()}><i class="fas fa-save"></i> Save</ button>:
-                <button class="btn-cart btn btn-success action-bar-btn" type="button" onClick={() => this.handleClickSave()}><i class="fas fa-save"></i> Loan</ button> // add handleClickLoan
-            }
+            <h1>Cart Appointment</h1>
             
-            {cart.map(item =><CartItem info={item}  date={item.date} time={item.blockIds} isAnnual={item.isAnnual}/>)}
+            {cart.map(item =><CartItem cartInfo ={cart} info={item}  date={item.date} time={item.blockIds} isAnnual={item.isAnnual}/>)}
         </div>
 
 

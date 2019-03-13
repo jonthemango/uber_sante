@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {DELETE} from './ApiCall';
+import {PUT, GET,POST} from './ApiCall';
 import cookie from 'react-cookies'
 
 class CartItem extends Component {
@@ -11,17 +11,9 @@ class CartItem extends Component {
             time : null,
             isAnnual : null,
             logs : null,
+            cartInfo : null
         }
     }
-
-    // <style>
-    //     .cart-item{
-    //         width: '100%';
-    //         border-bottom: '1px solid black';
-    //         background-color: 'white';
-    //         padding: "5px";
-    //     }
-    // </style>
 
     getHourByBlockIds(blockId){
         switch(blockId){
@@ -65,53 +57,94 @@ class CartItem extends Component {
 
     }
 
-    handleClickRemove(index, id){
-        const isAdmin = cookie.load('session') === 'yes'
-        if(isAdmin){
-            DELETE('/cartItem', {"index": index})
-                .then( res => res.json() )
-                .then ( json => {
-                window.location.reload()
+    updateUser(user){
+        PUT('/api/patients/'+user._id,{user : user})
+            .then( res =>  res.json())
+            .then( res => {
+                    if (res.success) {
+                        window.location.reload()
+                    }
+                    else{
+                        alert("A probleme occured when saving to your information / Please try again")
+                    }
                 })
-        }else {
-            const cart = cookie.load('userCart')
-            const newCart = cart.filter(x => x.id !== id)
-            cookie.save('userCart', newCart)
-            window.location.reload();
-        }
+                .catch(e => {
+                    console.log('Error')
+        })
+    }
+
+    handleClickRemove(cartInfo,info){
+
+        const session = cookie.load('session')
+
+        GET('/api/patients/'+session.id)
+            .then( res =>  res.json())
+            .then( res => {
+                if (res.success) {
+                    let filterCart = cartInfo.filter(function(ele){
+                        return ele != info;
+                    });
+                    let user = res.data.patient
+                    user.cart = filterCart
+                    this.updateUser(user)
+                }
+            }
+            ).catch(e => {
+        })
             
     }
 
-    render() {  
-        const {info ,date, time, isAnnual } = this.props
+    handleClickSave(cartInfo,info){
+        POST('/api/appointments/', {
+            clinicId: info.clinicId,
+            patientId: info.patientId,
+            date: info.date,
+            blockIds: info.blockIds,
+            isAnnual: info.isAnnual,
+            paymentInfo: info.paymentInfo
+        })
+           .then( res =>  res.json())
+           .then( res => {
+                if (res.success) {
+                    let filterCart = cartInfo.filter(function(ele){
+                        return ele != info;
+                    });
+                    let user = res.data.patient
+                    user.cart = filterCart
+                    this.updateUser(user)
+                    alert("Appointment Succesfully Created!!")
+                }
+                else{
+                    alert("Appointment Not Created!! Appointment not available at this time ")
+                    console.log('something went terribly wrong')}
+            })
+            .catch(e => {
+                console.log('Error')
+        })
+    }
 
-        let Time = this.getHourByBlockIds(time[0]);
+
+    render() {  
+        const {cartInfo,info ,date, time, isAnnual } = this.props
+
+        let timeAppointment = this.getHourByBlockIds(time[0]);
         let typeOfAppointment = "20 min Appointment"
         if(isAnnual)
             typeOfAppointment = "1 hour Appointment"
         return (
             <React.Fragment>
             <div class="card search-result">
-                <div class="card-header">
-                    <p>OK</p>
-                </div>
-                <div class="card-body">
-                    <h1 class="card-title">OKOKKK</h1>
-                    <p class="card-text">
-                    OKOKOKKKK
-                    </p>
-                </div>
-                
-                {/* <div class="card-footer">
-                    <button class="action-bar-btn btn btn-danger" type="button" onClick={() => this.handleClickRemove(index, resource_data.id)}><i class="fas fa-trash-alt"></i> Remove</ button>
-                </div> */}
+                <div class="card-header"></div>
+            
             </div>
             
             <div className="cart-item">
-                    <span style={{ marginLeft: 10,fontFamily: 'Arial'}}>  Date: {date}</span> <br/>
-                    <span style={{ marginLeft: 10,fontFamily: 'Arial'}}>  Time: {Time}</span> <br/>
-                    <span style={{ marginLeft: 10,fontFamily: 'Arial'}}>  Type: {typeOfAppointment}</span> <br/>
-                    <button class="cart-btn btn btn-primary" type="button" onClick={() => this.handleClickRemove()}> Remove </ button>
+                    <span style={{ marginLeft: 10,fontFamily: 'Arial'}}>  Date: {date}</span> <br/><br/>
+                    <span style={{ marginLeft: 10,fontFamily: 'Arial'}}>  Time: {timeAppointment}</span> <br/><br/>
+                    <span style={{ marginLeft: 10,fontFamily: 'Arial'}}>  Type: {typeOfAppointment}</span> <br/><br/>
+                    <button class="btn-cart btn btn-success action-bar-btn" type="button" onClick={() => this.handleClickSave(cartInfo,info)}><i class="fas fa-save"></i> Checkout</ button>
+                    <button class="cart-btn btn btn-primary" type="button" onClick={() => this.handleClickRemove(cartInfo,info)}> Remove </ button>
+
             </div>
             </React.Fragment>
             

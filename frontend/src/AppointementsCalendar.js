@@ -63,6 +63,7 @@ const Slot = styled.div`
     border: 0.1px solid black;
     min-height: 10px;
     background-color: ${props => props.picked ? 'lightgreen' : 'transparent'};
+    transform: ${props => props.picked ? 'scale(1.1)' : 'none'};
     background-color: ${({color = ''}) => color};
     box-shadow: ${props => props.picked ? 'inset 0px 0px 96px 5px rgba(0,0,0,0.19)' : 'none'};
     overflow: hidden;
@@ -178,10 +179,8 @@ export default class Calendar extends Component {
                 for(let newSlot of newSlots){
                     if(newSlot.slots.length !=0){
                     if(newSlot.slots.length >= 1 && newSlot.slots.length <= 4){
-                        newSlots[newSlot.id].picked = true
                         newSlots[newSlot.id].color = colorA
                     } else if(newSlot.slots.length === 5){
-                        newSlots[newSlot.id].picked = true
                         newSlots[newSlot.id].color = colorB
                     }
                 }

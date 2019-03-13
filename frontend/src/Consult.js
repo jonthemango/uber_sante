@@ -21,7 +21,14 @@ const Separator = styled.div`
     transition: .5s;
     align-self: center;
 `
-
+const LiY = styled.div`
+background: yellow;
+`
+const LiR = styled.div`
+background: red;
+`
+const Ul = styled.div`
+`
 const Links = styled.div`
     padding-right: 15%;
     display: flex;
@@ -143,6 +150,7 @@ class Consult extends Component {
                 if (res.success) {
                     alert("Appointment Succesfully Created!!")
                     this.setState({appointment:res.data.appointment})
+                    window.location.reload()
                 }
                 else{
                     alert("Appointment Not Created!! Make sur you choose an available slot ")
@@ -155,7 +163,6 @@ class Consult extends Component {
 
     sendToCart(patientObj){
 
-        console.log(patientObj)
         PUT('/api/patients/'+patientObj._id,{patient : patientObj})
                 .then( res =>  res.json())
                 .then( res => {
@@ -195,10 +202,10 @@ class Consult extends Component {
                 patientEmail = user.email
             }
             
-            
             GET('/api/patients/email/'+patientEmail)
                 .then(res => res.json())
                 .then(res => {
+                    if(res.success){
                     const patientObj = res.data.patient
                     const patientId = patientObj._id
                     if(user.type=="nurse"){
@@ -213,11 +220,14 @@ class Consult extends Component {
                             paymentInfo:{cardNumber:1}
                         }
                         if(patientObj.cart == undefined){
-                            patientObj.cart= []
+                            patientObj.cart = []
                         }
                         patientObj.cart.push(appointmentObj)
                         this.sendToCart(patientObj)
                     }
+                }else{
+                    alert("This email does not figure in our database!!!")
+                }
                 })
         }
         else{
@@ -228,7 +238,7 @@ class Consult extends Component {
     // Method that will, based on patient's date selection, determine the first day in the same week
     filterCalendarByDate(day) {
         
-       // console.log({day})
+        //console.log({day})
         //this.setState({date:day});
         var dayCurrent = day.getDay()
 
@@ -387,12 +397,23 @@ class Consult extends Component {
                 
                 <button className="button" id = "appointmentSave" onClick={ _ => this.createAppointment() }> Book Appointment</button>
                 
+            <div>
+                <br />
+                <label>Legend</label>
+                <Ul>
+                    <LiY> There is 1-4 slots for booking available
+                    </LiY>
+                    <LiR> There is no slots for booking available
+                    </LiR>
+                </Ul>
+            </div>
                             
             </div>
             <br/>
             <CalendarArea>
                 <AppointementsCalendar onSlotClicked={ (slot,date) => this.handleSlotPicked(slot,date) } slots={this.state.slots} style={{height: 600}}/>
             </CalendarArea>
+            
 
         </React.Fragment>
         : 
