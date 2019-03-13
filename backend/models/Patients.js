@@ -31,7 +31,15 @@ class Patients {
 
 
     async update() {
-        const id = this._id;
+        const id = this._id
+
+        // get the password of the old patient before updating it so that we dont
+        // overwrite the password field.
+        const patientRecord = await persist(async (db) => {
+            return await db.collection("patients").findOne({ _id: ObjectId(id) })
+        })
+        this.password = patientRecord.password
+
         const result = await persist(async (db) => {
             delete this._id;
             const result = await db.collection("patients").updateOne(

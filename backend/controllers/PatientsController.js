@@ -70,8 +70,6 @@ class PatientsController {
         res.json({ deleted: deleted, message: "Patient was deleted" })
     }
 
-
-
 }
 
 module.exports = PatientsController;
