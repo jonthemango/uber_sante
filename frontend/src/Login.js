@@ -168,7 +168,7 @@ class Login extends Component {
             .then( response =>  response.json())
             .then( response => {
                 if (response.success) {
-                    cookie.save('session', {id: response.user._id, type, token: response.token,email:response.user.email})
+                    cookie.save('session', {id: response.user._id, type, token: response.token})
                     NotificationManager.success('Logged in!', 'Welcome');
                    if(type!=='doctor') {
                     this.props.history.push('/')

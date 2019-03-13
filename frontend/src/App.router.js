@@ -7,6 +7,7 @@ import Calendar from './Calendar'
 import SignUp from './SignUp'
 import {NotificationContainer} from 'react-notifications';
 import DoctorHome from './DoctorHome'
+import Cart from './Cart'
 
 class App extends Component {
   render() {
@@ -21,6 +22,7 @@ class App extends Component {
           <Route exact path="/signup" component={SignUp}/>
           <Route exact path="/signup" component={SignUp}/>
           <Route exact path="/doctor" component={DoctorHome}/>
+          <Route exact path="/cart" component={Cart}/>
         </Switch>
       </Router>
       <NotificationContainer style={{fontFamily: 'arial'}}/>

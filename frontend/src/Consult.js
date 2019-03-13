@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import './Consult.css'
 import styled from 'styled-components'
 import cookie from 'react-cookies'
-import { GET, POST } from './ApiCall'
+import { GET, POST, PUT } from './ApiCall'
 import AppointementsCalendar from './AppointementsCalendar'
 import DatePicker from "react-datepicker"
 import 'moment-timezone';
@@ -153,15 +153,10 @@ class Consult extends Component {
         })
     }
 
-    sendToCart(clinicId,patientId,date,blockIds,isAnnual,paymentInfo){
-        POST('/api/patients/cart', {
-                    clinicId: clinicId,
-                    patientId: patientId,
-                    date: date,
-                    blockIds: blockIds,
-                    isAnnual: isAnnual,
-                    paymentInfo:paymentInfo
-                })
+    sendToCart(patientObj){
+
+        console.log(patientObj)
+        PUT('/api/patients/'+patientObj._id,{patient : patientObj})
                 .then( res =>  res.json())
                 .then( res => {
                         if (res.success) {
@@ -178,10 +173,6 @@ class Consult extends Component {
     
     // Method that will allow patients to create an appointment
     createAppointment(){
-
-        alert(this.state.datePicked)
-        alert(this.state.appointmentType)
-        alert(this.state.slotSelected)
         if(this.state.datePicked !=null && this.state.appointmentType !=null && this.state.slotSelected !=null){
 
             const user = cookie.load('session')
@@ -208,11 +199,24 @@ class Consult extends Component {
             GET('/api/patients/email/'+patientEmail)
                 .then(res => res.json())
                 .then(res => {
-                    const patientId = res.id
+                    const patientObj = res.data.patient
+                    const patientId = patientObj._id
                     if(user.type=="nurse"){
                         this.nurseMakeAppointment("5c79642f43d24100061b3283",patientId,this.state.datePicked,blockid,isannual,{cardNumber:1})
                     }else{
-                        this.sendToCart("5c79642f43d24100061b3283",patientId,this.state.datePicked,blockid,isannual,{cardNumber:1})
+                        let appointmentObj = {
+                            clinicId: "5c79642f43d24100061b3283",
+                            patientId: patientId,
+                            date: this.state.datePicked,
+                            blockIds: blockid,
+                            isAnnual: isannual,
+                            paymentInfo:{cardNumber:1}
+                        }
+                        if(patientObj.cart == undefined){
+                            patientObj.cart= []
+                        }
+                        patientObj.cart.push(appointmentObj)
+                        this.sendToCart(patientObj)
                     }
                 })
         }
@@ -298,7 +302,6 @@ class Consult extends Component {
     }
 
     handleSlotPicked(slot,date){
-        alert(date)
         this.setState({slotSelected:slot});
         this.setState({datePicked:date});
     }
@@ -338,6 +341,13 @@ class Consult extends Component {
                 </Link>
             </Links> : 
             <Links>
+                { session.type === "patient" ?
+                    <Link color="#FF6666" underColor="black">
+                        <a href="/cart">Cart</a>
+                        <Separator/>
+                    </Link>:
+                    <Link></Link>
+                }
                 <Link onClick={ _ => cookie.remove('session')} color="#FF6666" underColor="black">
                     <a href="/">Log out</a>
                     <Separator/>
@@ -354,7 +364,7 @@ class Consult extends Component {
             <div className="container2">
 
                 {
-                    session.type !== "nurse"?
+                    session.type === "nurse"?
                     <div>
                         <label>Please write a patient email</label>
                         <input onChange={ e => this.setState({patientEmail:e.target.value})}></input>
