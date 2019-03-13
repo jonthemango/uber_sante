@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import {PUT, GET,POST} from './ApiCall';
+import {PUT, GET, POST, DELETE} from './ApiCall';
 import cookie from 'react-cookies'
-import swal from 'sweetalert2'
+import swal from 'sweetalert2'    
 
 class CartItem extends Component {
     constructor(){
@@ -144,6 +144,13 @@ class CartItem extends Component {
         })
     }
 
+    // Method to cancel an appointment
+    handleClickDelete(cartInfo, info) {
+        alert('deleting appointment...')
+        //DELETE('api/appointments'+ appointment_id)
+        // .then()
+    }
+
     render() {  
         const {cartInfo,info ,date, time, isAnnual } = this.props
 
@@ -163,7 +170,8 @@ class CartItem extends Component {
                 <span style={{ marginLeft: 10,fontFamily: 'Arial'}}>  Type: {typeOfAppointment}</span> <br/><br/>
                 <button class="cart-btn btn btn-primary" type="button" onClick={() => this.handleClickRemove(cartInfo,info)}> Remove </ button><br/>
             </div>
-            <button ref={btn => { this.btn = btn; }} class="btn-cart btn btn-success action-bar-btn" type="button" onClick={() => this.handleClickSave(cartInfo,info)}><i class="fas fa-save"></i> Checkout</ button>
+            <button ref={btn => { this.btn = btn; }} class="btn-cart btn btn-success action-bar-btn" type="button" onClick={() => this.handleClickSave(cartInfo,info)}><i class="fas fa-save"></i> Checkout</ button><br/>
+            <button type="button" onClick={() => this.handleClickDelete(cartInfo,info)}>Cancel Appointment</ button>
             </React.Fragment>
 
         );

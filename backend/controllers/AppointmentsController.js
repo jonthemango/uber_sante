@@ -138,8 +138,15 @@ class AppointmentsController {
     static deleteAppointment(req, res) {
         const appointmentId = req.params.id;
 
-        // delete the appointment from db
+        let appointments = [];
 
+        try {
+            appointments = await Appointment.getAppointments({ appointmentId })
+            //delete this bitch
+        }
+        catch(e) {
+
+        }
 
     }
 
