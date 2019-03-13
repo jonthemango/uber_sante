@@ -107,7 +107,7 @@ class CartItem extends Component {
             preConfirm: () => {
               return [
                 document.getElementById('swal-input1').value,
-                alert('ok cart'),
+                //alert('ok cart'),
               ]
             }
         })
@@ -129,14 +129,18 @@ class CartItem extends Component {
                     let user = res.data.patient
                     user.cart = filterCart
                     this.updateUser(user)
+                    this.btn.setAttribute("disabled", "disabled") // disables button
                     alert("Appointment Succesfully Created!!")
                 }
-                else{
-                    alert("Appointment Not Created!! Appointment not available at this time ")
-                    console.log('something went terribly wrong')}
+                else{ // bug
+                    alert("Appointment not Created!! Appointment not available at this time ")
+                    this.btn.setAttribute("disabled", "disabled")
+                    console.log('something went terribly wrong')
+                }
+                    
             })
             .catch(e => {
-                console.log('Error')
+                console.log('Error',e)
         })
     }
 
@@ -159,7 +163,7 @@ class CartItem extends Component {
                 <span style={{ marginLeft: 10,fontFamily: 'Arial'}}>  Type: {typeOfAppointment}</span> <br/><br/>
                 <button class="cart-btn btn btn-primary" type="button" onClick={() => this.handleClickRemove(cartInfo,info)}> Remove </ button><br/>
             </div>
-            <button class="btn-cart btn btn-success action-bar-btn" type="button" onClick={() => this.handleClickSave(cartInfo,info)}><i class="fas fa-save"></i> Checkout</ button>
+            <button ref={btn => { this.btn = btn; }} class="btn-cart btn btn-success action-bar-btn" type="button" onClick={() => this.handleClickSave(cartInfo,info)}><i class="fas fa-save"></i> Checkout</ button>
             </React.Fragment>
 
         );
