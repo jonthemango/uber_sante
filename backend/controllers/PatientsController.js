@@ -48,11 +48,14 @@ class PatientsController {
 
     static async updatePatient(req, res) {
         const patientId = req.params.id;
-        let patient = new Patient({ ...req.body, _id: patientId });
+        console.log("patientId from params",patientId)
+        console.log("\n****this is the received patient",req.body)
 
+        let patient = new Patient({ ...req.body, _id: patientId });
+        console.log("\n****this is the constructed",patient)
 
         patient = await patient.update();
-
+        console.log("\n****this is the updated patient",patient)
         if (patient.error) {
             res.json({ success: false, error: patient })
         } else {

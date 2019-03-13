@@ -59,7 +59,7 @@ class CartItem extends Component {
     }
 
     updateUser(user){
-        PUT('/api/patients/'+user._id,{user : user})
+        PUT('/api/patients/'+user._id,{...user})
             .then( res =>  res.json())
             .then( res => {
                     if (res.success) {
@@ -92,7 +92,7 @@ class CartItem extends Component {
             }
             ).catch(e => {
         })
-            
+
     }
 
     handleClickSave(cartInfo,info){
@@ -152,7 +152,7 @@ class CartItem extends Component {
             <div class="card search-result">
                 <div class="card-header"></div>
             </div>
-            
+
             <div className="cart-item">
                 <span style={{ marginLeft: 10,fontFamily: 'Arial'}}>  Date: {date}</span> <br/><br/>
                 <span style={{ marginLeft: 10,fontFamily: 'Arial'}}>  Time: {timeAppointment}</span> <br/><br/>
@@ -161,7 +161,7 @@ class CartItem extends Component {
             </div>
             <button class="btn-cart btn btn-success action-bar-btn" type="button" onClick={() => this.handleClickSave(cartInfo,info)}><i class="fas fa-save"></i> Checkout</ button>
             </React.Fragment>
-            
+
         );
     }
 }

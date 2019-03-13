@@ -52,14 +52,14 @@ const Link = styled.div`
         justify-content: center;
         font-size: 1.3rem;
         color: inherit;
-        text-decoration: none; 
+        text-decoration: none;
         width: 130px;
         height: 100%;
         transition: .2s;
         text-align: justify;
         font-weight: bold;
         color: #00A54F;
-        
+
     }
 
     a:hover {
@@ -72,7 +72,7 @@ const Link = styled.div`
         background-color: #1E591E;
         width: 100%;
       }
-    
+
 `
 
 class Cart extends Component {
@@ -82,39 +82,39 @@ class Cart extends Component {
         this.state={
             cart: [],
         }
-    }  
+    }
 
-    
+
 
     generateInfoByPatientCart(patient){
-        
-        
+
+
         if(patient.cart == undefined){
             alert("You did not save an appointment at this time")
         }else{
-            //this.setState({patient.cart}) // <- The real one when Ribal fix the issue
-            let cart =[]
-        let appointmentObj = {
-            clinicId: "5c79642f43d24100061b3283",
-            patientId: "123456789",
-            date: "28-04-2019",
-            blockIds: [3,4,5],
-            isAnnual: true,
-            paymentInfo:{cardNumber:1}
-        }
-        cart[0] =appointmentObj
-        let yanis = {
-            clinicId: "5c79642f43d24100061b3283",
-            patientId: "123456789",
-            date: "29-04-2019",
-            blockIds: [11],
-            isAnnual: false,
-            paymentInfo:{cardNumber:1}
-        }
-        cart[1] = yanis
-        
-        this.setState({cart:cart})
-            
+            this.setState({cart:patient.cart}) // <- The real one when Ribal fix the issue
+        //     let cart =[]
+        // let appointmentObj = {
+        //     clinicId: "5c79642f43d24100061b3283",
+        //     patientId: "123456789",
+        //     date: "28-04-2019",
+        //     blockIds: [3,4,5],
+        //     isAnnual: true,
+        //     paymentInfo:{cardNumber:1}
+        // }
+        // cart[0] =appointmentObj
+        // let yanis = {
+        //     clinicId: "5c79642f43d24100061b3283",
+        //     patientId: "123456789",
+        //     date: "29-04-2019",
+        //     blockIds: [11],
+        //     isAnnual: false,
+        //     paymentInfo:{cardNumber:1}
+        // }
+        // cart[1] = yanis
+
+        // this.setState({cart:cart})
+
         }
     }
 
@@ -134,7 +134,7 @@ class Cart extends Component {
     componentWillMount(props) {
         this.getPatientCart()
     }
-        
+
 
     render() {
     const session = cookie.load('session')
@@ -143,19 +143,19 @@ class Cart extends Component {
     return (
     <React.Fragment>
 
-        
+
      <Navbar>
          <a href="/"> <img alt="" src={require('./res/logo.png')}/></a>
             {!session ? <Links>
                 <Link>
-                    <a href="/login">Sign in</a> 
+                    <a href="/login">Sign in</a>
                     <Separator/>
                 </Link>
                 <Link>
                     <a href="/SignUp">Sign up</a>
                     <Separator/>
                 </Link>
-            </Links> : 
+            </Links> :
             <Links>
                 <Link onClick={ _ => cookie.remove('session')} color="#FF6666" underColor="black">
                     <a href="/">Log out</a>
@@ -163,10 +163,10 @@ class Cart extends Component {
                 </Link>
             </Links>}
         </Navbar>
-            
+
         <div class= "logged-body">
             <h1>Cart Appointment</h1>
-            
+
             {cart.map(item =><CartItem cartInfo ={cart} info={item}  date={item.date} time={item.blockIds} isAnnual={item.isAnnual}/>)}
         </div>
 
