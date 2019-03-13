@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import {PUT, GET,POST} from './ApiCall';
 import cookie from 'react-cookies'
+import swal from 'sweetalert2'
 
 class CartItem extends Component {
     constructor(){
@@ -95,6 +96,22 @@ class CartItem extends Component {
     }
 
     handleClickSave(cartInfo,info){
+        // chechout form
+        const {value: formValues} =  swal.fire({
+            title: 'Checkout Cart',
+            html:
+              '<label>Credit Card Number</label><input id="swal-input1" class="swal2-input">' +
+              '<label>Security Number (3 Numbers)</label><input id="swal-input1" class="swal2-input">' +
+              '<label>Expiration Date</label> <p><select> <option value="january">January</option><option value="february">February</option><option value="mars">Mars</option><option value="april">April</option><option value="may">May</option><option value="june">June</option><option value="july">July</option><option value="august">August</option><option value="september">September</option><option value="october">October</option><option value="november">November</option><option value="december">December</option></select><select> <option value="2019">2019</option><option value="2020">2020</option><option value="2021">2021</option><option value="2022">2022</option><option value="2023">2023</option><option value="2024">2024</option><option value="2025">2025</option><option value="2026">2026</option><option value="2027">2027</option><option value="2028">2028</option></select></p>',
+            focusConfirm: false,
+            preConfirm: () => {
+              return [
+                document.getElementById('swal-input1').value,
+                alert('ok cart'),
+              ]
+            }
+        })
+        
         POST('/api/appointments/', {
             clinicId: info.clinicId,
             patientId: info.patientId,
@@ -123,7 +140,6 @@ class CartItem extends Component {
         })
     }
 
-
     render() {  
         const {cartInfo,info ,date, time, isAnnual } = this.props
 
@@ -135,17 +151,15 @@ class CartItem extends Component {
             <React.Fragment>
             <div class="card search-result">
                 <div class="card-header"></div>
-            
             </div>
             
             <div className="cart-item">
-                    <span style={{ marginLeft: 10,fontFamily: 'Arial'}}>  Date: {date}</span> <br/><br/>
-                    <span style={{ marginLeft: 10,fontFamily: 'Arial'}}>  Time: {timeAppointment}</span> <br/><br/>
-                    <span style={{ marginLeft: 10,fontFamily: 'Arial'}}>  Type: {typeOfAppointment}</span> <br/><br/>
-                    <button class="btn-cart btn btn-success action-bar-btn" type="button" onClick={() => this.handleClickSave(cartInfo,info)}><i class="fas fa-save"></i> Checkout</ button>
-                    <button class="cart-btn btn btn-primary" type="button" onClick={() => this.handleClickRemove(cartInfo,info)}> Remove </ button>
-
+                <span style={{ marginLeft: 10,fontFamily: 'Arial'}}>  Date: {date}</span> <br/><br/>
+                <span style={{ marginLeft: 10,fontFamily: 'Arial'}}>  Time: {timeAppointment}</span> <br/><br/>
+                <span style={{ marginLeft: 10,fontFamily: 'Arial'}}>  Type: {typeOfAppointment}</span> <br/><br/>
+                <button class="cart-btn btn btn-primary" type="button" onClick={() => this.handleClickRemove(cartInfo,info)}> Remove </ button><br/>
             </div>
+            <button class="btn-cart btn btn-success action-bar-btn" type="button" onClick={() => this.handleClickSave(cartInfo,info)}><i class="fas fa-save"></i> Checkout</ button>
             </React.Fragment>
             
         );
