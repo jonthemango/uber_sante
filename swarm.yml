@@ -1,0 +1,19 @@
+version: '3.4'
+
+services:
+
+  backend:
+    image: 'ubersante-backend:prod'
+    ports:
+      - target: 5001
+        published: 5001
+        protocol: tcp
+        mode: host
+
+  frontend:
+    image: 'ubersante-frontend:dev'
+    ports:
+      - target: 3000
+        published: 3000
+        protocol: tcp
+        mode: host

@@ -1,9 +1,7 @@
-FROM node:alpine 
-RUN mkdir /backend
-WORKDIR /backend
-COPY . /backend
+FROM node:alpine
+RUN mkdir /frontend
+WORKDIR /frontend
+COPY . /frontend
 RUN npm install
 RUN ls
-CMD npm run dev
-
-
+CMD npm start
