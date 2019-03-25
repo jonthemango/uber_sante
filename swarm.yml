@@ -3,7 +3,7 @@ version: '3.4'
 services:
 
   backend:
-    image: 'ubersante-backend:prod'
+    image: 'us.gcr.io/soen341-218021/ubersante-backend:prod'
     ports:
       - target: 5001
         published: 5001
@@ -11,9 +11,9 @@ services:
         mode: host
 
   frontend:
-    image: 'ubersante-frontend:dev'
+    image: 'us.gcr.io/soen341-218021/ubersante-frontend:prod'
     ports:
       - target: 3000
-        published: 3000
+        published: 80
         protocol: tcp
         mode: host
