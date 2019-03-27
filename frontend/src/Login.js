@@ -115,7 +115,11 @@ class Login extends Component {
 
         this.setState({ type: 'patient' });
 
+        var Access = document.getElementById('AccessInput');
+        var AccessP = document.getElementById('AccessLabel');
 
+        Access.placeholder ='Email';
+        AccessP.innerHTML='Email';
         // call to database and add the patient tag 
 
 
@@ -136,6 +140,13 @@ class Login extends Component {
         currBtn3.style.background = '#ffb6c1';
         currBtn4.style.background = '#ffb6c1';
 
+        var Access = document.getElementById('AccessInput');
+        var AccessP = document.getElementById('AccessLabel');
+
+        Access.placeholder ='Access ID';
+        AccessP.innerHTML='Access ID';
+
+
         this.setState({ type: 'nurse' });
         // call to database and add the patient tag 
     }
@@ -147,6 +158,7 @@ class Login extends Component {
         var currBtn2 = document.getElementById('btn2');
         var currBtn3 = document.getElementById('btn3');
         var currBtn4 = document.getElementById('btnLogin');
+        
 
         //this.props.show = false;
         currDisplay.style.display = 'grid';
@@ -156,7 +168,16 @@ class Login extends Component {
         currBtn3.style.background = '#ffbc00';
         currBtn4.style.background = '#ffbc00';
 
+
+        var Access = document.getElementById('AccessInput');
+        var AccessP = document.getElementById('AccessLabel');
+
+        Access.placeholder ='Email';
+        AccessP.innerHTML='Email';
+
         this.setState({ type: 'doctor' });
+
+        
         // call to database and add the patient tag 
 
 
@@ -167,6 +188,10 @@ class Login extends Component {
         POST('/api/login', { email, password , type})
             .then( response =>  response.json())
             .then( response => {
+               
+            /*   if(type=='nurse'&& /^[a-zA-Z]{3}[0-9]{5}/.test(this.state.email)) {
+               alert('ok')}*/
+               
                 if (response.success) {
                     console.log(response)
                     cookie.save('session', {id: response.user._id, type, token: response.token,email:response.user.email})
@@ -214,8 +239,8 @@ class Login extends Component {
             </ButtonGroup ><br/>
 
             <Box id="box">
-                <p>Email</p>
-                <input onChange={e => this.setState({ email: e.target.value })} placeholder="Email" />
+                <p id="AccessLabel">Email</p>
+                <input onChange={e => this.setState({ email: e.target.value })} placeholder="Email" id="AccessInput" />
 
                 <p>Password</p>
                 <input onChange={e => this.setState({ password: e.target.value })} placeholder="Password" type="password" />
