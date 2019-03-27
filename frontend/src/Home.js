@@ -166,21 +166,16 @@ class Home extends Component {
                 </Link>
             </Links> : 
             <Links>
-                { session.type === "patient" ?
-                    
-                    <Link color="#FF6666" underColor="black">
-                        <a href="/cart">Cart</a>
-                        <Separator/>
-                    </Link>
-                    
-                    : null
-                    
-                }
-                
                 <Link>
                     <a href={`/${session.type}`} >Profile</a>
                     <Separator/>
                 </Link>
+                { session.type === "patient" ?
+                    <Link color="orange" underColor="green">
+                        <a href="/cart">Cart</a>
+                        <Separator/>
+                    </Link>
+                    : null }
                 <Link onClick={ _ => cookie.remove('session')} color="#FF6666" underColor="black">
                     <a href="/">Log out</a>
                     <Separator/>
