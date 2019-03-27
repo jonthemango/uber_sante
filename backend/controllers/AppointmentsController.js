@@ -39,9 +39,8 @@ class AppointmentsController {
                 const appointment = await builder.buildAppointment();
                 publisher.publish({ event: "paymentPending", data: { appointment, paymentInfo } })
                 res.json({ success: true, data: { appointment }, message: "Appointment made." });
-            }else{
-                console.log("YANIS TEST2")
-            res.json({ success: false, message: "Incorrect payment information" })
+            } else {
+                res.json({ success: false, message: "Incorrect payment information" })
             }
         } catch (err) {
             console.log("YANIS TEST3")
@@ -141,15 +140,15 @@ class AppointmentsController {
     static async deleteAppointment(req, res) {
         const appointmentId = req.params.id;
 
-        let appointments = [];
-
         try {
-            appointments = await Appointment.getAppointments({ appointmentId })
-            //delete this bitch
+            const result = await Appointment.delete(appointmentId)
         }
-        catch(e) {
-
+        catch (error) {
+            console.log({ error })
+            res.json({ success: false, message: "was not able to delete appointment" })
+            return
         }
+        res.json({ success: true, message: "appointment successfully deleted" })
 
     }
 
