@@ -167,7 +167,7 @@ class Cart extends Component {
         <div class= "logged-body">
             <h1>Cart Appointment</h1>
 
-            {cart.map(item =><CartItem cartInfo ={cart} info={item}  date={item.date} time={item.blockIds} isAnnual={item.isAnnual}/>)}
+            {cart.map(item => <CartItem cartInfo ={cart} info={item}  date={item.date} time={item.blockIds} isAnnual={item.isAnnual}/>)}
         </div>
 
 

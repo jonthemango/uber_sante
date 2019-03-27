@@ -123,7 +123,7 @@ class Consult extends Component {
     // Method that will fetch all existing appointments in a specific clinic
     getAllAppointment(){
         cookie.load('session');
-        GET('/api/clinics/5c79642f43d24100061b3283/appointments/')
+        GET('/api/clinics/5c9bbc69712d950006b36fea/appointments/')
                .then( res =>  res.json())
                .then( res => {
                    console.log("JON",res)
@@ -210,10 +210,10 @@ class Consult extends Component {
                     const patientObj = {...res.data.patient}
                     const patientId = patientObj._id
                     if(user.type=="nurse"){
-                        this.nurseMakeAppointment("5c79642f43d24100061b3283",patientId,this.state.datePicked,blockid,isannual,{cardNumber:1})
+                        this.nurseMakeAppointment("5c9bbc69712d950006b36fea",patientId,this.state.datePicked,blockid,isannual,{cardNumber:1})
                     }else{
                         let appointmentObj = {
-                            clinicId: "5c79642f43d24100061b3283",
+                            clinicId: "5c9bbc69712d950006b36fea",
                             patientId: patientId,
                             date: this.state.datePicked,
                             blockIds: blockid,
@@ -238,7 +238,7 @@ class Consult extends Component {
     }
     // Method that will, based on patient's date selection, determine the first day in the same week
     filterCalendarByDate(day) {
-
+        console.log(day);
         //console.log({day})
         //this.setState({date:day});
         var dayCurrent = day.getDay()
@@ -249,6 +249,7 @@ class Consult extends Component {
         var dayGoodFormat = moment(day).format("YYYY-MM-DD");
 
         this.setState({datePicked:dayGoodFormat});
+        this.setState({date:dayGoodFormat});
 
 
         firstDayOfWeek.setDate(firstDayOfWeek.getDate() - dayCurrent);
@@ -315,6 +316,7 @@ class Consult extends Component {
     handleSlotPicked(slot,date){
         this.setState({slotSelected:slot});
         this.setState({datePicked:date});
+        this.setState({date:date})
     }
 
     componentWillMount() {
@@ -384,8 +386,7 @@ class Consult extends Component {
                 }
                 <label>Pick a consultation date</label>
                 <br />
-                <DatePicker  className='date' selected={this.state.date} onChange={e => this.filterCalendarByDate(e) } />
-
+                <DatePicker className='date' selected={this.state.date} onChange={e => this.filterCalendarByDate(e) } />
                 <br />
                 <br />
                 <p>Do you wish to book a 20min or a 1h consultation ?</p>

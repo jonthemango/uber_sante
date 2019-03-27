@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { Component, useState } from 'react'
 import styled from 'styled-components'
 import moment from 'moment'
 import './App.css'
@@ -85,6 +85,8 @@ const Grid = styled.div`
     background-position: center;
 `
 
+
+
 export default class Calendar extends Component {
     constructor (props) {
         super(props)
@@ -97,6 +99,7 @@ export default class Calendar extends Component {
             days: [" "].concat(moment.weekdays().splice(1,5)), // removing sun & fris
             pickedSlot: null
         }
+
     }
 
 

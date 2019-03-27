@@ -97,6 +97,7 @@ class CartItem extends Component {
 
     handleClickSave(cartInfo,info){
         // chechout form
+        console.log('cart info', {cartInfo,info})
         const {value: formValues} =  swal.fire({
             title: 'Checkout Cart',
             html:
@@ -106,42 +107,43 @@ class CartItem extends Component {
             focusConfirm: false,
             preConfirm: () => {
               return [
-                document.getElementById('swal-input1').value,
-                //alert('ok cart'),
+                POST('/api/appointments/', {
+                    clinicId: info.clinicId,
+                    patientId: info.patientId,
+                    date: info.date,
+                    blockIds: info.blockIds,
+                    isAnnual: info.isAnnual,
+                    paymentInfo: info.paymentInfo
+                }).then( res =>  res.json())
+                   .then( res => {
+                       console.log('res', {res})
+                        if (res.success) {
+                            let filterCart = cartInfo.filter(function(ele){
+                                return ele != info;
+                            });
+                            let user = res.data.patient
+                            user.cart = filterCart
+                            this.updateUser(user)
+                            this.btn.setAttribute("disabled", "disabled") // disables button
+                            alert("Appointment Succesfully Created!!")
+                        }
+                        else{ // bug
+                            alert("Appointment not Created!! Appointment not available at this time ")
+                            this.btn.setAttribute("disabled", "disabled")
+                            console.log('something went terribly wrong')
+                        }
+                            
+                    })
+                    .catch(e => {
+                        console.log('Error',e)
+                })
+
+
               ]
             }
         })
         
-        POST('/api/appointments/', {
-            clinicId: info.clinicId,
-            patientId: info.patientId,
-            date: info.date,
-            blockIds: info.blockIds,
-            isAnnual: info.isAnnual,
-            paymentInfo: info.paymentInfo
-        })
-           .then( res =>  res.json())
-           .then( res => {
-                if (res.success) {
-                    let filterCart = cartInfo.filter(function(ele){
-                        return ele != info;
-                    });
-                    let user = res.data.patient
-                    user.cart = filterCart
-                    this.updateUser(user)
-                    this.btn.setAttribute("disabled", "disabled") // disables button
-                    alert("Appointment Succesfully Created!!")
-                }
-                else{ // bug
-                    alert("Appointment not Created!! Appointment not available at this time ")
-                    this.btn.setAttribute("disabled", "disabled")
-                    console.log('something went terribly wrong')
-                }
-                    
-            })
-            .catch(e => {
-                console.log('Error',e)
-        })
+        
     }
 
     // Method to cancel an appointment
