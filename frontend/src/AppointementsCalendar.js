@@ -199,8 +199,10 @@ export default class Calendar extends Component {
             console.log({weeklySlots})
             if(weeklySlots){
                 for(let slot of weeklySlots){
-                    let gridId = this.getSlot(slot.weekday, slot.blockId)
-                    slots[gridId] = {...slot, key: gridId, picked: true, color: slot.type == 'walkin' ? colorA : colorB}
+                    for(let blockId of slot.blockIds){
+                        let gridId = this.getSlot(slot.weekday, blockId)
+                        slots[gridId] = {...slot, key: gridId, picked: true, color: slot.type == 'walkin' ? colorA : colorB}
+                    }
                 }
             }
             this.setState({slots})
@@ -219,13 +221,12 @@ export default class Calendar extends Component {
                 <Main>
                     { this.state.times.map( x => <Time key={x} >{x}</Time>) }
                     <Grid>
-                        {this.state.slots.map( x => <Slot   {...x}
+                        {this.state.slots.map( (x,i) => <Slot key={i}
                                                             id={x.id}
                                                             color={x.color}
-                                                            key={x.id}
                                                             slots={x.slots}
                                                             date={x.date}
-                                                            picked ={x.picked}
+                                                            // picked ={x.picked}
                                                             onClick={ _ => this.handleSlotClick(x) }>
                                                     </Slot>
                                             )
@@ -244,6 +245,7 @@ export default class Calendar extends Component {
                     <p>Patient's Address- { appointmentData ? appointmentData.patient.physicalAddress : 'Not Provided'}</p>
                     <p>Room Number - <b>#{ appointmentData ? appointmentData.room : 'Not Provided'}</b></p>
                     <p>Appointment Type Number - <b>{ appointmentData ? appointmentData.type : 'Not Provided'}</b></p>
+                    <b>Date - { appointmentData ? appointmentData.date : 'Not Provided'}</b>
                 </Modal.Body>
                 <Modal.Footer>
                     <Button variant="primary" onClick={ _ => this.setState({showModal: false})}>
