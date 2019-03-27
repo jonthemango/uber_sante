@@ -1,6 +1,6 @@
 import cookie from 'react-cookies'
-// const API = 'http://localhost:5001'          // when you run on your machine
-const API = 'http://104.196.55.64:5001' //when you run on the server
+const API = 'http://localhost:5001'          // when you run on your machine
+// const API = 'http://104.196.55.64:5001' //when you run on the server
 
 export function POST(route, data, more_headers){
     const id = cookie.load('id');

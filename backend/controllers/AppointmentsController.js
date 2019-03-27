@@ -38,8 +38,8 @@ class AppointmentsController {
                 const appointment = await builder.buildAppointment();
                 publisher.publish({ event: "paymentPending", data: { appointment, paymentInfo } })
                 res.json({ success: true, data: { appointment }, message: "Appointment made." });
-            }else{
-            res.json({ success: false, message: "Incorrect payment information" })
+            } else {
+                res.json({ success: false, message: "Incorrect payment information" })
             }
         } catch (err) {
             res.json({ success: false, error: err.message, message: "Appointment not made." })
@@ -138,15 +138,15 @@ class AppointmentsController {
     static async deleteAppointment(req, res) {
         const appointmentId = req.params.id;
 
-        let appointments = [];
-
         try {
-            appointments = await Appointment.getAppointments({ appointmentId })
-            //delete this bitch
+            const result = await Appointment.delete(appointmentId)
         }
-        catch(e) {
-
+        catch (error) {
+            console.log({ error })
+            res.json({ success: false, message: "was not able to delete appointment" })
+            return
         }
+        res.json({ success: true, message: "appointment successfully deleted" })
 
     }
 
