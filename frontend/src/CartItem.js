@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import {PUT, GET, POST, DELETE} from './ApiCall';
 import cookie from 'react-cookies'
-import swal from 'sweetalert2'    
+import swal from 'sweetalert2'
 
 class CartItem extends Component {
     constructor(){
@@ -118,12 +118,7 @@ class CartItem extends Component {
                    .then( res => {
                        console.log('res', {res})
                         if (res.success) {
-                            let filterCart = cartInfo.filter(function(ele){
-                                return ele != info;
-                            });
-                            let user = res.data.patient
-                            user.cart = filterCart
-                            this.updateUser(user)
+                            this.handleClickRemove(cartInfo,info)
                             this.btn.setAttribute("disabled", "disabled") // disables button
                             alert("Appointment Succesfully Created!!")
                         }
@@ -132,7 +127,7 @@ class CartItem extends Component {
                             this.btn.setAttribute("disabled", "disabled")
                             console.log('something went terribly wrong')
                         }
-                            
+
                     })
                     .catch(e => {
                         console.log('Error',e)
@@ -142,8 +137,8 @@ class CartItem extends Component {
               ]
             }
         })
-        
-        
+
+
     }
 
     // Method to cancel an appointment
@@ -153,7 +148,7 @@ class CartItem extends Component {
         // .then()
     }
 
-    render() {  
+    render() {
         const {cartInfo,info ,date, time, isAnnual } = this.props
 
         let timeAppointment = this.getHourByBlockIds(time[0]);
