@@ -35,7 +35,6 @@ class AppointmentsController {
 
         try {
             if (Payment.isValid(paymentInfo)) {
-                console.log("YANIS TEST")
                 const appointment = await builder.buildAppointment();
                 publisher.publish({ event: "paymentPending", data: { appointment, paymentInfo } })
                 res.json({ success: true, data: { appointment }, message: "Appointment made." });
@@ -43,7 +42,7 @@ class AppointmentsController {
                 res.json({ success: false, message: "Incorrect payment information" })
             }
         } catch (err) {
-            console.log("YANIS TEST3")
+            console.log({err})
             res.json({ success: false, error: err.message, message: "Appointment not made." })
         }
 

@@ -196,6 +196,7 @@ export default class Calendar extends Component {
         }else {
             const slots = this.generateSlots()
             let weeklySlots = newSlots[date]
+            console.log({weeklySlots})
             if(weeklySlots){
                 for(let slot of weeklySlots){
                     let gridId = this.getSlot(slot.weekday, slot.blockId)

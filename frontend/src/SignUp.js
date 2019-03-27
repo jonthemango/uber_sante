@@ -89,17 +89,22 @@ const Link = styled.a`
 
         // Function that will add new user to datastore
         registerUser() {
-            const {email,password,healthCardNB,birthDay,sexe,phoneNumber,physicalAddress} = this.state
-            POST('/api/patients',{email,password,healthCardNB,birthDay,sexe,phoneNumber,physicalAddress})
-                .then(response => response.json())
-                .then(response => {
-                    if(response.success) {
-                        cookie.save('session', {token: response.token})
-                        NotificationManager.success('The account was successfully created', 'Success');
-                        this.props.history.push(`/`)
-                    }
-                 }
-            )
+            if(2019 - this.state.birthDay.getFullYear() >= 18) {
+                const {email,password,healthCardNB,birthDay,sexe,phoneNumber,physicalAddress} = this.state
+                POST('/api/patients',{email,password,healthCardNB,birthDay,sexe,phoneNumber,physicalAddress})
+                    .then(response => response.json())
+                    .then(response => {
+                        if(response.success) {
+                            cookie.save('session', {token: response.token})
+                            NotificationManager.success('The account was successfully created', 'Success');
+                            this.props.history.push(`/`)
+                        }
+                    })
+            }
+            else {
+                NotificationManager.error('Error', 'You must be at least 18years old');
+            }
+            
         }
 
         render() {
