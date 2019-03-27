@@ -24,7 +24,7 @@ class AppointmentsController {
         const publisher = new BusPublisher({ port: 7001 })
 
         const { clinicId, patientId, date, blockIds, paymentInfo } = req.body
-        
+
         let builder = Appointment.Builder()
         builder = await builder
             .buildPatientInfo({ patientId, clinicId })
@@ -135,7 +135,7 @@ class AppointmentsController {
         res.json(appointment)
     }
 
-    static deleteAppointment(req, res) {
+    static async deleteAppointment(req, res) {
         const appointmentId = req.params.id;
 
         let appointments = [];

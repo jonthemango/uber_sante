@@ -25,10 +25,15 @@ get = (url) => {
 
 
 const doctor = {
-  permit: 'a random permit',
-  firstname: 'ribal',
-  lastname: 'aladeeb',
-  city: 'montreal',
+  "email": "jon",
+  "password": "secret",
+  "permit": "a random permit",
+  "firstname": "ribal",
+  "lastname": "aladeeb",
+  "specialty": "null",
+  "city": "montreal",
+  "availability": null,
+  "clinicId": ""
 };
 
 const patient = {
@@ -40,7 +45,7 @@ const patient = {
   email: "",
   password:"secret"
 }
-//post("http://localhost:5001/api/patients/", patient);
+post("http://localhost:5001/api/doctors/", doctor);
 const nurse = {
 
 }
@@ -55,7 +60,6 @@ const appointment = {
 
 url = "http://localhost:5001/api/appointments";
 obj = appointment
-post(url,obj);
 
 
 
