@@ -294,25 +294,27 @@ export default class DoctorHome extends Component {
 
     async updateAvailabilities(){
         const slots = cookie.load('slots')
-        const {id} = cookie.load('session')
-        const newAvailabilities = slots.map(x => x.id).map(x => this.getDay(x))
-        let availability = {}
-
-        for(let day of this.state.days){
-            availability[day] = {}
-        }
-
-        for(let item of newAvailabilities){
-            let {day, slot} = item
-            availability[day][slot]=true;
-        }
-
-        availability = {availability}
-
-        const response = await POST(`/api/doctors/${id}/availability`,availability).then(res=>res.json())
-
-        if(response.success){
-            NotificationManager.success('Availabilities updated', 'Success');
+        if(slots){
+            const {id} = cookie.load('session')
+            const newAvailabilities = slots.map(x => x.id).map(x => this.getDay(x))
+            let availability = {}
+    
+            for(let day of this.state.days){
+                availability[day] = {}
+            }
+    
+            for(let item of newAvailabilities){
+                let {day, slot} = item
+                availability[day][slot]=true;
+            }
+    
+            availability = {availability}
+    
+            const response = await POST(`/api/doctors/${id}/availability`,availability).then(res=>res.json())
+    
+            if(response.success){
+                NotificationManager.success('Availabilities updated', 'Success');
+            }
         }
     }
 

@@ -129,9 +129,10 @@ class Consult extends Component {
                    console.log("JON",res)
                   if (res.success) {
                     this.setState({appointment:res.data.appointments})
-                  }
+                  } else 
+                    this.setState({appointment:[]})
                 }
-                ).catch(e => {
+            ).catch(e => {
         })
 
     }
