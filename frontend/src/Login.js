@@ -189,9 +189,9 @@ class Login extends Component {
             .then( response =>  response.json())
             .then( response => {
                
-            /*   if(type=='nurse'&& /^[a-zA-Z]{3}[0-9]{5}/.test(this.state.email)) {
-               alert('ok')}*/
+               if(type=='nurse'&& /^[a-zA-Z]{3}[0-9]{5}/.test(this.state.email)) {
                
+
                 if (response.success) {
                     console.log(response)
                     cookie.save('session', {id: response.user._id, type, token: response.token,email:response.user.email})
@@ -201,7 +201,7 @@ class Login extends Component {
                    }else{
                     this.props.history.push('/doctor')
                    }
-                }else{
+              }  }else{
                     NotificationManager.error('Wrong credentials', 'Try again');
                 }
             }
