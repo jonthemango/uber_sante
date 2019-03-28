@@ -6,6 +6,7 @@ import { GET, POST, PUT } from './ApiCall'
 import 'moment-timezone';
 import 'react-dropdown/style.css'
 import AppointmentItem from './AppointmentItem'
+import swal from 'sweetalert2'    
 
 const moment = require('moment');
 
@@ -75,15 +76,15 @@ const Link = styled.div`
 
 `
 
-class PatientHome extends Component {
+class NurseHome extends Component {
     constructor (props) {
         super(props)
 
         this.state={
             cart: [],
         }
-        
-        this.mounted(props)
+
+        this.mounted()
     }
 
 
@@ -96,20 +97,42 @@ class PatientHome extends Component {
         }
     }
 
-    mounted({id}) {
-        let user={};
-        
-        if(id) user.id = id
-        else user = cookie.load('session')
 
-        GET(`/api/patients/${user.id}/appointments`)
+
+    async mounted() {
+        const {value: email} = await swal.fire({
+            title: 'Enter a Patient email',
+            input: 'text',
+            showCancelButton: true,
+            inputValidator: async (value) => {
+                if(!value) return "Please enter an email";
+
+                const response = await GET(`/api/patients/email/${value}`).then( res =>  res.json())
+                    .then( res => {
+                        return res;
+                    }).catch(e => "Network error" )
+                    
+                console.log('user',{response})
+
+                if (!response.success) {
+                    return `Patient doesn't exist!`
+                } else {
+                    this.setState({patientId: response.data.patient._id, email: value})
+                }
+            }
+          })
+
+        console.log('pat', this.state.patientId)
+
+        GET(`/api/patients/${this.state.patientId}/appointments`)
             .then( res =>  res.json())
             .then( res => {
                 console.log('appts',{res})
                 this.generateInfoByPatientCart(res.data.appointments)
             }
             ).catch(e => {
-        })
+
+            })
     }
 
 
@@ -134,6 +157,10 @@ class PatientHome extends Component {
                 </Link>
             </Links> :
             <Links>
+                <Link onClick={ _ => window.location.reload()} color="#FF6666" underColor="black">
+                    <a href="/nurse">Search</a>
+                    <Separator/>
+                </Link>
                 <Link onClick={ _ => cookie.remove('session')} color="#FF6666" underColor="black">
                     <a href="/">Log out</a>
                     <Separator/>
@@ -142,7 +169,7 @@ class PatientHome extends Component {
         </Navbar>
 
         <div class= "logged-body">
-            <h1>Appointments</h1>
+            {this.state.email? <h1>Appointments for {this.state.email}</h1> : null}
 
             {cart.map(item => <AppointmentItem cartInfo ={cart} info={item}  date={item.date} time={item.blockIds} isAnnual={item.isAnnual}/>)}
         </div>
@@ -154,4 +181,4 @@ class PatientHome extends Component {
     }
 }
 
-export default PatientHome;
+export default NurseHome;
