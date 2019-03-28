@@ -189,9 +189,10 @@ class Login extends Component {
             .then( response =>  response.json())
             .then( response => {
                
-            //    if(type=='nurse'&& /^[a-zA-Z]{3}[0-9]{5}/.test(this.state.email)) {
-               
-
+          if(type=='nurse' &&  /^[a-zA-Z]{3}[0-9]{5}/.test(this.state.email)==false) {
+            NotificationManager.error('Wrong credentials', 'Try again');
+          }else{
+            
                 if (response.success) {
                     console.log(response)
                     cookie.save('session', {id: response.user._id, type, token: response.token,email:response.user.email})
@@ -203,7 +204,7 @@ class Login extends Component {
                    }
                 }else{
                     NotificationManager.error('Wrong credentials', 'Try again');
-                }
+                }}
             }
         ).catch(e => {
             NotificationManager.error('Network Error', 'Check backend');
