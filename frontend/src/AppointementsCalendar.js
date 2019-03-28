@@ -226,7 +226,7 @@ export default class Calendar extends Component {
                                                             color={x.color}
                                                             slots={x.slots}
                                                             date={x.date}
-                                                            // picked ={x.picked}
+                                                            picked ={x.picked}
                                                             onClick={ _ => this.handleSlotClick(x) }>
                                                     </Slot>
                                             )
