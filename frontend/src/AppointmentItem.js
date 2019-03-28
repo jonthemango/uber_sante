@@ -57,6 +57,10 @@ class AppointmentItem extends Component {
         }
 
     }
+    handleClickUpdate(cartInfo,info){
+        this.props.history.push("/consult", {updateAppointment: true, info} )
+        
+    }
 
     handleClickRemove(cartInfo,info){
 
@@ -82,6 +86,56 @@ class AppointmentItem extends Component {
 
     }
 
+    componentDidMount(){
+        console.log('props',this.props)
+        const hasNewAppointment = this.props.history.location.state && this.props.history.location.state.newAppointment
+        if(hasNewAppointment)
+            this.setState({ newAppointment: this.props.history.location.state.newAppointment,
+                            info: this.props.history.location.state.info} , _ => console.log('new appointment from uptate', this.state.newAppointment, this.state.info))
+        
+        
+        if(hasNewAppointment) {
+            const {info, newAppointment} = this.props.history.location.state
+
+            POST('/api/appointments/', {
+                clinicId: newAppointment.clinicId,
+                patientId: newAppointment.patientId,
+                date: newAppointment.date,
+                blockIds: newAppointment.blockIds,
+                isAnnual: newAppointment.isAnnual,
+                paymentInfo: {cardNumber: 1}
+            })
+               .then( res =>  res.json())
+               .then( res => {
+                    if (res.success) {
+                        DELETE(`/api/appointments/${info._id}`)
+                        .then( res =>  res.json())
+                        .then( res => {
+                            if (res.success) {
+                                alert('Appointment succesfully updated')
+                                this.props.history.push("/")
+                            }else {
+                                alert('An error occured making an appointment')
+                                console.log('No success', {res})
+                            }
+                        }
+                        ).catch(e => {
+                            alert('Network error')
+                            console.log('Network error', {e})
+                        })
+                        this.setState({appointment:res.data.appointment})
+                    }
+                })
+                .catch(e => {
+                    console.log('Error')
+            })
+            
+           
+        }
+        
+        
+    }
+
     render() {  
         const {cartInfo,info ,date, time, isAnnual } = this.props
 
@@ -99,7 +153,8 @@ class AppointmentItem extends Component {
                 <span style={{ marginLeft: 10,fontFamily: 'Arial'}}>  Date: {date}</span> <br/><br/>
                 <span style={{ marginLeft: 10,fontFamily: 'Arial'}}>  Time: {timeAppointment}</span> <br/><br/>
                 <span style={{ marginLeft: 10,fontFamily: 'Arial'}}>  Type: {typeOfAppointment}</span> <br/><br/>
-                <button class="cart-btn btn btn-primary" type="button" onClick={() => this.handleClickRemove(cartInfo,info)}> Remove </ button><br/>
+                <button class="cart-btn btn btn-primary" type="button" onClick={() => this.handleClickRemove(cartInfo,info)}> Remove </ button>
+                <button class="cart-btn btn btn-primary" type="button" onClick={() => this.handleClickUpdate(cartInfo,info)}> Update </ button><br/>
             </div>
             </React.Fragment>
 

@@ -144,7 +144,7 @@ class PatientHome extends Component {
         <div class= "logged-body">
             <h1>Appointments</h1>
 
-            {cart.map(item => <AppointmentItem cartInfo ={cart} info={item}  date={item.date} time={item.blockIds} isAnnual={item.isAnnual}/>)}
+            {cart.map(item => <AppointmentItem history={this.props.history} cartInfo ={cart} info={item}  date={item.date} time={item.blockIds} isAnnual={item.isAnnual}/>)}
         </div>
 
 

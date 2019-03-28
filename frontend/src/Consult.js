@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import './Consult.css'
 import styled from 'styled-components'
 import cookie from 'react-cookies'
-import { GET, POST, PUT } from './ApiCall'
+import { GET, POST, PUT, DELETE } from './ApiCall'
 import AppointementsCalendar from './AppointementsCalendar'
 import DatePicker from "react-datepicker"
 import 'moment-timezone';
@@ -202,29 +202,48 @@ class Consult extends Component {
             }else{
                 patientEmail = user.email
             }
+            
 
             GET('/api/patients/email/'+patientEmail)
                 .then(res => res.json())
                 .then(res => {
                     if(res.success){
+                    
                     const patientObj = {...res.data.patient}
                     const patientId = patientObj._id
+                    let appointmentObj = {
+                        clinicId: "5c9bbc69712d950006b36fea",
+                        patientId: patientId,
+                        date: this.state.datePicked,
+                        blockIds: blockid,
+                        isAnnual: isannual,
+                        paymentInfo:{cardNumber:1}
+                    }
+
                     if(user.type=="nurse"){
-                        this.nurseMakeAppointment("5c9bbc69712d950006b36fea",patientId,this.state.datePicked,blockid,isannual,{cardNumber:1})
-                    }else{
-                        let appointmentObj = {
-                            clinicId: "5c9bbc69712d950006b36fea",
-                            patientId: patientId,
-                            date: this.state.datePicked,
-                            blockIds: blockid,
-                            isAnnual: isannual,
-                            paymentInfo:{cardNumber:1}
+                        const isUpdating = this.props.history.location.state && this.props.history.location.state.updateAppointment
+
+                        if(isUpdating){
+                            this.props.history.push("/nurse", {newAppointment: appointmentObj, info: this.props.history.location.state.info} )
+                        }else {
+                            this.nurseMakeAppointment("5c9bbc69712d950006b36fea",patientId,this.state.datePicked,blockid,isannual,{cardNumber:1})
                         }
+
+                    }else{
+                        
                         if(patientObj.cart == undefined){
                             patientObj.cart = []
                         }
-                        patientObj.cart.push(appointmentObj)
-                        this.sendToCart(patientObj)
+
+                        const isUpdating = this.props.history.location.state && this.props.history.location.state.updateAppointment
+
+                        
+                        if(isUpdating){
+                            this.props.history.push("/patient", {newAppointment: appointmentObj, info: this.props.history.location.state.info} )
+                        }else {
+                            patientObj.cart.push(appointmentObj)
+                            this.sendToCart(patientObj)
+                        }
                     }
                 }else{
                     alert("This email does not figure in our database!!!")
@@ -334,10 +353,12 @@ class Consult extends Component {
     ]
     const defaultOption = options[0]
 
-
+    const isUpdating = this.props.history.location.state && this.props.history.location.state.updateAppointment
+    
+    console.log('props => ',this.props)
     return (
 
-
+    
     <React.Fragment>
 
 
@@ -384,12 +405,12 @@ class Consult extends Component {
                     </div>
                     : null
                 }
-                <label>Pick a consultation date</label>
+                <label>{isUpdating ? "Pick a new appointment date" : "Pick a consultation date"}</label>
                 <br />
                 <DatePicker className='date' selected={this.state.date} onChange={e => this.filterCalendarByDate(e) } />
                 <br />
                 <br />
-                <p>Do you wish to book a 20min or a 1h consultation ?</p>
+                <p>{isUpdating ? "Pick a new appointment type " : "Pick a consultation type "}</p>
                 <RadioGroup onChange={value=>this.setState({appointmentType:value})} >
                     <RadioButton value="appointmentType20">20 min walk-in</RadioButton>
                     <RadioButton value="appointmentType60">1h annual check-up</RadioButton>

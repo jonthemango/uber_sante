@@ -171,7 +171,7 @@ class NurseHome extends Component {
         <div class= "logged-body">
             {this.state.email? <h1>Appointments for {this.state.email}</h1> : null}
 
-            {cart.map(item => <AppointmentItem cartInfo ={cart} info={item}  date={item.date} time={item.blockIds} isAnnual={item.isAnnual}/>)}
+            {cart.map(item => <AppointmentItem history={this.props.history} cartInfo ={cart} info={item}  date={item.date} time={item.blockIds} isAnnual={item.isAnnual}/>)}
         </div>
 
 
