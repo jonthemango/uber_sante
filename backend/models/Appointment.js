@@ -92,7 +92,7 @@ class Appointment {
                 _id: ObjectId(appointmentId)
             })
         })
-        console.log({result})
+        console.log({ result })
         if (result.result.n == 1) {
             return result
         }

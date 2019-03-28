@@ -48,14 +48,14 @@ class PatientsController {
 
     static async updatePatient(req, res) {
         const patientId = req.params.id;
-        console.log("patientId from params",patientId)
-        console.log("\n****this is the received patient",req.body)
+        console.log("patientId from params", patientId)
+        console.log("\n****this is the received patient", req.body)
 
         let patient = new Patient({ ...req.body, _id: patientId });
-        console.log("\n****this is the constructed",patient)
+        console.log("\n****this is the constructed", patient)
 
         patient = await patient.update();
-        console.log("\n****this is the updated patient",patient)
+        console.log("\n****this is the updated patient", patient)
         if (patient.error) {
             res.json({ success: false, error: patient })
         } else {
@@ -67,10 +67,13 @@ class PatientsController {
     static async deletePatient(req, res) {
         const patientId = req.params.id;
 
-        // delete patient from db
-        const deleted = await Patient.delete(patientId);
-
-        res.json({ deleted: deleted, message: "Patient was deleted" })
+        try {
+            // delete patient from db
+            const result = await Patient.delete(patientId)
+            res.json({ success: true, result, message: "Patient was deleted" })
+        } catch (error) {
+            res.json({ success: false, message: "Unable to delete patient" })
+        }
     }
 
 }

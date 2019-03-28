@@ -28,7 +28,8 @@ class Patients {
         this.email = email
         this.password = password
         this.cart = cart
-        console.log("from constructor,",{ _id,
+        console.log("from constructor,", {
+            _id,
             healthCardNB,
             firstname,
             lastname,
@@ -38,7 +39,8 @@ class Patients {
             physicalAddress,
             email,
             password,
-            cart})
+            cart
+        })
     }
 
 
@@ -92,30 +94,34 @@ class Patients {
 
         if (patient != undefined) {
             delete patient.password
-            return new Patients({...patient})
+            return new Patients({ ...patient })
         }
         return null
     }
 
-    static async getByEmail(email){
-        const patient = await persist(async (db)=>{
-            return await db.collection("patients").findOne({email})
+    static async getByEmail(email) {
+        const patient = await persist(async (db) => {
+            return await db.collection("patients").findOne({ email })
         })
-        if (patient !=undefined){
+        if (patient != undefined) {
             delete patient.password
-            return new Patients({...patient})
+            return new Patients({ ...patient })
         }
         return null
     }
 
     static async delete(id) {
 
-        const deleted = await persist(async (db) => {
+        const result = await persist(async (db) => {
             // Remove a single document
-            const result = await db.collection("patients").deleteOne({ _id: ObjectId(id) })
-            return result.deletedCount > 0;
+            return db.collection("patients").deleteOne({ _id: ObjectId(id) })
         })
-        return deleted;
+        console.log("result from deleting a patient:", result)
+        if (result.result.n == 1) {
+            return result
+        }
+
+        throw new Error("Was not able to delete the appointment")
     }
 
 

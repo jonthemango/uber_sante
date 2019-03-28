@@ -24,7 +24,7 @@ Post('/api/patients', "Posting Patient", patient,({expect,res})=>{
             expect(res.body.data.patient.sex).to.equal("Female");
 
             Delete('/api/patients/' + id, "Deleting Patient by Id", {}, ({expect,res}) =>{
-                expect(res.body.deleted).to.equal(true);
+                expect(res.body.success).to.equal(true);
             });
         });
     })

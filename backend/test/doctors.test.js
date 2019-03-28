@@ -2,6 +2,8 @@ const { Get, Post, Put, Delete } = require('./TestModule')
 const Doctor = require('../models/Doctors')
 
 let doctor = new Doctor({
+    email:"testDoc@doc.com",
+    password:"blabla",
     permit: 'a random permit',
     firstname: 'ribal',
     lastname: 'aladeeb',
