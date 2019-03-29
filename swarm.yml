@@ -11,7 +11,7 @@ services:
         mode: host
 
   frontend:
-    image: 'ubersante-frontend:latest'
+    image: 'ubersante-frontend:v3'
     ports:
       - target: 3000
         published: 80
