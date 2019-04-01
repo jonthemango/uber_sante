@@ -4,9 +4,9 @@ Nurse = require('../models/Nurses')
 class NursesController {
 
     static async makeNurse(req, res) {
-        const { accessId, email, password, firstname, lastname } = req.body;
+        const { accessId, email, password, firstname, lastname, clinicId } = req.body;
 
-        let nurse = new Nurse({ accessId, email, password, firstname,lastname })
+        let nurse = new Nurse({ accessId, email, password, firstname,lastname, clinicId });
 
 
         // save the nurse in db

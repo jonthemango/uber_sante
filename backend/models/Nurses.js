@@ -9,7 +9,7 @@ class Nurses {
         email,
         firstname,
         lastname,
-        password }) {
+        password, clinicId }) {
         //username contains three letter followed by 5digits: DOL96315
         this._id = _id
         this.email = email
@@ -17,6 +17,7 @@ class Nurses {
         this.lastname = lastname
         this.accessId = accessId
         this.password = password
+        this.clinicId = clinicId
 
     }
 
