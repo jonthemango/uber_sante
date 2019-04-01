@@ -5,10 +5,11 @@ Clinics = require('../models/Clinics')
 class ClinicsController {
 
     static async makeClinic(req, res) {
-        const clinic = new Clinic(req.body);
+        const clinic = new Clinics(req.body);
 
         // save the clinic in db
         await clinic.add();
+        res.json({ success: true, data: { clinic }, message: "Clinic posted" });
     }
 
     static async getClinics(req, res){

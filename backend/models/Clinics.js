@@ -3,10 +3,15 @@ ObjectId = require('mongodb').ObjectID;
 
 class Clinics {
     constructor({rooms, name}){
-        this.rooms = rooms;
-        this.name = name;
-        this.doctors = [];
-        this.nurses = [];
+        if (rooms > 0){
+            let roomArr  = []
+            for (let i=0; i<rooms; i++){
+                roomArr.push(i)
+            }
+            this.rooms = roomArr;
+            this.name = name;
+        }
+        
     }
 
     async add() {

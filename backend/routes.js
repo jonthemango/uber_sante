@@ -51,6 +51,7 @@ doctors.post('/doctors/:id/availability', DoctorsController.setAvailability);
 
 // ========= CRUD Clinics =============
 const ClinicsController = require("./controllers/ClinicsController");
+clinics.post('/clinics/', ClinicsController.makeClinic);
 clinics.get('/clinics/', ClinicsController.getClinics);
 
 const AuthService = require('./controllers/AuthService')
