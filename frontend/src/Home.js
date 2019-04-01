@@ -187,7 +187,7 @@ class Home extends Component {
                 <Btn href="/consult"><img alt="" src={"http://www.flambeauswim.com/wp-content/uploads/2015/12/calendar-300x300.png"}/> <p> Make an appointment</p></Btn>
                 <Btn href="/calendar">View my file</Btn>
                 <Btn href="/calendar">Book a room</Btn>
-                <Btn href="/calendar">Contact us</Btn>
+                <Btn href="/admin">Admin</Btn>
             </Menu>
         </Main>
     </React.Fragment>

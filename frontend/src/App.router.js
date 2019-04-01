@@ -8,6 +8,7 @@ import SignUp from './SignUp'
 import {NotificationContainer} from 'react-notifications';
 import DoctorHome from './DoctorHome'
 import Cart from './Cart'
+import Admin from './Admin/Admin'
 import PatientHome from './PatientHome';
 import NurseHome from './NurseHome';
 
@@ -27,6 +28,7 @@ class App extends Component {
           <Route exact path="/patient" component={PatientHome}/>
           <Route exact path="/nurse" component={NurseHome}/>
           <Route exact path="/cart" component={Cart}/>
+          <Route exact path="/admin" component={Admin}/>
         </Switch>
       </Router>
       <NotificationContainer style={{fontFamily: 'arial'}}/>
