@@ -48,6 +48,11 @@ doctors.put('/doctors/:id', DoctorsController.updateDoctor);
 doctors.delete('/doctors/:id', DoctorsController.deleteDoctor);
 doctors.post('/doctors/:id/availability', DoctorsController.setAvailability);
 
+
+// ========= CRUD Clinics =============
+const ClinicsController = require("./controllers/ClinicsController");
+clinics.get('/clinics/', ClinicsController.getClinics);
+
 const AuthService = require('./controllers/AuthService')
 auth.post('/login', AuthService.login)
 

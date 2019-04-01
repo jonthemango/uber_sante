@@ -2,8 +2,28 @@ persist = require('../persistence')
 ObjectId = require('mongodb').ObjectID;
 
 class Clinics {
-    constructor(){
+    constructor({rooms, name}){
+        this.rooms = rooms;
+        this.name = name;
+        this.doctors = [];
+        this.nurses = [];
+    }
 
+    async add() {
+        const result = await persist(async (db) => {
+            return await db.collection("clinics").insertOne(this);
+        })
+        
+        return result;
+    }
+
+
+    static async getAll(){
+        const query = {};
+        const clinics = await persist(async (db) => {
+            return await db.collection("clinics").find(query).toArray();
+        });
+        return clinics
     }
 
 
