@@ -64,6 +64,27 @@ class Nurses {
         return null
     }
 
+    static async getNurses({ clinicId, nurseId }) {
+        let query = {};
+
+        if (clinicId) {
+            query.clinicId = clinicId
+        }
+
+        if (nurseId) {
+            query.doctorId = doctorId;
+        }
+
+
+        console.log(query);
+        const nurses = await persist(async (db) => {
+            const doctors = await db.collection("nurses").find(query).toArray();
+            return doctors;
+        });
+
+        return nurses
+    }
+
     static async delete(id) {
 
         const deleted = await persist(async (db) => {

@@ -33,6 +33,18 @@ class NursesController {
         }
     }
 
+    static async getNursesByClinic(req, res){
+        const clinicId = req.params.id;
+
+        const nurses = await Nurse.getNurses({clinicId});
+
+        if (nurses.error || nurses == undefined) {
+            res.json({ success: false, error: nurses.error })
+        } else {
+            res.json({ success: true, data: { nurses }, message: "Nurses for clinic were retrived" });
+        }
+    }
+
     static async updateNurse(req, res) {
         const nurseId = req.params.id;
         let nurse = new Nurse({ ...req.body, _id: nurseId });
