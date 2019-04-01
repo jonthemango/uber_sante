@@ -31,6 +31,13 @@ class PatientsController {
 
     }
 
+    static async getPatients(req, res) {
+        const patients = await Patient.getAll();
+        res.json({ success: true, data: { patients }, message: "Patients were retrived" });
+    }
+
+
+
     static async getPatientByEmail(req, res) {
         const patientEmail = req.params.email
 

@@ -97,6 +97,13 @@ class Patients {
         return null
     }
 
+    static async getAll() {
+        const patients = await persist(async (db) => {
+            return await db.collection("patients").find({}).toArray();
+        })
+        return patients;
+    }
+
     static async getByEmail(email){
         const patient = await persist(async (db)=>{
             return await db.collection("patients").findOne({email})
