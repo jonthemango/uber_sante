@@ -1,42 +1,43 @@
-import React, { Component, useState} from 'react'
+import React from 'react'
 import styled from 'styled-components'
 
+const size=200
+
 const Main = styled.div`
-    width: 100vw;
+    background-color: white;
+    width: ${size}px;
+    height: ${size}px;
+    border-radius: 5px;
+    border: 1px solid lightgrey;
+    border-radius: 5px;
+    box-shadow: inset 0px 0px 49px -15px rgba(0,0,0,0);
+    transition-duration: 1s;
     display: flex;
-    align-items: center;
     flex-direction: column;
+    align-items: center;
     justify-content: center;
-    padding-top: 10%;
-    & div {
-        display: flex;
-        align-items: center;
-        flex-direction: column;
-        justify-content: center;
-        width: 20vw;
-        & input,button {
-            outline-width: 0;
-            padding: 15px;
-            width: 100%;
-            height: 50px;
-            border-radius: 30px;
-        }
+    margin-bottom: 1em;
+    &:hover {
+        box-shadow: inset 0px 0px 49px -15px rgba(0,0,0,0.75);
+    }
+    & h1 {
+        font-size: 1rem;
+        font-weight: bold;
+    }
+    & p {
     }
 `
 
 
-const ClinicItem = ({login})=> {
-    const [name, setName] = useState("")
-    const [password, setPassword] = useState("")
-    
-    return <Main>
-            <div>
-                <h1>Admin</h1>
-                <input type="text" value={name} placeholder="Name" onChange={e => setName(e.target.value)}/>
-                <input type="password" value={password} placeholder="Password" onChange={e => setPassword(e.target.value)}/>
-                <button className="btn btn-success" onClick={ _ => name === "admin" && password === "admin" ? login() : null }>Login</button>
-            </div>
-        </Main>
+const ClinicItem = ({id="", name="No name provided", rooms=[]})=> {
+
+    return <Main className="animated fadeIn" key={id}>
+                <h1>Clinic Name</h1>
+                <p>{name}</p>
+                <h1>Rooms</h1>
+                <p>{rooms.length}</p>
+            </Main>
+        
 }
 
 export default ClinicItem
