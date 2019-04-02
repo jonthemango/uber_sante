@@ -31,7 +31,7 @@ function postPatient(patient){
 }
 
 
-class PatientItem extends React.Component {
+class NewPatientItem extends React.Component {
     state = {
     "healthCardNB": "",
     "firstname": "",
@@ -104,4 +104,4 @@ class PatientItem extends React.Component {
 
 } 
 
-export default PatientItem
+export default NewPatientItem
