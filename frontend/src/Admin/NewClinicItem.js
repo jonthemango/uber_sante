@@ -17,7 +17,7 @@ margin-bottom: 1em;
     }
 
 `
-function postClinic(name,rooms, reFetch){
+function postClinic(name,rooms, reFetch, initState){
     if(name && rooms){
         POST('/api/clinics/', {name,rooms})
         .then(response => {
@@ -27,6 +27,7 @@ function postClinic(name,rooms, reFetch){
             console.log(err)
         })
         .finally(_ => {
+            initState()
             reFetch()
         })
     }
@@ -39,6 +40,10 @@ const ClinicItem = ({reFetch, id="", isNew=false, name="none"})=> {
     const [newName, setNewName]=useState("")
     const [newRooms, setRooms]=useState("")
     
+    const initState = () => {
+        setNewName("");
+        setRooms("");
+    }
 
     return <Main key={id}><Form><Row form>
                 <Col md={6}>
@@ -54,7 +59,7 @@ const ClinicItem = ({reFetch, id="", isNew=false, name="none"})=> {
                     </FormGroup>
                 </Col>
         </Row>
-        <Button onClick={ _ => postClinic(newName, newRooms, reFetch)} color="primary">Add Clinic</Button>
+        <Button onClick={ _ => postClinic(newName, newRooms, reFetch, initState)} color="primary">Add Clinic</Button>
         </Form></Main>
 }
 

@@ -16,35 +16,57 @@ const Main = styled.div`
     }
 
 `
-function postPatient(patient, reFetch){
-    console.log(patient);
-    if(patient){
-        POST('/api/patients/', patient)
-        .then(response => {
-            console.log(response);
-        })
-        .catch( err => {
-            console.log(err)
-        })
-        .finally(_ => {
-            reFetch();
-        })
-    }
 
-}
 
 
 class NewPatientItem extends React.Component {
-    state = {
-    "healthCardNB": "",
-    "firstname": "",
-    "lastname": "",
-    "birthDay": "",
-    "sex": "",
-    "phoneNumber": "",
-    "physicalAddress": "",
-    "email": "",
-    "password": "",
+
+    constructor(props){
+        super(props);
+
+        this.state = {
+            "healthCardNB": "",
+            "firstname": "",
+            "lastname": "",
+            "birthDay": "",
+            "sex": "",
+            "phoneNumber": "",
+            "physicalAddress": "",
+            "email": "",
+            "password": ""
+        }
+    }
+
+    initState(){
+        this.setState({
+            "healthCardNB": "",
+            "firstname": "",
+            "lastname": "",
+            "birthDay": "",
+            "sex": "",
+            "phoneNumber": "",
+            "physicalAddress": "",
+            "email": "",
+            "password": ""
+            });
+    }
+
+    postPatient(patient){
+        console.log(patient);
+        if(patient){
+            POST('/api/patients/', patient)
+            .then(response => {
+                console.log(response);
+            })
+            .catch( err => {
+                console.log(err)
+            })
+            .finally(_ => {
+                this.initState();
+                this.props.reFetch();
+            })
+        }
+    
     }
 
     render () {
@@ -101,7 +123,7 @@ class NewPatientItem extends React.Component {
                         </FormGroup>
                     </Col>
             </Row>
-            <Button onClick={ _ => postPatient(this.state, this.props.reFetch)} color="primary">Add Patient</Button>
+            <Button onClick={ _ => this.postPatient(this.state)} color="primary">Add Patient</Button>
             </Form></Main>
     }
 
