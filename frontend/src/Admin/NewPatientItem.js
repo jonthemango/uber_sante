@@ -16,18 +16,21 @@ const Main = styled.div`
     }
 
 `
-function postPatient(patient){
+function postPatient(patient, reFetch){
     console.log(patient);
     if(patient){
         POST('/api/patients/', patient)
         .then(response => {
-            console.log(response.data);
-            window.location.reload()
+            console.log(response);
         })
         .catch( err => {
             console.log(err)
         })
+        .finally(_ => {
+            reFetch();
+        })
     }
+
 }
 
 
@@ -98,7 +101,7 @@ class NewPatientItem extends React.Component {
                         </FormGroup>
                     </Col>
             </Row>
-            <Button onClick={ _ => postPatient(this.state)} color="primary">Add Patient</Button>
+            <Button onClick={ _ => postPatient(this.state, this.props.reFetch)} color="primary">Add Patient</Button>
             </Form></Main>
     }
 

@@ -17,6 +17,8 @@ const Main = styled.div`
     align-items: center;
     justify-content: center;
     margin-bottom: 1em;
+    margin-right: 1em;
+    text-align: center;
     &:hover {
         box-shadow: inset 0px 0px 49px -15px rgba(0,0,0,0.75);
     }

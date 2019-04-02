@@ -80,8 +80,6 @@ class AppointmentItem extends Component {
                 }
             }
             ).catch(e => {
-                alert('Network error')
-                console.log('Network error', {e})
             })
 
     }
@@ -120,7 +118,6 @@ class AppointmentItem extends Component {
                             }
                         }
                         ).catch(e => {
-                            alert('Network error')
                             console.log('Network error', {e})
                         })
                         this.setState({appointment:res.data.appointment})

@@ -19,9 +19,9 @@ export default class PatientItem extends React.Component {
                 console.log('patient item error',{err})
                 return err;
         })
-
-    
-        
+        .finally( _ => {
+            this.props.reFetch();
+        })
     }
 
     renderComponent(){
@@ -53,7 +53,9 @@ export default class PatientItem extends React.Component {
         })
         .finally(_=>{
             NotificationManager.success('Patient Deleted', 'Success');
+            this.props.reFetch()
         })
+
     }
 
     editing(){

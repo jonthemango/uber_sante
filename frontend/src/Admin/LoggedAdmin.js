@@ -14,10 +14,9 @@ const Grid = styled.div`
     width: 100%;
     display: flex;
     flex-wrap: wrap;
+    align-content: flex-start;
     justify-items: center;
-    justify-content: space-between;
     max-height: 50vh;
-    overflow-y: auto;
     & .row label {
         font-weight: normal !important;
     }
@@ -37,6 +36,9 @@ class LoggedAdmin extends Component {
             patients: [],
         }
 
+        this.fetchClinics = this.fetchClinics.bind(this);
+        this.fetchPatients = this.fetchPatients.bind(this);
+
     }
 
     componentDidMount(){
@@ -49,7 +51,6 @@ class LoggedAdmin extends Component {
         const result = await GET('/api/clinics/')
                                 .then(res=> res.json())
                                 .catch(e => {
-                                    alert('Network error')
                                     console.log('fetching clinic error', {e})
                                     return e
                                 })
@@ -64,7 +65,6 @@ class LoggedAdmin extends Component {
         const result = await GET('/api/patients/')
                                 .then(res=> res.json())
                                 .catch(e => {
-                                    alert('Network error')
                                     console.log('fetching clinic error', {e})
                                     return e
                                 })
@@ -111,9 +111,9 @@ class LoggedAdmin extends Component {
               <Col sm="12">
               <div style={{marginBottom: "4em"}}>
                         <h2>Clinics</h2>
-                        <NewClinicItem/>
+                        <NewClinicItem reFetch={this.fetchClinics} />
                         <Grid>
-                            {this.state.clinics.map(item => <ClinicItem {...item}/>)}
+                            {this.state.clinics.map(item => <ClinicItem {...item} reFetch={this.fetchClinics}/>)}
                         </Grid>
                 </div>
               </Col>
@@ -124,7 +124,7 @@ class LoggedAdmin extends Component {
               <Col sm="12">
               <div>
                 <h2>Patients</h2>
-                        <NewPatientItem/>
+                        <NewPatientItem reFetch={this.fetchPatients}/>
                         
 						<Background>
 
@@ -144,7 +144,7 @@ class LoggedAdmin extends Component {
                   </tr>
                   </thead>
                   <tbody>
-              {this.state.patients.map(item => <PatientItem {...item}/>)}
+              {this.state.patients.map(item => <PatientItem {...item} reFetch={this.fetchPatients} />)}
              </tbody>
              </Table>
 			 </Background>
