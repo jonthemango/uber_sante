@@ -31,9 +31,9 @@ const Main = styled.div`
 `
 
 
-const ClinicItem = ({id="", name="No name provided", rooms=[]})=> {
+const ClinicItem = ({choose, _id="", name="No name provided", rooms=[]})=> {
 
-    return <Main className="animated fadeIn" key={id}>
+    return <Main className="animated fadeIn" key={_id} onClick={() => choose(_id)}>
                 <h1>Clinic Name</h1>
                 <p>{name}</p>
                 <h1>Rooms</h1>

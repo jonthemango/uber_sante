@@ -123,7 +123,7 @@ class Consult extends Component {
     // Method that will fetch all existing appointments in a specific clinic
     getAllAppointment(){
         cookie.load('session');
-        GET('/api/clinics/5c9bbc69712d950006b36fea/appointments/')
+        GET('/api/clinics/5ca3b5d1aa9b21270113dd04/appointments/')
                .then( res =>  res.json())
                .then( res => {
                    console.log("JON",res)
@@ -212,7 +212,7 @@ class Consult extends Component {
                     const patientObj = {...res.data.patient}
                     const patientId = patientObj._id
                     let appointmentObj = {
-                        clinicId: "5c9bbc69712d950006b36fea",
+                        clinicId: "5ca3b5d1aa9b21270113dd04",
                         patientId: patientId,
                         date: this.state.datePicked,
                         blockIds: blockid,
@@ -226,7 +226,7 @@ class Consult extends Component {
                         if(isUpdating){
                             this.props.history.push("/nurse", {newAppointment: appointmentObj, info: this.props.history.location.state.info} )
                         }else {
-                            this.nurseMakeAppointment("5c9bbc69712d950006b36fea",patientId,this.state.datePicked,blockid,isannual,{cardNumber:1})
+                            this.nurseMakeAppointment("5ca3b5d1aa9b21270113dd04",patientId,this.state.datePicked,blockid,isannual,{cardNumber:1})
                         }
 
                     }else{

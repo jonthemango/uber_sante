@@ -23,6 +23,16 @@ class ClinicsController {
         }
 
     }
+
+    static async getClinic(req, res){
+        const clinic = await Clinics.get(req.params.id);
+
+        if (clinic.error || clinic == undefined) {
+            res.json({ success: false, error: clinic.error })
+        } else {
+            res.json({ success: true, data: { clinic }, message: "Clinic retrived" });
+        }
+    }
 }
 
 module.exports = ClinicsController;

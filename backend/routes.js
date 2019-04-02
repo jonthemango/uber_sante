@@ -54,6 +54,7 @@ doctors.get('/clinics/:id/doctors', DoctorsController.getDoctorsByClinic);
 const ClinicsController = require("./controllers/ClinicsController");
 clinics.post('/clinics/', ClinicsController.makeClinic);
 clinics.get('/clinics/', ClinicsController.getClinics);
+clinics.get('/clinics/:id', ClinicsController.getClinic);
 
 const AuthService = require('./controllers/AuthService')
 auth.post('/login', AuthService.login)

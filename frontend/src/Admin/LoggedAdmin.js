@@ -34,10 +34,16 @@ class LoggedAdmin extends Component {
             logged: false,
             clinics: [],
             patients: [],
+            doctors: [],
+            nurses: [],
+            rooms: [],
+            appointments: [],
+            hideClinic: true,
         }
 
         this.fetchClinics = this.fetchClinics.bind(this);
         this.fetchPatients = this.fetchPatients.bind(this);
+        this.chooseClinic = this.chooseClinic.bind(this);
 
     }
 
@@ -68,11 +74,84 @@ class LoggedAdmin extends Component {
                                     console.log('fetching clinic error', {e})
                                     return e
                                 })
-
         if(result.success) {
             const {patients} = result.data
             this.setState({patients})
         }
+    }
+
+    async fetchDoctors(clinicId){
+      console.log(`/api/clinics/${clinicId}/doctors`)
+      const result = await GET(`/api/clinics/${clinicId}/doctors`)
+                              .then(res=> res.json())
+                              .catch(e => {
+                                  console.log('fetching doctors error', {e})
+                                  return e
+                              })
+      console.log(result);
+      if(result.success) {
+          const {doctors} = result.data
+          this.setState({doctors})
+      }
+    }
+
+    async fetchNurses(clinicId){
+      console.log(`/api/clinics/${clinicId}/nurses`)
+      const result = await GET(`/api/clinics/${clinicId}/nurses`)
+                              .then(res=> res.json())
+                              .catch(e => {
+                                  console.log('fetching nurses error', {e})
+                                  return e
+                              })
+      console.log(result);
+      if(result.success) {
+          const {nurses} = result.data
+          this.setState({nurses})
+      }
+    }
+
+    async fetchRooms(clinicId){
+      console.log(`/api/clinics/${clinicId}`)
+      const result = await GET(`/api/clinics/${clinicId}`)
+                              .then(res=> res.json())
+                              .catch(e => {
+                                  console.log('fetching clinic error', {e})
+                                  return e
+                              })
+      console.log(result);
+      if(result.success) {
+          const {clinic} = result.data
+          console.log(clinic)
+          this.setState({rooms: clinic.rooms})
+      }
+    }
+
+    async fetchAppoointments(clinicId){
+      console.log(`/api/clinics/${clinicId}/appointments`)
+      const result = await GET(`/api/clinics/${clinicId}/appointments`)
+                              .then(res=> res.json())
+                              .catch(e => {
+                                  console.log('fetching appointment error', {e})
+                                  return e
+                              })
+      console.log(result);
+      if(result.success) {
+          const {appointments} = result.data
+          console.log(appointments)
+          this.setState({appointments});
+      }
+    }
+
+    async chooseClinic(id){
+      if (id == ""){
+        return
+      }
+      console.log(id);
+      this.setState({hideClinic: false});
+      this.fetchDoctors(id);
+      this.fetchNurses(id);
+      this.fetchRooms(id);
+      this.fetchAppoointments(id);
     }
 
     toggle(tab) {
@@ -103,6 +182,38 @@ class LoggedAdmin extends Component {
               Patients ({this.state.patients.length})
             </NavLink>
           </NavItem>
+          <NavItem>
+            <NavLink disabled={this.state.hideClinic}
+              className={classnames({ active: this.state.activeTab === '3' })}
+              onClick={() => { this.toggle('3'); }}
+            >
+              Doctors ({this.state.doctors.length})
+            </NavLink>
+          </NavItem>
+          <NavItem>
+            <NavLink disabled={this.state.hideClinic}
+              className={classnames({ active: this.state.activeTab === '4' })}
+              onClick={() => { this.toggle('4'); }}
+            >
+              Nurses ({this.state.nurses.length})
+            </NavLink>
+          </NavItem>
+          <NavItem>
+            <NavLink disabled={this.state.hideClinic}
+              className={classnames({ active: this.state.activeTab === '2' })}
+              onClick={() => { this.toggle('5'); }}
+            >
+              Rooms ({this.state.rooms.length})
+            </NavLink>
+          </NavItem>
+          <NavItem>
+            <NavLink disabled={this.state.hideClinic}
+              className={classnames({ active: this.state.activeTab === '2' })}
+              onClick={() => { this.toggle('5'); }}
+            >
+              Appointments ({this.state.appointments.length})
+            </NavLink>
+          </NavItem>
         </Nav>
 
         <TabContent activeTab={this.state.activeTab}>
@@ -113,7 +224,7 @@ class LoggedAdmin extends Component {
                         <h2>Clinics</h2>
                         <NewClinicItem reFetch={this.fetchClinics} />
                         <Grid>
-                            {this.state.clinics.map(item => <ClinicItem {...item} reFetch={this.fetchClinics}/>)}
+                            {this.state.clinics.map(item => <ClinicItem {...item} reFetch={this.fetchClinics} choose={this.chooseClinic}/>)}
                         </Grid>
                 </div>
               </Col>
