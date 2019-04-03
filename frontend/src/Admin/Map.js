@@ -22,7 +22,7 @@ class SimpleMap extends Component {
 
   return (
       // Important! Always set the container height explicitly
-      <div style={{ height: '100vh', width: '100%' }}>
+    <div style={{ height: '100vh', width: '100%', marginTop: "2em"}}>
         <IframeComponent src="https://www.google.com/maps/embed/v1/place?key=AIzaSyBOmW-WP0dtM7sQbXZuBNwu3uUX-5rrZrw
     &q=Uber,Seattle+WA" height="600" width="100%"/>
       </div>
