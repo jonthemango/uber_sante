@@ -11,14 +11,14 @@ const document_routers = (routers_json, top_level_route, port) => {
 
   for(let i=0; i<routers.length; i++){
     router = routers[i];
-    api_package[router_names[i]] = document_router(router, top_level_route, port)
+    api_package[router_names[i]] = document_router(router, top_level_route, port, router_names[i])
   }
   return api_package
 }
 
 
 
-const document_router = (router, top_level_route, port) => {
+const document_router = (router, top_level_route, port, router_name) => {
   let route_obj;
   let path;
   const api_package = []
@@ -31,7 +31,7 @@ const document_router = (router, top_level_route, port) => {
       path = top_level_route + route_obj.path;
       uri = "http://localhost:" + port + path
       method = route_obj.stack[0].method;
-      api_package.push({uri, path, method, method_name, description:""});
+      api_package.push({uri, path, method, method_name, router_name, description:""});
   }
   return api_package
 }
