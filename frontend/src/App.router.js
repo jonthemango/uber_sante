@@ -8,7 +8,7 @@ import SignUp from './SignUp'
 import {NotificationContainer} from 'react-notifications';
 import DoctorHome from './DoctorHome'
 import Cart from './Cart'
-import Admin from './Admin/Admin'
+import Admin from './admin/Admin'
 import PatientHome from './PatientHome';
 import NurseHome from './NurseHome';
 

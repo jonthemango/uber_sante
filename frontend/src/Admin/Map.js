@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import IframeComponent from './IframeComponent';
 
-const AnyReactComponent = ({ text }) => <div>{text}</div>;
  
 class SimpleMap extends Component {
   

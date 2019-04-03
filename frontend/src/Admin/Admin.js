@@ -6,7 +6,8 @@ import LoggedAdmin from './LoggedAdmin'
 const Admin = (props) => {
     const [logged, setLogged] = useState(false)
     
-    return logged ? <LoginAdmin login={_=> setLogged(true)}/> : <LoggedAdmin/>
+    return !logged ? <LoginAdmin login={_=> setLogged(true)}/> : <LoggedAdmin/>
+    
     
 }
 

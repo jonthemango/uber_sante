@@ -16,6 +16,7 @@
     "react-datepicker": "^2.1.0",
     "react-dom": "^16.8.6",
     "react-dropdown": "^1.6.4",
+    "react-json-pretty": "^2.1.0",
     "react-moment": "^0.8.4",
     "react-notifications": "^1.4.3",
     "react-radio-buttons": "^1.2.2",
