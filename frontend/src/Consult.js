@@ -110,7 +110,37 @@ class Consult extends Component {
             slotSelected:null,
             selectedDate:null,
             dayPickByuser:null,
-            patientEmail: ''
+            patientEmail: '',
+            clinicName:null,
+            dayOfWeek:null
+        }
+    }
+
+    getAllClinics(){
+        GET('/api/clinics/')
+               .then( res =>  res.json())
+               .then( res => {
+                   console.log("SALIHAAAA",res)
+                  if (res.success) {
+                    this.setState({allClinics:res.data.clinics})
+                  } else 
+                    this.setState({allClinics:[]})
+                }
+            ).catch(e => {
+        })
+    }
+    optionSelectedFromDropdown(item){
+       
+        for(var i=0;i<this.state.allClinics.length;i++){
+            if(this.state.allClinics[i]['name'] == item){
+                this.setState({clinicSelected :this.state.allClinics[i]})
+                this.setState({clinicId :this.state.allClinics[i]['_id']})
+            }
+        }
+        this.setState({clinicName: item})
+        this.getAllAppointment()
+        if(this.state.dayOfWeek != null){
+            this.createCalendarAvailability(this.state.dayOfWeek)
         }
     }
 
@@ -138,8 +168,9 @@ class Consult extends Component {
                 }
             ).catch(e => {
         })
-
     }
+
+
 
     nurseMakeAppointment(clinicId,patientId,date,blockIds,isAnnual,paymentInfo){
         POST('/api/appointments/', {
@@ -261,6 +292,8 @@ class Consult extends Component {
     }
     // Method that will, based on patient's date selection, determine the first day in the same week
     filterCalendarByDate(day) {
+
+        if(this.state.clinicId != null){
         console.log(day);
         //console.log({day})
         //this.setState({date:day});
@@ -287,8 +320,12 @@ class Consult extends Component {
             dayOfWeek.push(firstDay)
 
         }
+        this.setState({dayOfWeek:dayOfWeek})
         this.createCalendarAvailability(dayOfWeek)
-
+    }
+    else{
+        alert("Choose a Clinic First")
+    }
     }
 
     getYearOfDate(date){
@@ -348,7 +385,10 @@ class Consult extends Component {
     componentWillMount() {
         //this.getAllAppointment()
         //this.getInfos();
-        this.setState({appointment: this.getAllAppointment()})
+        this.setState({allClinics: this.getAllClinics()})
+        
+        //this.setState({appointment: this.getAllAppointment()})
+       
     }
 
 
