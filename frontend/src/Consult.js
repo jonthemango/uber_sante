@@ -137,6 +137,7 @@ class Consult extends Component {
                 this.setState({clinicId :this.state.allClinics[i]['_id']})
             }
         }
+        console.log("Eric Logs",this.state.clinicId)
         this.setState({clinicName: item})
         this.getAllAppointment()
         if(this.state.dayOfWeek != null){
