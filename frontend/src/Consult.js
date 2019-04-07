@@ -130,7 +130,7 @@ class Consult extends Component {
         })
     }
     optionSelectedFromDropdown(item){
-       
+       console.log("Zabbe",item)
         for(var i=0;i<this.state.allClinics.length;i++){
             if(this.state.allClinics[i]['name'] == item){
                 this.setState({clinicSelected :this.state.allClinics[i]})
@@ -143,6 +143,7 @@ class Consult extends Component {
             this.createCalendarAvailability(this.state.dayOfWeek)
         }
     }
+    
 
     generateSlots(lowEnd=0, highEnd=36*5){
         let list = [];
