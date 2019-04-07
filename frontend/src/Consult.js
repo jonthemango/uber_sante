@@ -332,7 +332,10 @@ class Consult extends Component {
                 }
             }
         }
-
+        for(let element=0; element<list.length; element++){
+            list[element]['MaxSlots']= this.state.clinicSelected.rooms.length
+        }
+        console.log("YANIS LIST",list)
         this.setState({slots: list});
     }
 
@@ -360,6 +363,17 @@ class Consult extends Component {
     const isUpdating = this.props.history.location.state && this.props.history.location.state.updateAppointment
     
     console.log('props => ',this.props)
+
+    const nameClinics = []
+    console.log("yanis1 : ",this.state.allClinics)
+    if(this.state.allClinics != undefined){
+
+     for(var i=0;i<this.state.allClinics.length;i++){
+           nameClinics.push(this.state.allClinics[i]['name'])
+      }
+    }
+    
+
     return (
 
     
@@ -409,6 +423,11 @@ class Consult extends Component {
                     </div>
                     : null
                 }
+                <label>Please choose a clinic</label>
+
+                <Dropdown options={nameClinics} value={this.state.clinicName} onChange={e =>this.optionSelectedFromDropdown(e.value)}  placeholder="Select an option" />
+                <br />
+                
                 <label>{isUpdating ? "Pick a new appointment date" : "Pick a consultation date"}</label>
                 <br />
                 <DatePicker className='date' selected={this.state.date} onChange={e => this.filterCalendarByDate(e) } />
@@ -423,17 +442,20 @@ class Consult extends Component {
                 <p>Choose the starting slot in the calendar</p>
 
                 <button className="button" id = "appointmentSave" onClick={ _ => this.createAppointment() }> Book Appointment</button>
-
+            
+                { this.state.clinicSelected !=null ?
             <div>
                 <br />
+                
                 <label>Legend</label>
                 <Ul>
-                    <LiY> There is 1-4 slots for booking available
+                    <LiY> There is 1-{this.state.clinicSelected['rooms'].length} slots for booking available
                     </LiY>
-                    <LiR> There is no slots for booking available
+                    <LiR> There is no slots for booking available 
                     </LiR>
                 </Ul>
             </div>
+            :null}
 
             </div>
             <br/>
