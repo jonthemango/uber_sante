@@ -12,6 +12,7 @@ import 'react-dropdown/style.css'
 import VueClockPicker from 'vue-clock-picker'
 import { ButtonGroup } from 'react-bootstrap'
 
+
 const moment = require('moment');
 
 const Separator = styled.div`
@@ -98,7 +99,10 @@ class Consult extends Component {
         super(props)
 
         this.state={
-            appointment : this.getAllAppointment(),
+            allClinics: this.getAllClinics(),
+            clinicId: null,
+            clinicSelected:null,
+            appointment : [],
             date : new Date(),
             slots: this.generateSlots(),
             datePicked:null,
@@ -123,7 +127,7 @@ class Consult extends Component {
     // Method that will fetch all existing appointments in a specific clinic
     getAllAppointment(){
         cookie.load('session');
-        GET('/api/clinics/5ca3b5d1aa9b21270113dd04/appointments/')
+          GET('/api/clinics/'+this.state.clinicId+'/appointments/')
                .then( res =>  res.json())
                .then( res => {
                    console.log("JON",res)
@@ -181,7 +185,7 @@ class Consult extends Component {
 
     // Method that will allow patients to create an appointment
     createAppointment(){
-        if(this.state.datePicked !=null && this.state.appointmentType !=null && this.state.slotSelected !=null){
+        if(this.state.datePicked !=null && this.state.appointmentType !=null && this.state.slotSelected !=null && this.state.clinicId !=null){
 
             const user = cookie.load('session')
             var blockid = []
@@ -212,7 +216,7 @@ class Consult extends Component {
                     const patientObj = {...res.data.patient}
                     const patientId = patientObj._id
                     let appointmentObj = {
-                        clinicId: "5ca3b5d1aa9b21270113dd04",
+                        clinicId: this.state.clinicId,
                         patientId: patientId,
                         date: this.state.datePicked,
                         blockIds: blockid,
@@ -226,7 +230,7 @@ class Consult extends Component {
                         if(isUpdating){
                             this.props.history.push("/nurse", {newAppointment: appointmentObj, info: this.props.history.location.state.info} )
                         }else {
-                            this.nurseMakeAppointment("5ca3b5d1aa9b21270113dd04",patientId,this.state.datePicked,blockid,isannual,{cardNumber:1})
+                            this.nurseMakeAppointment(this.state.clinicId,patientId,this.state.datePicked,blockid,isannual,{cardNumber:1})
                         }
 
                     }else{
