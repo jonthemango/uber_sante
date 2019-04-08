@@ -39,7 +39,7 @@ nurses.post('/nurses/', NursesController.makeNurse);
 nurses.get('/nurses/:id', NursesController.getNurse);
 nurses.put('/nurses/:id', NursesController.updateNurse);
 nurses.delete('/nurses/:id', NursesController.deleteNurse);
-nurses.get('/clinics/:id/nurses', NursesController.getNursesByClinic)
+nurses.get('/clinics/:id/nurses', NursesController.getNursesByClinic);
 
 // ======== CRUD Doctors ============
 const DoctorsController = require("./controllers/DoctorsController");
