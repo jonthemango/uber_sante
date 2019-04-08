@@ -12,6 +12,8 @@ import DoctorItem from './DoctorItem';
 import AppointmentItem from './AppointmentItem';
 import Map from './Map.js'
 import Code from './Code.js'
+import NurseItem from './NurseItem';
+import NewNurseItem from "./NewNurseItem";
 
 const Grid = styled.div`
     background-color: #ffffff;
@@ -344,8 +346,8 @@ class LoggedAdmin extends Component {
             <Row>
               <Col sm="12">
               <div>
-                <h2>Nurses (not hooked up yet)</h2>
-                        
+                <h2>Nurses</h2>
+                <NewNurseItem reFetch={this.fetchNurses} {...this.state} />
 						<Background>
 
                         <Table>
@@ -355,12 +357,11 @@ class LoggedAdmin extends Component {
                       <th>Last Name</th>
                       <th>Access Id</th>
                       <th>Email</th>
-                      <th>Actions</th>
-                      <th></th>
                       <th></th>
                   </tr>
                   </thead>
                   <tbody>
+                  {this.state.nurses.map(item => <NurseItem {...item} reFetch={this.fetchNurses} {...this.state}/>)}
              </tbody>
              </Table>
 			 </Background>
