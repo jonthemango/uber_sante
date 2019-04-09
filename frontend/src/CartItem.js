@@ -123,7 +123,7 @@ class CartItem extends Component {
                                 alert("Appointment Succesfully Created!!")
                             }
                             else { // bug
-                                alert("Appointment not Created!! Appointment not available at this time ")
+                                alert(res.error)
                                 this.btn.setAttribute("disabled", "disabled")
                                 console.log('something went terribly wrong')
                             }
