@@ -12,12 +12,10 @@ export default class DoctorItem extends React.Component {
     }
     async update(clinicId){
         this.setState({isEditing: false})
-        console.log('update', this.state)
         PUT(`/api/doctors/${this.props._id}`, {...this.state}).then(res => res.json())
         .then(_=> NotificationManager.success('Doctor updated', 'Success'))
         .catch(err => {
                 NotificationManager.warning(err);
-                console.log('doctor item error',{err})
                 return err;
         })
         .finally( _ => {
@@ -28,13 +26,10 @@ export default class DoctorItem extends React.Component {
     async updateAllAvail(clinicId, availType){
         let availability = avail(availType);
         
-        console.log(clinicId, availability)
-        console.log('update', this.state)
         POST(`/api/doctors/${this.props._id}/availability`, availability).then(res => res.json())
         .then(_=> NotificationManager.success('Availabilities updated', 'Success'))
         .catch(err => {
                 NotificationManager.warning(err);
-                console.log('doctor item error',{err})
                 return err;
         })
         .finally( _ => {

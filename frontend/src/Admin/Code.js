@@ -37,7 +37,6 @@ class Code extends Component {
         this.getDocs()
     }
     
-    console.log(result);
     this.setState({code: result})
     return result
 

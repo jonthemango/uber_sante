@@ -12,12 +12,10 @@ export default class NurseItem extends React.Component {
 
     async updateNurse(clinicId){
         this.setState({isEditing: false})
-        console.log('nurse update', this.state)
         PUT(`/api/nurses/${this.props._id}`, {...this.state}).then(res => res.json())
         .then(_=> NotificationManager.success('Nurse updated', 'Success'))
         .catch(err => {
                 NotificationManager.warning(err);
-                console.log('nurse item error',{err})
                 return err;
         })
         .finally( _ => {

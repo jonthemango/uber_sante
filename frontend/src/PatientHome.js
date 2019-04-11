@@ -105,7 +105,6 @@ class PatientHome extends Component {
         GET(`/api/patients/${user.id}/appointments`)
             .then( res =>  res.json())
             .then( res => {
-                console.log('appts',{res})
                 this.generateInfoByPatientCart(res.data.appointments)
             }
             ).catch(e => {

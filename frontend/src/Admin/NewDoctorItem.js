@@ -23,7 +23,6 @@ class NewDoctorItem extends React.Component {
 
     constructor(props){
         super(props);
-        console.log("props",props);
         this.state = {
         "email":"",
         "permit":"",
@@ -54,14 +53,11 @@ class NewDoctorItem extends React.Component {
     }
 
     postDoctor(doctor){
-        console.log(doctor);
         if(doctor){
             POST('/api/doctors/', doctor)
             .then(response => {
-                console.log(response);
             })
             .catch( err => {
-                console.log(err)
             })
             .finally(_ => {
                 this.initState();

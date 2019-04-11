@@ -160,7 +160,6 @@ class Consult extends Component {
           GET('/api/clinics/'+this.state.clinicId+'/appointments/')
                .then( res =>  res.json())
                .then( res => {
-                   console.log("JON",res)
                   if (res.success) {
                     this.setState({appointment:res.data.appointments})
                   } else 
@@ -189,12 +188,8 @@ class Consult extends Component {
                     window.location.reload()
                 }
                 else{
-                    alert("Appointment Not Created!! Make sur you choose an available slot ")
-                    console.log('something went terribly wrong')}
+                    alert("Appointment Not Created!! Make sur you choose an available slot ")}
             })
-            .catch(e => {
-                console.log('Error')
-        })
     }
 
     sendToCart(patientObj){
@@ -210,7 +205,6 @@ class Consult extends Component {
                         }
                     })
                     .catch(e => {
-                        console.log('Error')
                 })
     }
 
@@ -294,9 +288,6 @@ class Consult extends Component {
     filterCalendarByDate(day) {
 
         if(this.state.clinicId != null){
-        console.log(day);
-        //console.log({day})
-        //this.setState({date:day});
         var dayCurrent = day.getDay()
 
         var firstDayOfWeek = day;
@@ -372,7 +363,6 @@ class Consult extends Component {
         for(let element=0; element<list.length; element++){
             list[element]['MaxSlots']= this.state.clinicSelected.rooms.length
         }
-        console.log("YANIS LIST",list)
         this.setState({slots: list});
     }
 
@@ -394,7 +384,6 @@ class Consult extends Component {
 
     render() {
     const session = cookie.load('session')
-    console.log("User2",session)
     const options = [
         'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'
     ]
@@ -402,10 +391,8 @@ class Consult extends Component {
 
     const isUpdating = this.props.history.location.state && this.props.history.location.state.updateAppointment
     
-    console.log('props => ',this.props)
 
     const nameClinics = []
-    console.log("yanis1 : ",this.state.allClinics)
     if(this.state.allClinics != undefined){
 
      for(var i=0;i<this.state.allClinics.length;i++){

@@ -52,14 +52,11 @@ class NewPatientItem extends React.Component {
     }
 
     postPatient(patient){
-        console.log(patient);
         if(patient){
             POST('/api/patients/', patient)
             .then(response => {
-                console.log(response);
             })
             .catch( err => {
-                console.log(err)
             })
             .finally(_ => {
                 this.initState();

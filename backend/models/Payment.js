@@ -7,7 +7,7 @@ const subber = new BusSubscriber({ port: 7001 })
 
 class Payment {
     static isValid(paymentInfo) {
-        if  (paymentInfo == undefined || paymentInfo.cardNumber == undefined){
+        if  (paymentInfo == undefined || paymentInfo.cardNumber == undefined){ // 
             return false
         }
         return true

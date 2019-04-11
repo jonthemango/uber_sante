@@ -194,7 +194,6 @@ class Login extends Component {
           }else{
             
                 if (response.success) {
-                    console.log(response)
                     cookie.save('session', {id: response.user._id, type, token: response.token,email:response.user.email})
                     NotificationManager.success('Logged in!', 'Welcome');
                    if(type!=='doctor') {

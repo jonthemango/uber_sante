@@ -21,10 +21,8 @@ function postClinic(name,rooms, reFetch, initState){
     if(name && rooms){
         POST('/api/clinics/', {name,rooms})
         .then(response => {
-            console.log(response);
         })
         .catch( err => {
-            console.log(err)
         })
         .finally(_ => {
             initState()

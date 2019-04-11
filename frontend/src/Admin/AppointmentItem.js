@@ -14,8 +14,6 @@ export default class AppointmentItem extends React.Component {
     
     componentDidMount(){
         this.setState(({...this.props}))
-        console.log(this.state);
-        console.log(this.props);
     }
 
     blockId(ids){
@@ -36,12 +34,12 @@ export default class AppointmentItem extends React.Component {
             "8:00PM"
         ]
         if (ids.length == 3){
-            let deltaA = time[ids[0]]
-            let deltaB = time[ids[2]+1]
+            let deltaA = time[parseInt(ids[0])]
+            let deltaB = time[parseInt(ids[2])+1]
             res = deltaA + " to " + deltaB;
         } else {
-            let deltaA = time[ids[0]]
-            let deltaB = time[ids[0]+1]
+            let deltaA = time[parseInt(ids[0])]
+            let deltaB = time[parseInt(ids[0])+1]
             res = deltaA + " to " + deltaB;
         }
         return res;

@@ -11,12 +11,10 @@ export default class PatientItem extends React.Component {
     }
     async updatePatient(){
         this.setState({isEditing: false})
-        console.log('update', this.state)
         PUT(`/api/patients/${this.props._id}`, {...this.state}).then(res => res.json())
         .then(_=> NotificationManager.success('Patient updated', 'Success'))
         .catch(err => {
                 NotificationManager.warning(err);
-                console.log('patient item error',{err})
                 return err;
         })
         .finally( _ => {

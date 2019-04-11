@@ -3,6 +3,7 @@ import {GET} from '../ApiCall'
 import ClinicItem from './ClinicItem';
 import NewClinicItem from './NewClinicItem';
 import NewPatientItem from './NewPatientItem';
+import NewAppointmentItem from './NewAppointmentItem';
 import { Container, Nav, NavItem, NavLink, TabContent, TabPane, Row, Col, Table, ListGroup, ListGroupItem } from 'reactstrap';
 import styled from 'styled-components';
 import classnames from 'classnames';
@@ -55,6 +56,8 @@ class LoggedAdmin extends Component {
         this.fetchDoctors = this.fetchDoctors.bind(this);
         this.fetchNurses = this.fetchNurses.bind(this);
         this.fetchRooms = this.fetchRooms.bind(this);
+        this.fetchAppointments = this.fetchAppointments.bind(this);
+
     }
 
     componentDidMount(){
@@ -137,7 +140,7 @@ class LoggedAdmin extends Component {
       }
     }
 
-    async fetchAppoointments(clinicId){
+    async fetchAppointments(clinicId){
       console.log(`/api/clinics/${clinicId}/appointments`)
       const result = await GET(`/api/clinics/${clinicId}/appointments`)
                               .then(res=> res.json())
@@ -150,6 +153,7 @@ class LoggedAdmin extends Component {
           const {appointments} = result.data
           console.log(appointments)
           this.setState({appointments});
+          console.log("state",this.state)
       }
     }
 
@@ -162,7 +166,7 @@ class LoggedAdmin extends Component {
       this.fetchDoctors(id);
       this.fetchNurses(id);
       this.fetchRooms(id);
-      this.fetchAppoointments(id);
+      this.fetchAppointments(id);
     }
 
     toggle(tab) {
@@ -393,9 +397,10 @@ class LoggedAdmin extends Component {
               <Col sm="12">
               <div>
                 <h2>Appointments</h2>  
-						<Background>
-            {this.state.appointments.map(item => <AppointmentItem {...item} reFetch={this.fetchAppoointments} {...this.state}/>)}
-			      </Background>
+                {//<NewAppointmentItem reFetch={this.fetchAppointments} {...this.state} />}} 
+                }
+
+            {this.state.appointments.map(item => <AppointmentItem {...item} reFetch={this.fetchAppointments} {...this.state}/>)}
 
                     </div>
               </Col>

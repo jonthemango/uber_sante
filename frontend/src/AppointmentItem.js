@@ -65,7 +65,6 @@ class AppointmentItem extends Component {
     handleClickRemove(cartInfo,info){
 
         const session = cookie.load('session')
-        console.log('to delete', info)
 
         DELETE(`/api/appointments/${info._id}`)
             .then( res =>  res.json())
@@ -73,10 +72,8 @@ class AppointmentItem extends Component {
                 if (res.success) {
                     alert('Deleted !')
                     window.location.reload()
-                    console.log('Success', {res})
                 }else {
                     alert('An error occured')
-                    console.log('No success', {res})
                 }
             }
             ).catch(e => {
@@ -85,7 +82,6 @@ class AppointmentItem extends Component {
     }
 
     componentDidMount(){
-        console.log('props',this.props)
         const hasNewAppointment = this.props.history.location.state && this.props.history.location.state.newAppointment
         if(hasNewAppointment)
             this.setState({ newAppointment: this.props.history.location.state.newAppointment,
@@ -114,17 +110,14 @@ class AppointmentItem extends Component {
                                 this.props.history.push("/")
                             }else {
                                 alert('An error occured making an appointment')
-                                console.log('No success', {res})
                             }
                         }
                         ).catch(e => {
-                            console.log('Network error', {e})
                         })
                         this.setState({appointment:res.data.appointment})
                     }
                 })
                 .catch(e => {
-                    console.log('Error')
             })
             
            

@@ -325,7 +325,6 @@ export default class DoctorHome extends Component {
         let slots = []
         let res = []
         const result = await GET(`/api/doctors/${id}/appointments`).then(res => res.json())
-        console.log(result.data.appointments)
         if(result.success){
             for(let appointment of result.data.appointments){
                 let formatedAppointment = {blockIds: appointment.blockIds, _id: appointment._id, weekday: moment(appointment.date, 'YYYY-MM-DD').format('dddd').toLowerCase() , date: appointment.date, patientId: appointment.patientId, room: appointment.room, type: appointment.type}

@@ -134,11 +134,9 @@ export default class Calendar extends Component {
             this.props.onSlotClicked(slot,x.date);
         }
         if(this.props.isDoctor){
-            console.log({x})
             if(x._id){
                 const patient = await GET(`/api/patients/${x.patientId}`).then(res=>res.json()).then(res=>res.data.patient)
                 const appointmentData = {...x, patient}
-                console.log(appointmentData)
                 this.setState({appointmentData}, _ => this.setState({showModal: true}))
             } 
         }
@@ -191,12 +189,10 @@ export default class Calendar extends Component {
     
                 this.setState({slots:newSlots})
             }catch(e) {
-                console.log('err', e)
             }
         }else {
             const slots = this.generateSlots()
             let weeklySlots = newSlots[date]
-            console.log({weeklySlots})
             if(weeklySlots){
                 for(let slot of weeklySlots){
                     for(let blockId of slot.blockIds){

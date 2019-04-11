@@ -58,14 +58,11 @@ class NewNurseItem extends React.Component {
     }
 
     postNurse(nurse){
-        console.log(nurse);
         if(true){
             POST('/api/nurses/', nurse)
             .then(response => {
-                console.log(response);
             })
             .catch( err => {
-                console.log(err)
             })
             .finally(_ => {
                 this.initState();
