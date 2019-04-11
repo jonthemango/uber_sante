@@ -176,7 +176,7 @@ class LoggedAdmin extends Component {
     render() {
         return (
           <Background>
-            <Container style={{cursor: 'pointer', width:"90%"}}>
+            <Container style={{cursor: 'pointer', width:"100%", maxWidth: "90%"}}>
         <Nav tabs>
           <NavItem>
             <NavLink
@@ -327,9 +327,8 @@ class LoggedAdmin extends Component {
                       <th>City</th>
                       <th>Permit</th>
                       <th>Specialty</th>
+                      <th>Availabilities</th>
                       <th>Actions</th>
-                      <th></th>
-                      <th></th>
                   </tr>
                   </thead>
                   <tbody>
@@ -350,14 +349,14 @@ class LoggedAdmin extends Component {
                 <NewNurseItem reFetch={this.fetchNurses} {...this.state} />
 						<Background>
 
-                        <Table>
+            <Table style={{"textAlign": "left"}}>
                   <thead>
                   <tr>
                       <th>First Name</th>
                       <th>Last Name</th>
                       <th>Access Id</th>
                       <th>Email</th>
-                      <th></th>
+                      <th>Actions</th>
                   </tr>
                   </thead>
                   <tbody>

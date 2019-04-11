@@ -162,6 +162,9 @@ class Code extends Component {
           <Input type="textarea" style={{height: "20em"}} name="text" value={this.state.body} onChange={e => this.setState({body: e.target.value})}/>
               </FormGroup>
           </React.Fragment> : null }
+          <Alert color="success">
+          For example try to GET /api/clinics/
+          </Alert>
           <Alert color="danger">
           Interaction with API through this console is experimental
           </Alert>

@@ -29,13 +29,13 @@ export default class PatientItem extends React.Component {
         const {_id, firstname, lastname, birthDay,sex, phoneNumber, physicalAddress, email} = this.props
  
         return (<tr>
-            <td style={{textAlign: 'center',outline: isEditing ? '1px solid lightgrey':'none'}} onInput={ e => this.setState({firstname: e.currentTarget.textContent})} contentEditable={isEditing}>{firstname}</td>
-            <td style={{textAlign: 'center',outline: isEditing ? '1px solid lightgrey':'none'}} onInput={ e => this.setState({lastname: e.currentTarget.textContent})} contentEditable={isEditing}>{lastname}</td>
-            <td style={{textAlign: 'center',outline: isEditing ? '1px solid lightgrey':'none'}} onInput={ e => this.setState({birthDay: e.currentTarget.textContent})} contentEditable={isEditing}>{birthDay}</td>
-            <td style={{textAlign: 'center',outline: isEditing ? '1px solid lightgrey':'none'}} onInput={ e => this.setState({sex: e.currentTarget.textContent})} contentEditable={isEditing}>{sex}</td>
-            <td style={{textAlign: 'center',outline: isEditing ? '1px solid lightgrey':'none'}} onInput={ e => this.setState({phoneNumber: e.currentTarget.textContent})} contentEditable={isEditing}>{phoneNumber}</td>
-            <td style={{textAlign: 'center',outline: isEditing ? '1px solid lightgrey':'none'}} onInput={ e => this.setState({physicalAddress: e.currentTarget.textContent})} contentEditable={isEditing}>{physicalAddress}</td>
-            <td style={{textAlign: 'center',outline: isEditing ? '1px solid lightgrey':'none'}} onInput={ e => this.setState({email: e.currentTarget.textContent})} contentEditable={isEditing}>{email}</td>
+            <td style={{textAlign: 'left',outline: isEditing ? '1px solid lightgrey':'none'}} onInput={ e => this.setState({firstname: e.currentTarget.textContent})} contentEditable={isEditing}>{firstname}</td>
+            <td style={{textAlign: 'left',outline: isEditing ? '1px solid lightgrey':'none'}} onInput={ e => this.setState({lastname: e.currentTarget.textContent})} contentEditable={isEditing}>{lastname}</td>
+            <td style={{textAlign: 'left',outline: isEditing ? '1px solid lightgrey':'none'}} onInput={ e => this.setState({birthDay: e.currentTarget.textContent})} contentEditable={isEditing}>{birthDay}</td>
+            <td style={{textAlign: 'left',outline: isEditing ? '1px solid lightgrey':'none'}} onInput={ e => this.setState({sex: e.currentTarget.textContent})} contentEditable={isEditing}>{sex}</td>
+            <td style={{textAlign: 'left',outline: isEditing ? '1px solid lightgrey':'none'}} onInput={ e => this.setState({phoneNumber: e.currentTarget.textContent})} contentEditable={isEditing}>{phoneNumber}</td>
+            <td style={{textAlign: 'left',outline: isEditing ? '1px solid lightgrey':'none'}} onInput={ e => this.setState({physicalAddress: e.currentTarget.textContent})} contentEditable={isEditing}>{physicalAddress}</td>
+            <td style={{textAlign: 'left',outline: isEditing ? '1px solid lightgrey':'none'}} onInput={ e => this.setState({email: e.currentTarget.textContent})} contentEditable={isEditing}>{email}</td>
         
         <td><Button color={isEditing ? "secondary" : "primary"} onClick={_ => this.editing()}>Edit</Button></td>
         <td><Button color="success" onClick={ _ => this.updatePatient() } >Save</Button></td>

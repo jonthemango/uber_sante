@@ -30,14 +30,14 @@ export default class NurseItem extends React.Component {
         const {accessId, firstname, lastname, email, clinicId} = this.props
  
         return (<tr>
-            <td style={{textAlign: 'center',outline: isEditing ? '1px solid lightgrey':'none'}} onInput={ e => this.setState({firstname: e.currentTarget.textContent})} contentEditable={isEditing}>{firstname}</td>
-            <td style={{textAlign: 'center',outline: isEditing ? '1px solid lightgrey':'none'}} onInput={ e => this.setState({lastname: e.currentTarget.textContent})} contentEditable={isEditing}>{lastname}</td>
-            <td style={{textAlign: 'center',outline: isEditing ? '1px solid lightgrey':'none'}} onInput={ e => this.setState({accessId: e.currentTarget.textContent})} contentEditable={isEditing}>{accessId}</td>
-            <td style={{textAlign: 'center',outline: isEditing ? '1px solid lightgrey':'none'}} onInput={ e => this.setState({email: e.currentTarget.textContent})} contentEditable={isEditing}>{email}</td>
+            <td style={{textAlign: 'left',outline: isEditing ? '1px solid lightgrey':'none'}} onInput={ e => this.setState({firstname: e.currentTarget.textContent})} contentEditable={isEditing}>{firstname}</td>
+            <td style={{textAlign: 'left',outline: isEditing ? '1px solid lightgrey':'none'}} onInput={ e => this.setState({lastname: e.currentTarget.textContent})} contentEditable={isEditing}>{lastname}</td>
+            <td style={{textAlign: 'left',outline: isEditing ? '1px solid lightgrey':'none'}} onInput={ e => this.setState({accessId: e.currentTarget.textContent})} contentEditable={isEditing}>{accessId}</td>
+            <td style={{textAlign: 'left',outline: isEditing ? '1px solid lightgrey':'none'}} onInput={ e => this.setState({email: e.currentTarget.textContent})} contentEditable={isEditing}>{email}</td>
         
-        <td><Button color={isEditing ? "secondary" : "primary"} onClick={_ => this.editing()}>Edit</Button></td>
-        <td><Button color="success" onClick={ _ => this.updateNurse(clinicId) } >Save</Button></td>
-        <td><Button color="danger" onClick={ _ => this.deleteNurse(clinicId) }>Delete</Button></td>
+        <td><Button color={isEditing ? "secondary" : "primary"} onClick={_ => this.editing()}>Edit</Button>{" "}
+        <Button color="success" onClick={ _ => this.updateNurse(clinicId) } >Save</Button>{" "}
+        <Button color="danger" onClick={ _ => this.deleteNurse(clinicId) }>Delete</Button>{" "}</td>
       </tr>)
     }
 
