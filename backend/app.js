@@ -73,8 +73,8 @@ app.get(['/', '/api/'], (req, res) => {
         "helpful_links": {
             "repo": "https://github.com/jonthemango/uber_sante",
             "mongobb_node_docs": "http://mongodb.github.io/node-mongodb-native/3.1/",
-            "database_view": "http://68.183.207.82:8081/",
-            "database_connection": "mongodb://root:example@68.183.207.82:27017/",
+            "database_view": "http://104.196.55.64:8081/",
+            "database_connection": "mongodb://root:example@104.196.55.64:27017/",
             "rest": "https://en.wikipedia.org/wiki/Representational_state_transfer",
             "noras_requirements": "https://moodle.concordia.ca/moodle/pluginfile.php/3479944/mod_label/intro/SOEN%20344_W2019.pdf",
             "google_drive_link": "https://drive.google.com/drive/folders/18JtRxc3k4mJlnwUYyOA46yeWAYsZnGBH?usp=sharing"

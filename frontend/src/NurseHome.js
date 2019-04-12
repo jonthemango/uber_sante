@@ -5,7 +5,8 @@ import cookie from 'react-cookies'
 import { GET, POST, PUT } from './ApiCall'
 import 'moment-timezone';
 import 'react-dropdown/style.css'
-import CartItem from './CartItem'
+import AppointmentItem from './AppointmentItem'
+import swal from 'sweetalert2'    
 
 const moment = require('moment');
 
@@ -75,64 +76,63 @@ const Link = styled.div`
 
 `
 
-class Cart extends Component {
+class NurseHome extends Component {
     constructor (props) {
         super(props)
 
         this.state={
             cart: [],
         }
+
+        this.mounted()
     }
 
 
 
-    generateInfoByPatientCart(patient){
-
-
-        if(patient.cart == undefined){
+    generateInfoByPatientCart(cart){
+        if(cart == undefined){
             alert("You did not save an appointment at this time")
         }else{
-            this.setState({cart:patient.cart}) // <- The real one when Ribal fix the issue
-        //     let cart =[]
-        // let appointmentObj = {
-        //     clinicId: "5c79642f43d24100061b3283",
-        //     patientId: "123456789",
-        //     date: "28-04-2019",
-        //     blockIds: [3,4,5],
-        //     isAnnual: true,
-        //     paymentInfo:{cardNumber:1}
-        // }
-        // cart[0] =appointmentObj
-        // let yanis = {
-        //     clinicId: "5c79642f43d24100061b3283",
-        //     patientId: "123456789",
-        //     date: "29-04-2019",
-        //     blockIds: [11],
-        //     isAnnual: false,
-        //     paymentInfo:{cardNumber:1}
-        // }
-        // cart[1] = yanis
-
-        // this.setState({cart:cart})
-
+            this.setState({cart}) // <- The real one when Ribal fix the issue
         }
     }
 
-    getPatientCart(){
-        const user = cookie.load('session')
-        GET('/api/patients/'+user.id)
-            .then( res =>  res.json())
-            .then( res => {
-                if (res.success) {
-                    this.generateInfoByPatientCart(res.data.patient)
+
+
+    async mounted() {
+        const {value: email} = await swal.fire({
+            title: 'Enter a Patient email',
+            input: 'text',
+            showCancelButton: true,
+            inputValidator: async (value) => {
+                if(!value) return "Please enter an email";
+
+                const response = await GET(`/api/patients/email/${value}`).then( res =>  res.json())
+                    .then( res => {
+                        return res;
+                    }).catch(e => "Network error" )
+                    
+                console.log('user',{response})
+
+                if (!response.success) {
+                    return `Patient doesn't exist!`
+                } else {
+                    this.setState({patientId: response.data.patient._id, email: value})
                 }
             }
-            ).catch(e => {
-        })
-    }
+          })
 
-    componentWillMount(props) {
-        this.getPatientCart()
+        console.log('pat', this.state.patientId)
+
+        GET(`/api/patients/${this.state.patientId}/appointments`)
+            .then( res =>  res.json())
+            .then( res => {
+                console.log('appts',{res})
+                this.generateInfoByPatientCart(res.data.appointments)
+            }
+            ).catch(e => {
+
+            })
     }
 
 
@@ -157,6 +157,10 @@ class Cart extends Component {
                 </Link>
             </Links> :
             <Links>
+                <Link onClick={ _ => window.location.reload()} color="#FF6666" underColor="black">
+                    <a href="/nurse">Search</a>
+                    <Separator/>
+                </Link>
                 <Link onClick={ _ => cookie.remove('session')} color="#FF6666" underColor="black">
                     <a href="/">Log out</a>
                     <Separator/>
@@ -165,9 +169,9 @@ class Cart extends Component {
         </Navbar>
 
         <div class= "logged-body">
-            <h1>Cart Appointment</h1>
+            {this.state.email? <h1>Appointments for {this.state.email}</h1> : null}
 
-            {cart.map(item => <CartItem cartInfo ={cart} info={item}  date={item.date} time={item.blockIds} isAnnual={item.isAnnual}/>)}
+            {cart.map(item => <AppointmentItem history={this.props.history} cartInfo ={cart} info={item}  date={item.date} time={item.blockIds} isAnnual={item.isAnnual}/>)}
         </div>
 
 
@@ -177,4 +181,4 @@ class Cart extends Component {
     }
 }
 
-export default Cart;
+export default NurseHome;

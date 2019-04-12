@@ -28,7 +28,8 @@ appointments.delete('/appointments/:id', AppointmentsController.deleteAppointmen
 const PatientsController = require("./controllers/PatientsController");
 patients.post('/patients/', PatientsController.makePatient);
 patients.get('/patients/:id', PatientsController.getPatient);
-patients.get('/patients/email/:email',PatientsController.getPatientByEmail)
+patients.get('/patients/email/:email',PatientsController.getPatientByEmail);
+patients.get('/patients/', PatientsController.getPatients);
 patients.put('/patients/:id', PatientsController.updatePatient);
 patients.delete('/patients/:id', PatientsController.deletePatient);
 
@@ -38,7 +39,7 @@ nurses.post('/nurses/', NursesController.makeNurse);
 nurses.get('/nurses/:id', NursesController.getNurse);
 nurses.put('/nurses/:id', NursesController.updateNurse);
 nurses.delete('/nurses/:id', NursesController.deleteNurse);
-
+nurses.get('/clinics/:id/nurses', NursesController.getNursesByClinic);
 
 // ======== CRUD Doctors ============
 const DoctorsController = require("./controllers/DoctorsController");
@@ -47,6 +48,13 @@ doctors.get('/doctors/:id', DoctorsController.getDoctor);
 doctors.put('/doctors/:id', DoctorsController.updateDoctor);
 doctors.delete('/doctors/:id', DoctorsController.deleteDoctor);
 doctors.post('/doctors/:id/availability', DoctorsController.setAvailability);
+doctors.get('/clinics/:id/doctors', DoctorsController.getDoctorsByClinic);
+
+// ========= CRUD Clinics =============
+const ClinicsController = require("./controllers/ClinicsController");
+clinics.post('/clinics/', ClinicsController.makeClinic);
+clinics.get('/clinics/', ClinicsController.getClinics);
+clinics.get('/clinics/:id', ClinicsController.getClinic);
 
 const AuthService = require('./controllers/AuthService')
 auth.post('/login', AuthService.login)

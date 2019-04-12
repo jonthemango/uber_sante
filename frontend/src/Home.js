@@ -166,18 +166,16 @@ class Home extends Component {
                 </Link>
             </Links> : 
             <Links>
+                <Link>
+                    <a href={`/${session.type}`} >Profile</a>
+                    <Separator/>
+                </Link>
                 { session.type === "patient" ?
-                    <Link color="#FF6666" underColor="black">
+                    <Link color="orange" underColor="green">
                         <a href="/cart">Cart</a>
                         <Separator/>
-                    </Link>:
-                    
-                    <Link>
-                        <a href={`/${session.type}`} >Profile</a>
-                        <Separator/>
                     </Link>
-                }
-                
+                    : null }
                 <Link onClick={ _ => cookie.remove('session')} color="#FF6666" underColor="black">
                     <a href="/">Log out</a>
                     <Separator/>
@@ -189,7 +187,7 @@ class Home extends Component {
                 <Btn href="/consult"><img alt="" src={"http://www.flambeauswim.com/wp-content/uploads/2015/12/calendar-300x300.png"}/> <p> Make an appointment</p></Btn>
                 <Btn href="/calendar">View my file</Btn>
                 <Btn href="/calendar">Book a room</Btn>
-                <Btn href="/calendar">Contact us</Btn>
+                <Btn href="/admin">Admin</Btn>
             </Menu>
         </Main>
     </React.Fragment>

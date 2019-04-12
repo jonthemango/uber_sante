@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { Component, useState } from 'react'
 import styled from 'styled-components'
 import moment from 'moment'
 import './App.css'
@@ -85,6 +85,8 @@ const Grid = styled.div`
     background-position: center;
 `
 
+
+
 export default class Calendar extends Component {
     constructor (props) {
         super(props)
@@ -97,6 +99,7 @@ export default class Calendar extends Component {
             days: [" "].concat(moment.weekdays().splice(1,5)), // removing sun & fris
             pickedSlot: null
         }
+
     }
 
 
@@ -131,11 +134,9 @@ export default class Calendar extends Component {
             this.props.onSlotClicked(slot,x.date);
         }
         if(this.props.isDoctor){
-            console.log({x})
             if(x._id){
                 const patient = await GET(`/api/patients/${x.patientId}`).then(res=>res.json()).then(res=>res.data.patient)
                 const appointmentData = {...x, patient}
-                console.log(appointmentData)
                 this.setState({appointmentData}, _ => this.setState({showModal: true}))
             } 
         }
@@ -188,15 +189,16 @@ export default class Calendar extends Component {
     
                 this.setState({slots:newSlots})
             }catch(e) {
-                console.log('err', e)
             }
         }else {
             const slots = this.generateSlots()
             let weeklySlots = newSlots[date]
             if(weeklySlots){
                 for(let slot of weeklySlots){
-                    let gridId = this.getSlot(slot.weekday, slot.blockId)
-                    slots[gridId] = {...slot, key: gridId, picked: true, color: slot.type == 'walkin' ? colorA : colorB}
+                    for(let blockId of slot.blockIds){
+                        let gridId = this.getSlot(slot.weekday, blockId)
+                        slots[gridId] = {...slot, key: gridId, picked: true, color: slot.type == 'walkin' ? colorA : colorB}
+                    }
                 }
             }
             this.setState({slots})
@@ -215,10 +217,9 @@ export default class Calendar extends Component {
                 <Main>
                     { this.state.times.map( x => <Time key={x} >{x}</Time>) }
                     <Grid>
-                        {this.state.slots.map( x => <Slot   {...x}
+                        {this.state.slots.map( (x,i) => <Slot key={i}
                                                             id={x.id}
                                                             color={x.color}
-                                                            key={x.id}
                                                             slots={x.slots}
                                                             date={x.date}
                                                             picked ={x.picked}
@@ -240,6 +241,7 @@ export default class Calendar extends Component {
                     <p>Patient's Address- { appointmentData ? appointmentData.patient.physicalAddress : 'Not Provided'}</p>
                     <p>Room Number - <b>#{ appointmentData ? appointmentData.room : 'Not Provided'}</b></p>
                     <p>Appointment Type Number - <b>{ appointmentData ? appointmentData.type : 'Not Provided'}</b></p>
+                    <b>Date - { appointmentData ? appointmentData.date : 'Not Provided'}</b>
                 </Modal.Body>
                 <Modal.Footer>
                     <Button variant="primary" onClick={ _ => this.setState({showModal: false})}>

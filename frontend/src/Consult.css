@@ -1,5 +1,5 @@
 
-  input[type=text],select, input[type=password]{
+  input[type=text],select, input[type=password], input[type=number], input[type=radio], input[type=tel], input[type=email], input[type=date]{
     display:flex;
     width: 100%; 
     padding: 1%; 
@@ -33,9 +33,7 @@
     font-size: 1.3rem;
   }
 
-  .row label {
-    font-weight: bold;
-  }
+
 
   .row input {
     height: 40px;

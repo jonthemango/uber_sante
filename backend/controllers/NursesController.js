@@ -4,9 +4,9 @@ Nurse = require('../models/Nurses')
 class NursesController {
 
     static async makeNurse(req, res) {
-        const { accessId, email, password, firstname, lastname } = req.body;
+        const { accessId, email, password, firstname, lastname, clinicId } = req.body;
 
-        let nurse = new Nurse({ accessId, email, password, firstname,lastname })
+        let nurse = new Nurse({ accessId, email, password, firstname,lastname, clinicId });
 
 
         // save the nurse in db
@@ -30,6 +30,18 @@ class NursesController {
             res.json({ success: false, error: nurse.error })
         } else {
             res.json({ success: true, data: { nurse }, message: "Nurse was retrived" });
+        }
+    }
+
+    static async getNursesByClinic(req, res){
+        const clinicId = req.params.id;
+
+        const nurses = await Nurse.getNurses({clinicId});
+
+        if (nurses.error || nurses == undefined) {
+            res.json({ success: false, error: nurses.error })
+        } else {
+            res.json({ success: true, data: { nurses }, message: "Nurses for clinic were retrived" });
         }
     }
 

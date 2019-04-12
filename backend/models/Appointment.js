@@ -58,17 +58,17 @@ class Appointment {
 
                 appointment = appointments[i]
                 aptDate = moment(appointment.date)
-                if (startMoment.isValid() && endMoment.isValid() && start != undefined && end != undefined){
+                if (startMoment.isValid() && endMoment.isValid() && start != undefined && end != undefined) {
                     if (startMoment.isBefore(aptDate) && endMoment.isAfter(aptDate)) filteredAppointments.push(appointment)
-                } else if (startMoment.isValid() && start != undefined){
+                } else if (startMoment.isValid() && start != undefined) {
                     if (startMoment.isBefore(aptDate)) filteredAppointments.push(appointment)
-                } else if (endMoment.isValid() && end != undefined){
+                } else if (endMoment.isValid() && end != undefined) {
                     if (endMoment.isBefore(aptDate)) filteredAppointments.push(appointment)
                 } else {
                     throw new Error("Start and End date are invalid")
                 }
             }
-        }else{
+        } else {
             filteredAppointments = appointments
         }
         return filteredAppointments
@@ -84,6 +84,20 @@ class Appointment {
             return patientAppointments;
         });
         return patientAppointments.length > 1
+    }
+
+    static async delete(appointmentId) {
+        const result = await persist(async (db) => {
+            return await db.collection("appointments").deleteOne({
+                _id: ObjectId(appointmentId)
+            })
+        })
+        console.log({result})
+        if (result.result.n == 1) {
+            return result
+        }
+
+        throw new Error("Was not able to delete the appointment")
     }
 
 

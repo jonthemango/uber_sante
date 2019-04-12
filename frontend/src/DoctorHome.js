@@ -294,25 +294,27 @@ export default class DoctorHome extends Component {
 
     async updateAvailabilities(){
         const slots = cookie.load('slots')
-        const {id} = cookie.load('session')
-        const newAvailabilities = slots.map(x => x.id).map(x => this.getDay(x))
-        let availability = {}
-
-        for(let day of this.state.days){
-            availability[day] = {}
-        }
-
-        for(let item of newAvailabilities){
-            let {day, slot} = item
-            availability[day][slot]=true;
-        }
-
-        availability = {availability}
-
-        const response = await POST(`/api/doctors/${id}/availability`,availability).then(res=>res.json())
-
-        if(response.success){
-            NotificationManager.success('Availabilities updated', 'Success');
+        if(slots){
+            const {id} = cookie.load('session')
+            const newAvailabilities = slots.map(x => x.id).map(x => this.getDay(x))
+            let availability = {}
+    
+            for(let day of this.state.days){
+                availability[day] = {}
+            }
+    
+            for(let item of newAvailabilities){
+                let {day, slot} = item
+                availability[day][slot]=true;
+            }
+    
+            availability = {availability}
+    
+            const response = await POST(`/api/doctors/${id}/availability`,availability).then(res=>res.json())
+    
+            if(response.success){
+                NotificationManager.success('Availabilities updated', 'Success');
+            }
         }
     }
 
@@ -321,22 +323,27 @@ export default class DoctorHome extends Component {
         const doctorInfo = await GET(`/api/doctors/${id}`).then(res => res.json())
         this.setState({...doctorInfo.data.doctor})
         let slots = []
-
+        let res = []
         const result = await GET(`/api/doctors/${id}/appointments`).then(res => res.json())
         if(result.success){
             for(let appointment of result.data.appointments){
-                for(let id of appointment.blockIds){
-                    let firstWeekDay = moment(appointment.date,'YYYY-MM-DD').weekday(1).format('YYYY-MM-DD')
-                    let formatedAppointment = {_id: appointment._id, weekday: moment(appointment.date, 'YYYY-MM-DD').format('dddd').toLowerCase() , date: appointment.date, patientId: appointment.patientId, room: appointment.room, type: appointment.type, blockId: id }
-                    if(slots[id])
-                        slots[firstWeekDay].push(formatedAppointment)
-                    else
-                        slots[firstWeekDay] = [formatedAppointment]
-                    }
+                let formatedAppointment = {blockIds: appointment.blockIds, _id: appointment._id, weekday: moment(appointment.date, 'YYYY-MM-DD').format('dddd').toLowerCase() , date: appointment.date, patientId: appointment.patientId, room: appointment.room, type: appointment.type}
+                res.push(formatedAppointment)
             }
         }
 
-        this.setState({slots})
+        const newStuff = res.reduce((cumul,current)=> {
+            let firstWeekDay = moment(current.date,'YYYY-MM-DD').weekday(1).format('YYYY-MM-DD')
+            if(cumul[firstWeekDay])
+                cumul[firstWeekDay].push(current)
+            else 
+                cumul[firstWeekDay] = [current]
+            
+                return cumul
+         })
+
+        console.log('result',newStuff)
+        this.setState({slots: newStuff})
     }
 
     render(){

@@ -9,7 +9,7 @@ class Nurses {
         email,
         firstname,
         lastname,
-        password }) {
+        password, clinicId }) {
         //username contains three letter followed by 5digits: DOL96315
         this._id = _id
         this.email = email
@@ -17,6 +17,7 @@ class Nurses {
         this.lastname = lastname
         this.accessId = accessId
         this.password = password
+        this.clinicId = clinicId
 
     }
 
@@ -61,6 +62,27 @@ class Nurses {
            return new Nurses({ ...nurse })
         }
         return null
+    }
+
+    static async getNurses({ clinicId, nurseId }) {
+        let query = {};
+
+        if (clinicId) {
+            query.clinicId = clinicId
+        }
+
+        if (nurseId) {
+            query.doctorId = doctorId;
+        }
+
+
+        console.log(query);
+        const nurses = await persist(async (db) => {
+            const doctors = await db.collection("nurses").find(query).toArray();
+            return doctors;
+        });
+
+        return nurses
     }
 
     static async delete(id) {
