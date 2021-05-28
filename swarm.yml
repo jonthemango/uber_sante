@@ -3,7 +3,7 @@ version: '3.4'
 services:
 
   backend:
-    image: 'ubersante-backend:latest'
+    image: 'ubersante-backend:v3'
     ports:
       - target: 5001
         published: 5001
@@ -11,7 +11,7 @@ services:
         mode: host
 
   frontend:
-    image: 'ubersante-frontend:v3'
+    image: 'ubersante-frontend:v4'
     ports:
       - target: 3000
         published: 80

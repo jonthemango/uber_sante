@@ -7,7 +7,7 @@ async function persist (handler) {
     const client = await MongoClient.connect(url, { useNewUrlParser: true });
     const db = client.db(dbName)
 
-    let result;
+    let result
     try{
         result = await handler(db);
     } catch (error) {
